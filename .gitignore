@@ -1,0 +1,54 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ/IDEA related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Visual Studio Code settings
+.vscode/
+
+# Flutter/Dart related
+.dart_tool/
+.packages
+.buildlog/
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-versions
+pubspec.lock
+
+# Flutter build files
+/build/
+ios/Flutter/.last_build_id
+
+# Android Studio will place build artifacts here
+android/.gradle/
+android/app/debug/
+android/app/profile/
+android/app/release/
+
+# iOS specific
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework/
+ios/Flutter/Flutter.podspec
+ios/Runner.xcworkspace/
+ios/DerivedData/
+ios/.generated/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json

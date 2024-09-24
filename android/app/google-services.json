@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "443300820189",
+    "project_id": "ride-sharing-c8fb1",
+    "storage_bucket": "ride-sharing-c8fb1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:443300820189:android:bebea42d4419fdcdd19734",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdWO95s44Y1WorBo1i1zbuFoQCTSvAgUs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

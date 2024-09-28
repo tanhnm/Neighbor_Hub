@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart'; // Import Geolocator for location services
 import 'package:flutter_application_1/screens/BookingCarScreen/map_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -18,6 +19,37 @@ class _DestinationPickState extends State<DestinationPick> {
     {"name": "Great Wall", "location": "China"},
     {"name": "Sydney Opera House", "location": "Sydney, Australia"},
   ];
+
+  // Function to request location permission and get current position
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // If not enabled, show error
+      return Future.error('Location services are disabled.');
+    }
+
+    // Check for permission
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    // Handle the case where permissions are permanently denied
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // If permission granted, return the current position
+    return await Geolocator.getCurrentPosition();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,9 +128,30 @@ class _DestinationPickState extends State<DestinationPick> {
                   height: 60,
                   width: MediaQuery.of(context).size.width * 0.9, // 90% width
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => MapScreen()));
+                    onPressed: () async {
+                      try {
+                        // Call the function to request permission and get current location
+                        Position position = await _determinePosition();
+                        print(
+                            'Current position: ${position.latitude}, ${position.longitude}');
+
+                        // Pass the position to the MapScreen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MapScreen(
+                              initialLatitude: position.latitude,
+                              initialLongitude: position.longitude,
+                            ),
+                          ),
+                        );
+                      } catch (e) {
+                        // Handle any errors that occur during permission request
+                        print('Error: $e');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(e.toString())),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       elevation: 10,

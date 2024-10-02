@@ -6,7 +6,7 @@ import 'package:flutter_application_1/model/voucher.dart';
 class VoucherCard extends StatelessWidget {
   final Voucher voucher;
 
-  const VoucherCard({Key? key, required this.voucher}) : super(key: key);
+  const VoucherCard({super.key, required this.voucher});
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +25,15 @@ class VoucherCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(voucher.title,
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                SizedBox(height: 8),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
                 Text(voucher.description),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text('Discount: \$${voucher.discount}',
-                    style: TextStyle(color: Colors.green)),
+                    style: const TextStyle(color: Colors.green)),
               ],
             ),
           ],
@@ -65,9 +65,9 @@ class VoucherListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vouchers'),
+        title: const Text('Vouchers'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context).pop(); // Navigate back to the previous page
           },

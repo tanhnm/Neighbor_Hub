@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_application_1/screens/register_screen.dart';
 
 class ConfirmOtpScreen extends StatefulWidget {
-  const ConfirmOtpScreen({super.key});
+  final String phoneNumber;
+
+  const ConfirmOtpScreen({super.key, required this.phoneNumber});
 
   @override
   State<ConfirmOtpScreen> createState() => _ConfirmOtpScreenState();
@@ -15,7 +17,6 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
   final TextEditingController otpController3 = TextEditingController();
   final TextEditingController otpController4 = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _phoneController = TextEditingController();
   bool isOtpInputted = false; // Track phone validation
 
   void _checkOtpInput() {
@@ -48,21 +49,18 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Xác nhận số điện thoại của bạn',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 26),
-                      ),
-                      Text(
-                        'Nhập mã xác thực nhận vào tin nhắn được gửi đến 09444*** (Việt Nam)',
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
-                    ]),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  const Text(
+                    'Xác nhận số điện thoại của bạn',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
+                  ),
+                  Text(
+                    'Nhập mã xác thực nhận vào tin nhắn được gửi đến ${widget.phoneNumber.length == 10 ? '${widget.phoneNumber.substring(0, 4)}******' : widget.phoneNumber} (Việt Nam)',
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ]),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -167,8 +165,8 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const RegisterScreen()));
+                                      builder: (context) => RegisterScreen(
+                                          phone: widget.phoneNumber)));
                             }
                           }
                         : null, // Disable if not valid

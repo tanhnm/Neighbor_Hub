@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/screens/confirm_otp_screen.dart';
+import 'package:flutter_application_1/services/remote_service/remote_auth.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,13 +17,26 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   bool isPhoneValidated = false; // Track phone validation
 
-  void _submit() {
+  void _submit() async {
     if (_formKey.currentState!.validate()) {
+      print("+84${phoneTextEditingController.text}");
+      RemoteAuth(context: context)
+          .checkPhone(phone: "${phoneTextEditingController.text}");
       // Process the phone number
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const ConfirmOtpScreen()),
-      );
+      // await FirebaseAuth.instance.verifyPhoneNumber(
+      //   verificationCompleted: (PhoneAuthCredential credential) {},
+      //   verificationFailed: (FirebaseAuthException e) {},
+      //   codeSent: (String verificationId, int? resendToken) {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //           builder: (context) => ConfirmOtpScreen(
+      //               phoneNumber: phoneTextEditingController.text)),
+      //     );
+      //   },
+      //   codeAutoRetrievalTimeout: (String verificationId) {},
+      //   phoneNumber: '+84 971331302',
+      // );
     }
   }
 

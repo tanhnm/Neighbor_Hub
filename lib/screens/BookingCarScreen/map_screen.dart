@@ -13,8 +13,9 @@ class MapScreen extends StatefulWidget {
   final double initialLongitude;
 
   const MapScreen(
-      {Key? key, required this.initialLatitude, required this.initialLongitude})
-      : super(key: key);
+      {super.key,
+      required this.initialLatitude,
+      required this.initialLongitude});
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -28,11 +29,11 @@ class _MapScreenState extends State<MapScreen> {
   String secondPick = '';
   bool firstPickDone = false;
 
-  MapController _mapController = MapController();
+  final MapController _mapController = MapController();
   late LatLng _currentCenter;
 
   List<Marker> selectedMarkers = [];
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _suggestions = [];
   List<Map<String, String>> vehicles = [
     {'type': 'Sedan', 'model': 'Toyota Camry', 'price': '\$20'},
@@ -157,7 +158,7 @@ class _MapScreenState extends State<MapScreen> {
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lỗi gợi ý vị trí')),
+        const SnackBar(content: Text('Lỗi gợi ý vị trí')),
       );
     }
   }
@@ -218,7 +219,7 @@ class _MapScreenState extends State<MapScreen> {
                   onPositionChanged: (camera, hasGesture) {
                     setState(() {
                       selectedVehicle = '';
-                      _currentCenter = camera.center!;
+                      _currentCenter = camera.center;
                     });
                   },
                 ),
@@ -244,7 +245,7 @@ class _MapScreenState extends State<MapScreen> {
               ),
               firstPickDone
                   ? Container()
-                  : Align(
+                  : const Align(
                       alignment: Alignment.center,
                       child: Icon(
                         Icons.location_pin,
@@ -263,7 +264,7 @@ class _MapScreenState extends State<MapScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: Colors.black12,
                           blurRadius: 10,

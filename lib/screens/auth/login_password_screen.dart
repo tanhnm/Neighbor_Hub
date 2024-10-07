@@ -33,6 +33,15 @@ class _LoginPasswordScreenState extends State<LoginPasswordScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Đăng nhập với mật khẩu'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context); // Go back to the previous screen
+            },
+          ),
+        ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
@@ -41,21 +50,9 @@ class _LoginPasswordScreenState extends State<LoginPasswordScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Lên Xe Cùng Neighbor Hub',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
-                    ),
-                    Text(
-                      'Đăng nhập với mật khẩu',
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                  ],
+                Text(
+                  'Lên Xe Cùng Neighbor Hub',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
                 ),
                 const SizedBox(height: 36),
                 TextFormField(

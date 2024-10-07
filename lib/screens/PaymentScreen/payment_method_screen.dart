@@ -1,102 +1,112 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/PaymentScreen/voucher_selection_screen.dart';
 
-class PaymentMethodScreen extends StatefulWidget {
-  const PaymentMethodScreen({super.key});
-
+class PaymentMethodsScreen extends StatelessWidget {
   @override
-  _PaymentMethodScreenState createState() => _PaymentMethodScreenState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false, // Remove the debug banner
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Phương Thức Thanh Toán'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        body: PaymentMethods(),
+      ),
+    );
+  }
 }
 
-class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
-  final List<Map<String, dynamic>> paymentMethods = [
-    {
-      'name': 'Credit Card',
-      'icon': Icons.credit_card,
-      'options': ['Visa', 'MasterCard', 'Amex']
-    },
-    {
-      'name': 'PayPal',
-      'icon': Icons.account_balance_wallet,
-      'options': ['PayPal Account 1', 'PayPal Account 2']
-    },
-    {
-      'name': 'Google Pay',
-      'icon': Icons.payment,
-      'options': ['Google Account 1', 'Google Account 2']
-    },
-  ];
-
-  // To track which item is expanded
-  final Map<String, bool> _expandedItems = {};
-
+class PaymentMethods extends StatefulWidget {
   @override
-  void initState() {
-    super.initState();
-    // Initialize expanded items map with false for each method
-    for (var method in paymentMethods) {
-      _expandedItems[method['name']] = false;
-    }
-  }
+  _PaymentMethodsState createState() => _PaymentMethodsState();
+}
+
+class _PaymentMethodsState extends State<PaymentMethods> {
+  String selectedMethod = "";
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Select Payment Method'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context); // Goes back to the previous screen
-          },
-        ),
-      ),
-      body: ListView.builder(
-        itemCount: paymentMethods.length,
-        itemBuilder: (context, index) {
-          final method = paymentMethods[index];
-          final isExpanded = _expandedItems[method['name']] ?? false;
-
-          return Card(
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _expandedItems[method['name']] = !isExpanded;
-                    });
-                  },
-                  child: ListTile(
-                    leading: Icon(method['icon']),
-                    title: Text(method['name']),
-                    trailing: IconButton(
-                      icon: Icon(
-                          isExpanded ? Icons.expand_less : Icons.expand_more),
-                      onPressed: () {
-                        setState(() {
-                          _expandedItems[method['name']] = !isExpanded;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                if (isExpanded)
-                  Column(
-                    children: method['options'].map<Widget>((option) {
-                      return ListTile(
-                        title: Text(option),
-                        onTap: () {
-                          // Handle option selection logic here
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Selected: $option')),
-                          );
-                        },
-                      );
-                    }).toList(),
-                  ),
-              ],
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListTile(
+            leading: Icon(Icons.credit_card),
+            title: Text('Thẻ tín dụng'),
+            trailing: Radio<String>(
+              value: 'Credit/Debit Card',
+              groupValue: selectedMethod,
+              onChanged: (String? value) {
+                setState(() {
+                  selectedMethod = value!;
+                });
+              },
             ),
-          );
-        },
+          ),
+          ListTile(
+            leading: Icon(Icons.account_balance_wallet),
+            title: Text('PayPal'),
+            trailing: Radio<String>(
+              value: 'PayPal',
+              groupValue: selectedMethod,
+              onChanged: (String? value) {
+                setState(() {
+                  selectedMethod = value!;
+                });
+              },
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.payment),
+            title: Text('Google Pay'),
+            trailing: Radio<String>(
+              value: 'Google Pay',
+              groupValue: selectedMethod,
+              onChanged: (String? value) {
+                setState(() {
+                  selectedMethod = value!;
+                });
+              },
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.money),
+            title: Text('Tiền Mặt'),
+            trailing: Radio<String>(
+              value: 'Cash on Delivery',
+              groupValue: selectedMethod,
+              onChanged: (String? value) {
+                setState(() {
+                  selectedMethod = value!;
+                });
+              },
+            ),
+          ),
+          Spacer(),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                minimumSize: Size(double.infinity, 50),
+                backgroundColor: Color(0xFFFDC6D6)),
+            onPressed: selectedMethod.isNotEmpty
+                ? () {
+                    // Handle the selected payment method
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => VoucherSelectionScreen()));
+                  }
+                : null,
+            child: Text('Confirm Payment Method',
+                style: TextStyle(fontSize: 18, color: Colors.black)),
+          ),
+        ],
       ),
     );
   }

@@ -1,12 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/trip.dart';
+import 'package:flutter_application_1/model/user_model.dart';
+import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
+import 'package:flutter_application_1/services/fare_service/fare_controller.dart';
 import 'package:flutter_application_1/utils/api/api.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart'; // Add this import at the top
 import 'package:http/http.dart' as http;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:toastification/toastification.dart';
 
 class MapScreen extends StatefulWidget {
   final double initialLatitude;
@@ -28,6 +35,12 @@ class _MapScreenState extends State<MapScreen> {
   String firstPick = '';
   String secondPick = '';
   bool firstPickDone = false;
+  bool isPreBooking = false;
+  double farePrice = 0.0;
+  double distance = 0.0;
+  double duration = 0.0;
+  bool isLoading = false; // Add this to manage loading state
+  DateTime? bookingDateTime = null;
 
   final MapController _mapController = MapController();
   late LatLng _currentCenter;
@@ -35,15 +48,12 @@ class _MapScreenState extends State<MapScreen> {
   List<Marker> selectedMarkers = [];
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _suggestions = [];
-  List<Map<String, String>> vehicles = [
-    {'type': 'Sedan', 'model': 'Toyota Camry', 'price': '\$20'},
-    {'type': 'SUV', 'model': 'Honda CR-V', 'price': '\$30'},
-    {'type': 'Bike', 'model': 'Yamaha YZF-R15', 'price': '\$10'},
-    {'type': 'Luxury', 'model': 'Mercedes S-Class', 'price': '\$50'},
-  ];
+  List<Map<String, String>> vehicles = [];
+  String dropLocation = '';
+  String pickLocation = '';
+  User? user = null;
 
   String selectedVehicle = '';
-
   @override
   void initState() {
     super.initState();
@@ -62,22 +72,71 @@ class _MapScreenState extends State<MapScreen> {
         ),
       ),
     );
+
+    _loadUser();
+  }
+
+  Future<void> _loadUser() async {
+    var userBox = await Hive.openBox<User>('users');
+    user = userBox.get('user');
   }
 
   getCoordinates(String firstPick, String secondPick) async {
     // Call the API with reversed coordinates
-    var response = await http.get(getRouteUrl(firstPick, secondPick));
+    List<String> placeName = firstPick.split(',');
+    print(firstPick);
+    pickLocation = await getPlaceName(placeName[1], placeName[0]);
+    try {
+      isLoading = true;
+      var response = await http.get(getRouteUrl(firstPick, secondPick));
 
-    setState(() {
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        listOfPoint = data['features'][0]['geometry']['coordinates'];
-        points = listOfPoint
-            .map((e) => LatLng(e[1].toDouble(),
-                e[0].toDouble())) // Reverse them back for the map
-            .toList();
+      setState(() {
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          listOfPoint = data['features'][0]['geometry']['coordinates'];
+          distance =
+              data['features'][0]['properties']['segments'][0]['distance'];
+          duration =
+              data['features'][0]['properties']['segments'][0]['duration'];
+          points = listOfPoint
+              .map((e) => LatLng(e[1].toDouble(),
+                  e[0].toDouble())) // Reverse them back for the map
+              .toList();
+        } else {
+          print("Error: ${response.body}");
+          toastification.show(
+            context: context,
+            style: ToastificationStyle
+                .flat, // optional if you use ToastificationWrapper
+            title: Text('Error response: ${response.body}'),
+            autoCloseDuration: const Duration(seconds: 5),
+          );
+        }
+      });
+      List<Trip> trips = await FareController(context: context)
+          .getFare(distance: distance, travelTime: duration);
+      for (var trip in trips) {
+        vehicles.add({
+          'type': trip.vehicleType,
+          'distance': '$distance',
+          'duration': '${trip.travelTimeSeconds}',
+          'price': trip.tripCost.toString()
+        });
+        print('Vehicle Type: ${trip.vehicleType}, Trip Cost: ${trip.tripCost}');
       }
-    });
+    } catch (e) {
+      toastification.show(
+        context: context,
+        style: ToastificationStyle
+            .flat, // optional if you use ToastificationWrapper
+        title: Text('Error: $e'),
+        autoCloseDuration: const Duration(seconds: 5),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> searchLocation(String query) async {
@@ -163,12 +222,34 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  void _pickLocation() {
+  void _onSearchChanged(String value) {
+    if (value.isNotEmpty) {
+      getSuggestions(value); // Fetch suggestions as the user types
+    } else {
+      setState(() {
+        _suggestions = []; // Clear suggestions if search field is empty
+      });
+    }
+  }
+
+  void _onSuggestionTapped(Map<String, dynamic> suggestion) {
+    _searchController.text = suggestion['display_name'];
+    searchLocation(suggestion['display_name']);
     setState(() {
-      firstPickDone = true;
-      if (firstPickDone) {
-        secondPick = "${_currentCenter.longitude}, ${_currentCenter.latitude}";
-      }
+      _suggestions = []; // Clear suggestions after selection
+    });
+  }
+
+  void _pickLocation() async {
+    firstPickDone = true;
+    if (firstPickDone) {
+      secondPick = "${_currentCenter.longitude}, ${_currentCenter.latitude}";
+    }
+
+    dropLocation = await getPlaceName(_currentCenter.latitude.toString(),
+        _currentCenter.longitude.toString());
+
+    setState(() {
       if (selectedMarkers.length < 2) {
         // Add new marker
         selectedMarkers.add(
@@ -253,28 +334,75 @@ class _MapScreenState extends State<MapScreen> {
                         color: Colors.red,
                       ),
                     ),
+              ButtonBottom(),
+              // Search Bar
               Positioned(
-                top: 10,
-                left: 10,
-                right: 10,
-                child: Column(children: [
-                  // Search input and suggestions code here...
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 10,
-                          spreadRadius: 2,
+                  top: 20,
+                  left: 20,
+                  right: 20,
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 5,
+                              offset: Offset(0, 2),
+                            )
+                          ],
                         ),
-                      ],
-                    ),
+                        child: TextField(
+                          controller: _searchController,
+                          onChanged: _onSearchChanged,
+                          decoration: InputDecoration(
+                            hintText: 'Search for a location...',
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.search),
+                              onPressed: () {
+                                searchLocation(_searchController.text);
+                              },
+                            ),
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )),
+              // Suggestions List
+              if (_suggestions.isNotEmpty)
+                Container(
+                  margin: const EdgeInsets.fromLTRB(20, 80, 20, 0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 5,
+                        offset: Offset(0, 2),
+                      )
+                    ],
                   ),
-                ]),
-              ),
+                  child: ListView.builder(
+                    shrinkWrap: true, // Make the list view scrollable
+                    itemCount: _suggestions.length,
+                    itemBuilder: (context, index) {
+                      final suggestion = _suggestions[index];
+                      return ListTile(
+                        title: Text(suggestion['display_name']),
+                        subtitle: Text(
+                            '${suggestion['distance'].toStringAsFixed(2)} meters away'),
+                        onTap: () {
+                          _onSuggestionTapped(suggestion);
+                        },
+                      );
+                    },
+                  ),
+                ),
               firstPickDone
                   ? Positioned(
                       left: 0,
@@ -300,64 +428,74 @@ class _MapScreenState extends State<MapScreen> {
                                     color: Colors.black, fontSize: 16),
                               ),
                               const SizedBox(height: 10),
-                              Expanded(
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: vehicles.length,
-                                  itemBuilder: (context, index) {
-                                    final vehicle = vehicles[index];
-                                    bool isSelected =
-                                        vehicle['model'] == selectedVehicle;
+                              isLoading
+                                  ? Center(
+                                      child: LoadingAnimationWidget.waveDots(
+                                          color: Colors.black, size: 30))
+                                  : Expanded(
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: vehicles.length,
+                                        itemBuilder: (context, index) {
+                                          final vehicle = vehicles[index];
+                                          bool isSelected = vehicle['type'] ==
+                                              selectedVehicle;
 
-                                    return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          selectedVehicle = vehicle['model']!;
-                                        });
-                                      },
-                                      child: Card(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          side: BorderSide(
-                                            color: isSelected
-                                                ? Colors.blue
-                                                : Colors.grey,
-                                            width: 2,
-                                          ),
-                                        ),
-                                        elevation: 5,
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 8),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(15),
-                                          width: 150,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                vehicle['type']!,
-                                                style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                          return GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                selectedVehicle =
+                                                    vehicle['type']!;
+                                              });
+                                            },
+                                            child: Card(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                side: BorderSide(
+                                                  color: isSelected
+                                                      ? Colors.blue
+                                                      : Colors.grey,
+                                                  width: 2,
+                                                ),
                                               ),
-                                              const SizedBox(height: 5),
-                                              Text(vehicle['model']!),
-                                              const SizedBox(height: 5),
-                                              Text(vehicle['price']!,
-                                                  style: const TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.green)),
-                                            ],
-                                          ),
-                                        ),
+                                              elevation: 5,
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8),
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(15),
+                                                width: 150,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      vehicle['type']!,
+                                                      style: const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    const SizedBox(height: 5),
+                                                    Text(
+                                                        'distance: ${vehicle['distance']!}'),
+                                                    const SizedBox(height: 5),
+                                                    Text(
+                                                        'Price: ${vehicle['price']}',
+                                                        style: const TextStyle(
+                                                            fontSize: 14,
+                                                            color:
+                                                                Colors.green)),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
                                       ),
-                                    );
-                                  },
-                                ),
-                              ),
+                                    ),
                               const SizedBox(height: 10),
                             ],
                           ),
@@ -382,8 +520,129 @@ class _MapScreenState extends State<MapScreen> {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 onPressed: () {
-                  // Add your confirm vehicle action here
-                  print("Confirmed vehicle: $selectedVehicle");
+                  // Show a modal dialog asking for booking details
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      bool isPreBooking =
+                          false; // Local state inside the dialog
+                      return StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setState) {
+                          return AlertDialog(
+                            title: const Text('Confirm Vehicle'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                    'Do you want to make a pre-booking?'),
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Đặt trước'),
+                                    Switch(
+                                      value: isPreBooking,
+                                      onChanged: (bool value) {
+                                        setState(() {
+                                          isPreBooking = value;
+                                          if (value) {
+                                            // Trigger additional behavior when pre-booking is ON
+                                            print("Pre-booking is enabled.");
+                                          } else {
+                                            // Trigger behavior when pre-booking is OFF
+                                            print("Pre-booking is disabled.");
+                                          }
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                if (isPreBooking)
+                                  Column(
+                                    children: [
+                                      const Text('Chọn ngày và giờ:'),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          // Show Date Picker and Time Picker
+                                          DateTime? selectedDate =
+                                              await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(2000),
+                                            lastDate: DateTime(2101),
+                                          );
+                                          if (selectedDate != null) {
+                                            TimeOfDay? selectedTime =
+                                                await showTimePicker(
+                                              context: context,
+                                              initialTime: TimeOfDay.now(),
+                                            );
+                                            if (selectedTime != null) {
+                                              // Combine Date and Time
+                                              setState(() {
+                                                bookingDateTime = DateTime(
+                                                  selectedDate.year,
+                                                  selectedDate.month,
+                                                  selectedDate.day,
+                                                  selectedTime.hour,
+                                                  selectedTime.minute,
+                                                );
+                                              });
+                                              // Do something with the selected date and time
+                                              print(
+                                                  'Booking for: $bookingDateTime');
+                                            }
+                                          }
+                                        },
+                                        child: bookingDateTime == null
+                                            ? Text('Select Date and Time')
+                                            : Text(
+                                                '${bookingDateTime!.day}/${bookingDateTime!.month}/${bookingDateTime!.year} ${bookingDateTime!.hour}:${bookingDateTime!.minute}',
+                                              ),
+                                      ),
+                                    ],
+                                  ),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  !isPreBooking
+                                      ? BookingController(context: context)
+                                          .createBooking(
+                                              distance: distance.toInt(),
+                                              pickupLocation: pickLocation,
+                                              dropoffLocation: dropLocation,
+                                              userId: user?.userId ?? 0,
+                                              currentLocation: firstPick)
+                                      : BookingController(context: context)
+                                          .createBookingAdvance(
+                                              pickupLocation: pickLocation,
+                                              dropoffLocation: dropLocation,
+                                              distance: distance.toInt(),
+                                              userId: user?.userId ?? 0,
+                                              currentLocation: firstPick,
+                                              pickupTime:
+                                                  "${bookingDateTime?.toIso8601String()}Z");
+                                  // Navigator.pop(context); // Close the modal
+                                  // Proceed with vehicle confirmation logic
+                                  print("Confirmed vehicle: $selectedVehicle");
+                                },
+                                child: const Text('Confirm'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 15),
@@ -445,6 +704,38 @@ class _MapScreenState extends State<MapScreen> {
                 ],
               ),
             ),
+    );
+  }
+}
+
+class ButtonBottom extends StatelessWidget {
+  const ButtonBottom({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 10,
+      left: 10,
+      right: 10,
+      child: Column(children: [
+        // Search input and suggestions code here...
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 10,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+        ),
+      ]),
     );
   }
 }

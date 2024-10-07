@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart'; // Import Geolocator for location services
 import 'package:flutter_application_1/screens/BookingCarScreen/map_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:toastification/toastification.dart';
 
 class DestinationPick extends StatefulWidget {
   const DestinationPick({super.key});
@@ -11,6 +12,9 @@ class DestinationPick extends StatefulWidget {
 }
 
 class _DestinationPickState extends State<DestinationPick> {
+  Position? _currentPosition;
+  bool _isLocationLoading = false;
+
   // List of sample destinations (for demonstration purposes)
   final List<Map<String, String>> suggestedDestinations = [
     {"name": "Central Park", "location": "New York, USA"},
@@ -20,7 +24,39 @@ class _DestinationPickState extends State<DestinationPick> {
     {"name": "Sydney Opera House", "location": "Sydney, Australia"},
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
   // Function to request location permission and get current position
+  Future<void> _getCurrentLocation() async {
+    setState(() {
+      _isLocationLoading = true;
+    });
+
+    try {
+      Position position = await _determinePosition();
+      setState(() {
+        _currentPosition = position;
+      });
+    } catch (e) {
+      // Handle any errors that occur during permission request
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: Text('Error: $e'),
+        autoCloseDuration: const Duration(seconds: 5),
+        backgroundColor: Colors.red,
+      );
+    } finally {
+      setState(() {
+        _isLocationLoading = false;
+      });
+    }
+  }
+
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -28,7 +64,6 @@ class _DestinationPickState extends State<DestinationPick> {
     // Test if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // If not enabled, show error
       return Future.error('Location services are disabled.');
     }
 
@@ -41,13 +76,11 @@ class _DestinationPickState extends State<DestinationPick> {
       }
     }
 
-    // Handle the case where permissions are permanently denied
     if (permission == LocationPermission.deniedForever) {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
 
-    // If permission granted, return the current position
     return await Geolocator.getCurrentPosition();
   }
 
@@ -84,7 +117,25 @@ class _DestinationPickState extends State<DestinationPick> {
                     ),
                     const SizedBox(width: 10),
                     GestureDetector(
-                      onTap: null,
+                      onTap: () async {
+                        if (_currentPosition != null) {
+                          // Pass the position to the MapScreen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MapScreen(
+                                initialLatitude: _currentPosition!.latitude,
+                                initialLongitude: _currentPosition!.longitude,
+                              ),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Location not available")),
+                          );
+                        }
+                      },
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Row(
@@ -98,7 +149,7 @@ class _DestinationPickState extends State<DestinationPick> {
                           ],
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -129,27 +180,21 @@ class _DestinationPickState extends State<DestinationPick> {
                   width: MediaQuery.of(context).size.width * 0.9, // 90% width
                   child: ElevatedButton(
                     onPressed: () async {
-                      try {
-                        // Call the function to request permission and get current location
-                        Position position = await _determinePosition();
-                        print(
-                            'Current position: ${position.latitude}, ${position.longitude}');
-
+                      if (_currentPosition != null) {
                         // Pass the position to the MapScreen
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => MapScreen(
-                              initialLatitude: position.latitude,
-                              initialLongitude: position.longitude,
+                              initialLatitude: _currentPosition!.latitude,
+                              initialLongitude: _currentPosition!.longitude,
                             ),
                           ),
                         );
-                      } catch (e) {
-                        // Handle any errors that occur during permission request
-                        print('Error: $e');
+                      } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(e.toString())),
+                          const SnackBar(
+                              content: Text("Location not available")),
                         );
                       }
                     },
@@ -172,34 +217,37 @@ class _DestinationPickState extends State<DestinationPick> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 20),
                 // Suggested destinations list
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: suggestedDestinations.length,
-                    itemBuilder: (context, index) {
-                      final destination = suggestedDestinations[index];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: ListTile(
-                          leading: const Icon(
-                            FontAwesomeIcons.mapMarkerAlt,
-                            color: Colors.red,
-                          ),
-                          title: Text(destination['name']!),
-                          subtitle: Text(destination['location']!),
-                          trailing: const Icon(
-                            FontAwesomeIcons.chevronRight,
-                            color: Colors.grey,
-                          ),
-                          onTap: () {
-                            // Action when a destination is selected
-                            print(
-                                'Selected destination: ${destination['name']}');
+                  child: _isLocationLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : ListView.builder(
+                          itemCount: suggestedDestinations.length,
+                          itemBuilder: (context, index) {
+                            final destination = suggestedDestinations[index];
+                            return Card(
+                              margin: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: ListTile(
+                                leading: const Icon(
+                                  FontAwesomeIcons.mapMarkerAlt,
+                                  color: Colors.red,
+                                ),
+                                title: Text(destination['name']!),
+                                subtitle: Text(destination['location']!),
+                                trailing: const Icon(
+                                  FontAwesomeIcons.chevronRight,
+                                  color: Colors.grey,
+                                ),
+                                onTap: () {
+                                  // Action when a destination is selected
+                                  print(
+                                      'Selected destination: ${destination['name']}');
+                                },
+                              ),
+                            );
                           },
                         ),
-                      );
-                    },
-                  ),
                 ),
               ],
             ),

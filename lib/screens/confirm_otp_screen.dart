@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/screens/register_screen.dart';
+import 'package:flutter_application_1/services/remote_service/remote_auth.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ConfirmOtpScreen extends StatefulWidget {
   final String phoneNumber;
@@ -18,6 +20,7 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
   final TextEditingController otpController4 = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool isOtpInputted = false; // Track phone validation
+  bool isLoading = false;
 
   void _checkOtpInput() {
     setState(() {
@@ -26,6 +29,39 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
           otpController3.text.isNotEmpty &&
           otpController4.text.isNotEmpty;
     });
+  }
+
+  void _deleteOtpInput() {
+    setState(() {
+      isOtpInputted = otpController4.text.isNotEmpty &&
+          otpController3.text.isNotEmpty &&
+          otpController2.text.isNotEmpty &&
+          otpController1.text.isNotEmpty;
+    });
+  }
+
+  void _submit() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        setState(() {
+          isLoading = true;
+        });
+        print("test confirm otp");
+        print(widget.phoneNumber);
+        print(
+            '${otpController1.text}${otpController2.text}${otpController3.text}${otpController4.text}');
+        await RemoteAuth(context: context).verifySMSOTP(
+            phone: widget.phoneNumber,
+            code:
+                '${otpController1.text}${otpController2.text}${otpController3.text}${otpController4.text}');
+      } catch (e) {
+        print(e);
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -76,6 +112,11 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                               FocusScope.of(context).nextFocus(),
                               _checkOtpInput()
                             }
+                          else
+                            {
+                              FocusScope.of(context).previousFocus(),
+                              _deleteOtpInput()
+                            }
                         },
                         style: Theme.of(context).textTheme.headlineLarge,
                         keyboardType: TextInputType.number,
@@ -96,6 +137,11 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                             {
                               FocusScope.of(context).nextFocus(),
                               _checkOtpInput()
+                            }
+                          else
+                            {
+                              FocusScope.of(context).previousFocus(),
+                              _deleteOtpInput()
                             }
                         },
                         style: Theme.of(context).textTheme.headlineLarge,
@@ -118,6 +164,11 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                               FocusScope.of(context).nextFocus(),
                               _checkOtpInput()
                             }
+                          else
+                            {
+                              FocusScope.of(context).previousFocus(),
+                              _deleteOtpInput()
+                            }
                         },
                         style: Theme.of(context).textTheme.headlineLarge,
                         keyboardType: TextInputType.number,
@@ -138,6 +189,11 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                             {
                               FocusScope.of(context).nextFocus(),
                               _checkOtpInput()
+                            }
+                          else
+                            {
+                              FocusScope.of(context).previousFocus(),
+                              _deleteOtpInput()
                             }
                         },
                         style: Theme.of(context).textTheme.headlineLarge,
@@ -161,22 +217,21 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                     onPressed: isOtpInputted
                         ? () {
                             if (_formKey.currentState!.validate()) {
-                              // Process the phone number
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RegisterScreen(
-                                          phone: widget.phoneNumber)));
+                              _submit();
                             }
                           }
                         : null, // Disable if not valid
-                    child: Text('Tiếp tục',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: isOtpInputted
-                                ? Colors.black
-                                : const Color.fromARGB(255, 155, 150, 150)))),
+                    child: isLoading
+                        ? LoadingAnimationWidget.waveDots(
+                            color: Colors.black, size: 50)
+                        : Text('Tiếp tục',
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: isOtpInputted
+                                    ? Colors.black
+                                    : const Color.fromARGB(
+                                        255, 155, 150, 150)))),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 25.0),
                   child: Row(

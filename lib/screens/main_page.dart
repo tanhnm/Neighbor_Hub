@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/common/widgets/imageRounded/rounded_img.dart';
 import 'package:flutter_application_1/screens/BookingCarScreen/destination_pick.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hive/hive.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -15,7 +16,15 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    getToken() async {
+      var box = await Hive.openBox('authBox');
+      String token = await box.get('token', defaultValue: null);
+      return token;
+    }
 
+    getToken().then((value) {
+      print(value);
+    });
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

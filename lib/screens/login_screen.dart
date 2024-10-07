@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/screens/confirm_otp_screen.dart';
@@ -15,28 +14,23 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final phoneTextEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  bool isPhoneValidated = false; // Track phone validation
+  bool isPhoneValidated = false;
+  bool isLoading = false; // Loading state
 
-  void _submit() async {
+  Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
-      print("+84${phoneTextEditingController.text}");
-      RemoteAuth(context: context)
-          .checkPhone(phone: "${phoneTextEditingController.text}");
-      // Process the phone number
-      // await FirebaseAuth.instance.verifyPhoneNumber(
-      //   verificationCompleted: (PhoneAuthCredential credential) {},
-      //   verificationFailed: (FirebaseAuthException e) {},
-      //   codeSent: (String verificationId, int? resendToken) {
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(
-      //           builder: (context) => ConfirmOtpScreen(
-      //               phoneNumber: phoneTextEditingController.text)),
-      //     );
-      //   },
-      //   codeAutoRetrievalTimeout: (String verificationId) {},
-      //   phoneNumber: '+84 971331302',
-      // );
+      setState(() {
+        isLoading = true; // Set loading to true when the API call starts
+      });
+
+      try {
+        await RemoteAuth(context: context)
+            .checkPhone(phone: phoneTextEditingController.text);
+      } finally {
+        setState(() {
+          isLoading = false; // Stop loading after the API call completes
+        });
+      }
     }
   }
 
@@ -65,9 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Text(
                       'Đăng nhập / Đăng ký tài khoản',
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
+                      style: TextStyle(fontSize: 18),
                     ),
                   ],
                 ),
@@ -83,13 +75,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: phoneTextEditingController,
                   onChanged: (phone) {
                     setState(() {
-                      // Check if the phone number is valid
-                      isPhoneValidated = phone.completeNumber.length >=
-                          13; // Example length check
+                      isPhoneValidated = phone.completeNumber.length >= 13;
                     });
-                  },
-                  onSaved: (phone) {
-                    // Save phone number if needed
                   },
                   validator: (phone) {
                     if (phone != null && phone.completeNumber.length >= 10) {
@@ -99,28 +86,29 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                   },
                   inputFormatters: [
-                    FilteringTextInputFormatter
-                        .digitsOnly, // Allows only numeric input
+                    FilteringTextInputFormatter.digitsOnly,
                   ],
                 ),
                 const SizedBox(height: 36),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
-                    backgroundColor:
-                        isPhoneValidated ? const Color(0xFFFDC6D6) : null,
-                  ),
-                  onPressed: isPhoneValidated
-                      ? _submit // Enable button if phone is validated
-                      : null, // Disable button if not validated
-                  child: Text(
-                    'Tiếp tục',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: isPhoneValidated ? Colors.black : Colors.grey,
-                    ),
-                  ),
-                ),
+                isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator()) // Loading spinner
+                    : ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 50),
+                          backgroundColor:
+                              isPhoneValidated ? const Color(0xFFFDC6D6) : null,
+                        ),
+                        onPressed: isPhoneValidated ? _submit : null,
+                        child: Text(
+                          'Tiếp tục',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color:
+                                isPhoneValidated ? Colors.black : Colors.grey,
+                          ),
+                        ),
+                      ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 25.0),
                   child: Row(
@@ -150,47 +138,41 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Apple login button
                     GestureDetector(
                       onTap: () {
-                        // Add your Apple login logic here
+                        // Apple login logic
                       },
                       child: Image.asset(
-                        'images/apple_logo.png', // Path to your Apple logo
-                        width: 40,
-                        height: 40,
-                      ),
-                    ),
-                    const SizedBox(width: 20), // Add spacing between buttons
-
-                    // Facebook login button
-                    GestureDetector(
-                      onTap: () {
-                        // Add your Facebook login logic here
-                      },
-                      child: Image.asset(
-                        'images/facebook_logo.png', // Path to your Facebook logo
+                        'images/apple_logo.png',
                         width: 40,
                         height: 40,
                       ),
                     ),
                     const SizedBox(width: 20),
-
-                    // Google login button
                     GestureDetector(
                       onTap: () {
-                        // Add your Google login logic here
+                        // Facebook login logic
                       },
                       child: Image.asset(
-                        'images/google_logo.png', // Path to your Google logo
+                        'images/facebook_logo.png',
+                        width: 40,
+                        height: 40,
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    GestureDetector(
+                      onTap: () {
+                        // Google login logic
+                      },
+                      child: Image.asset(
+                        'images/google_logo.png',
                         width: 40,
                         height: 40,
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/voucher.dart';
+import 'package:flutter_application_1/services/voucher_service/voucher_service.dart';
+import 'package:hive/hive.dart';
 
 // Voucher model class
 // VoucherCard widget
@@ -26,7 +28,7 @@ class VoucherCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 8),
-                Text(voucher.title,
+                Text(voucher.description,
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
@@ -44,17 +46,38 @@ class VoucherCard extends StatelessWidget {
 }
 
 // VoucherListPage widget
-class VoucherListPage extends StatelessWidget {
+class VoucherListPage extends StatefulWidget {
+  @override
+  State<VoucherListPage> createState() => _VoucherListPageState();
+}
+
+class _VoucherListPageState extends State<VoucherListPage> {
+  List<dynamic> voucherss = [];
+  @override
+  void initState() {
+    super.initState();
+    VoucherService(context: context).getVoucher(); // Call the API here
+  }
+
+  getVouchers() async {
+    var box = await Hive.openBox('authBox');
+    print(await box.get('vouchers'));
+  }
+
   final List<Voucher> vouchers = [
     Voucher(
-      title: '10% Off',
+      voucherId: 1,
       description: 'Get 10% off on your next ride!',
+      code: 'Get 10% off on your next ride!',
+      expiryDate: '2024-01-01',
       discount: 10.0,
       imageUrl: 'images/voucher1.png', // Example asset path
     ),
     Voucher(
-      title: 'Free Ride',
+      voucherId: 2,
       description: 'Enjoy a free ride up to \$20!',
+      code: 'Enjoy a free ride up to \$20!',
+      expiryDate: '2024-01-01',
       discount: 20.0,
       imageUrl: 'images/voucher2.png', // Example asset path
     ),
@@ -63,6 +86,7 @@ class VoucherListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    getVouchers();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vouchers'),

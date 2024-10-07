@@ -11,28 +11,39 @@ class SettingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          height: 40,
-          width: 40,
-          decoration: BoxDecoration(
-            color: Colors.grey.shade600,
-            borderRadius: BorderRadius.circular(15),
+    return GestureDetector(
+      onTap: () async {
+        // Check if the setting has an action, if it does, call the action
+        if (setting.action != null) {
+          await setting.action!(context); // Call the action with context
+        } else {
+          // If no action is provided, navigate to the specified route
+          Navigator.pushNamed(context, setting.route);
+        }
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade600,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Icon(setting.icon, color: Colors.white),
           ),
-          child: Icon(setting.icon, color: Colors.white),
-        ),
-        const SizedBox(width: 10),
-        Text(
-          setting.title,
-          style: const TextStyle(
-              color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        const Spacer(),
-        Icon(FontAwesomeIcons.chevronRight, color: Colors.grey.shade600),
-      ],
+          const SizedBox(width: 10),
+          Text(
+            setting.title,
+            style: const TextStyle(
+                color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const Spacer(),
+          Icon(FontAwesomeIcons.chevronRight, color: Colors.grey.shade600),
+        ],
+      ),
     );
   }
 }

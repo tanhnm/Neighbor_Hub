@@ -31,7 +31,8 @@ class BookingController {
       // }
       // Make the API GET request
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:8080/api/v1/booking/listAdvanceBooking'),
+        Uri.parse(
+            'https://gh-neighborhub-569199407036.asia-southeast1.run.app/api/v1/booking/listAdvanceBooking'),
       );
 
       // Check if the request was successful

@@ -12,7 +12,8 @@ import 'package:toastification/toastification.dart';
 class RemoteAuth {
   final BuildContext context;
   RemoteAuth({required this.context});
-  final String _baseUrl = 'http://10.0.2.2:8080/api/v1/';
+  final String _baseUrl =
+      'https://gh-neighborhub-569199407036.asia-southeast1.run.app/api/v1/';
 
   Future<void> checkPhone({required String phone}) async {
     try {
@@ -137,7 +138,8 @@ class RemoteAuth {
       'phoneOrEmail': phone,
       'password': password,
     };
-
+    print('phone: $phone');
+    print('password: $password');
     try {
       final response = await http.post(
         Uri.parse(_baseUrl + 'auth/login'),
@@ -149,6 +151,7 @@ class RemoteAuth {
         print('Response: ${response.body}');
         // Assuming the token is in the response body, modify if your response format differs
         var jsonResponse = jsonDecode(response.body);
+        print("jsonResponse: ${jsonResponse['refresh_token']}");
         String token = jsonResponse['access_token'];
         String refreshToken = jsonResponse['refresh_token'];
 

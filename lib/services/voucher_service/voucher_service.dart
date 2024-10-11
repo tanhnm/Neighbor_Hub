@@ -10,7 +10,8 @@ import 'package:toastification/toastification.dart';
 class VoucherService {
   final BuildContext context;
   VoucherService({required this.context});
-  final String _baseUrl = 'http://10.0.2.2:8080/api/v1/';
+  final String _baseUrl =
+      'https://gh-neighborhub-569199407036.asia-southeast1.run.app/api/v1/';
 
   // Method to get fare based on travel time
   Future<void> getVoucher() async {

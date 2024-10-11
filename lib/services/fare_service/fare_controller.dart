@@ -11,7 +11,8 @@ import 'package:toastification/toastification.dart';
 class FareController {
   final BuildContext context;
   FareController({required this.context});
-  final String _baseUrl = 'http://10.0.2.2:8080/api/v1/';
+  final String _baseUrl =
+      'https://gh-neighborhub-569199407036.asia-southeast1.run.app/api/v1/';
 
   Future<String?> _getToken() async {
     var box = await Hive.openBox('authBox');

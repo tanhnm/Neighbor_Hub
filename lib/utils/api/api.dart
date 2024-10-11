@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 const String baseUrl =
     'https://api.openrouteservice.org/v2/directions/driving-car';
 const String apiKey =
-    '5b3ce3597851110001cf624853dcdcf9527f4827b2883acc750b65da';
+    '5b3ce3597851110001cf6248f761334819b74c4c8676159cce89879f';
 
 getRouteUrl(String startPoint, String endPoint) {
   return Uri.parse('$baseUrl?api_key=$apiKey&start=$startPoint&end=$endPoint');

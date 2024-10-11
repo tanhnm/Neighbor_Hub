@@ -19,7 +19,7 @@ class _LoginPasswordScreenState extends State<LoginPasswordScreen> {
       print("phone: ${widget.phoneNumber}");
       print("Password: ${passwordTextEditingController.text}");
       // Process the password
-      RemoteAuth(context: context).signIn(
+      await RemoteAuth(context: context).signIn(
           phone: widget.phoneNumber,
           password: passwordTextEditingController.text);
       // Add your logic for password authentication here

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/utils/api/api.dart';
 import 'package:geolocator/geolocator.dart'; // Import Geolocator for location services
 import 'package:flutter_application_1/screens/BookingCarScreen/map_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:toastification/toastification.dart';
 
 class DestinationPick extends StatefulWidget {
@@ -16,13 +18,7 @@ class _DestinationPickState extends State<DestinationPick> {
   bool _isLocationLoading = false;
 
   // List of sample destinations (for demonstration purposes)
-  final List<Map<String, String>> suggestedDestinations = [
-    {"name": "Central Park", "location": "New York, USA"},
-    {"name": "Eiffel Tower", "location": "Paris, France"},
-    {"name": "Colosseum", "location": "Rome, Italy"},
-    {"name": "Great Wall", "location": "China"},
-    {"name": "Sydney Opera House", "location": "Sydney, Australia"},
-  ];
+  List<dynamic> places = [];
 
   @override
   void initState() {
@@ -41,6 +37,11 @@ class _DestinationPickState extends State<DestinationPick> {
       setState(() {
         _currentPosition = position;
       });
+      final fetchedPlaces =
+          await getNearbyPlaces(position.latitude!, position.longitude!);
+      setState(() {
+        places = fetchedPlaces;
+      });
     } catch (e) {
       // Handle any errors that occur during permission request
       toastification.show(
@@ -56,6 +57,8 @@ class _DestinationPickState extends State<DestinationPick> {
       });
     }
   }
+
+  void loadPlaces() async {}
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -205,16 +208,21 @@ class _DestinationPickState extends State<DestinationPick> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: const Row(
-                      children: [
-                        Icon(FontAwesomeIcons.locationDot, color: Colors.red),
-                        SizedBox(width: 10),
-                        Text(
-                          "Pick Location",
-                          style: TextStyle(fontSize: 20, color: Colors.red),
-                        ),
-                      ],
-                    ),
+                    child: _isLocationLoading
+                        ? LoadingAnimationWidget.waveDots(
+                            color: Colors.black, size: 30)
+                        : const Row(
+                            children: [
+                              Icon(FontAwesomeIcons.locationDot,
+                                  color: Colors.red),
+                              SizedBox(width: 10),
+                              Text(
+                                "Chọn một điểm đến",
+                                style:
+                                    TextStyle(fontSize: 20, color: Colors.red),
+                              ),
+                            ],
+                          ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -223,9 +231,10 @@ class _DestinationPickState extends State<DestinationPick> {
                   child: _isLocationLoading
                       ? const Center(child: CircularProgressIndicator())
                       : ListView.builder(
-                          itemCount: suggestedDestinations.length,
+                          itemCount: places.length,
                           itemBuilder: (context, index) {
-                            final destination = suggestedDestinations[index];
+                            final place = places[index];
+                            final placeName = place ?? 'Unknown';
                             return Card(
                               margin: const EdgeInsets.symmetric(vertical: 8.0),
                               child: ListTile(
@@ -233,16 +242,14 @@ class _DestinationPickState extends State<DestinationPick> {
                                   FontAwesomeIcons.mapMarkerAlt,
                                   color: Colors.red,
                                 ),
-                                title: Text(destination['name']!),
-                                subtitle: Text(destination['location']!),
+                                title: Text(placeName),
                                 trailing: const Icon(
                                   FontAwesomeIcons.chevronRight,
                                   color: Colors.grey,
                                 ),
                                 onTap: () {
                                   // Action when a destination is selected
-                                  print(
-                                      'Selected destination: ${destination['name']}');
+                                  print('Selected destination: $placeName');
                                 },
                               ),
                             );

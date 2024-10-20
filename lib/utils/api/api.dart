@@ -36,3 +36,21 @@ Future<String> getPlaceName(String latitude, String longitude) async {
     return 'Error: ${response.statusCode}';
   }
 }
+
+Future<List<dynamic>> getNearbyPlaces(double latitude, double longitude) async {
+  final url =
+      'https://api.openrouteservice.org/geocode/reverse?api_key=$apiKey&point.lon=$longitude&point.lat=$latitude&size=5';
+
+  final response = await http.get(Uri.parse(url));
+
+  if (response.statusCode == 200) {
+    final data = json.decode(response.body);
+    List<dynamic> features = data['features'];
+    List<String> labels = features
+        .map((feature) => feature['properties']['label'] as String)
+        .toList();
+    return labels; // Returns the list of nearby places
+  } else {
+    throw Exception('Failed to load nearby places');
+  }
+}

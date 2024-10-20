@@ -16,6 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+
     getToken() async {
       var box = await Hive.openBox('authBox');
       String token = await box.get('token', defaultValue: null);
@@ -25,186 +26,195 @@ class _MainScreenState extends State<MainScreen> {
     getToken().then((value) {
       print(value);
     });
+
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 100,
-            color: const Color(0xFFCC2C70), // Set background color
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context)
+                .size
+                .height, // Make sure the scrollable area has a minimum height
           ),
-          const SizedBox(height: 14),
-          Container(
-            height: 100,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  height: 80,
-                  width: 80,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle, // Makes the container a circle
-                  ),
-                  child:
-                      Image.asset('images/Logo.png', width: 100, height: 100),
-                ),
-                const Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 100,
+                color: const Color(0xFFCC2C70), // Set background color
+              ),
+              const SizedBox(height: 14),
+              Container(
+                height: 100,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    FaIcon(
-                      FontAwesomeIcons.bell,
-                      size: 24,
-                      color: Colors.black,
+                    Container(
+                      height: 80,
+                      width: 80,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle, // Makes the container a circle
+                      ),
+                      child: Image.asset('images/Logo.png',
+                          width: 100, height: 100),
                     ),
-                    SizedBox(width: 20),
-                    FaIcon(
-                      FontAwesomeIcons.bars,
-                      size: 25,
-                      color: Colors.black,
+                    const Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.bell,
+                          size: 24,
+                          color: Colors.black,
+                        ),
+                        SizedBox(width: 20),
+                        FaIcon(
+                          FontAwesomeIcons.bars,
+                          size: 25,
+                          color: Colors.black,
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Chào buổi tối",
-                  style: TextStyle(
-                    color: Color(0xFFCC2C70),
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 4),
-                  child: Text(
-                    "xin chào, Huỳnh Nguyễn Minh Tân",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        // Navigate to the Booking Car screen when tapped
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const DestinationPick(),
-                          ),
-                        );
-                      },
-                      child: Column(
-                        children: [
-                          _buildCircleIcon('images/cars.png'),
-                          const Text(
-                            "Ô tô",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                    const Text(
+                      "Chào buổi tối",
+                      style: TextStyle(
+                        color: Color(0xFFCC2C70),
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Column(
+                    const Padding(
+                      padding: EdgeInsets.only(left: 4),
+                      child: Text(
+                        "xin chào, Huỳnh Nguyễn Minh Tân",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildCircleIcon('images/bike.png'),
-                        const Text("Xe máy",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        GestureDetector(
+                          onTap: () {
+                            // Navigate to the Booking Car screen when tapped
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const DestinationPick(),
+                              ),
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              _buildCircleIcon('images/cars.png'),
+                              const Text(
+                                "Ô tô",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            _buildCircleIcon('images/bike.png'),
+                            const Text("Xe máy",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            _buildCircleIcon('images/clock.png'),
+                            const Text("Đặt trước",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            _buildCircleIcon('images/voucher.png'),
+                            const Text("Voucher",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            _buildCircleIcon('images/action_key.png'),
+                            const Text("Tất cả",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        )
                       ],
                     ),
-                    Column(
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildCircleIcon('images/clock.png'),
-                        const Text("Đặt trước",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        _buildInfoCard("images/wallet.png", screenWidth,
+                            "Thanh Toán", "Thêm thẻ"),
+                        _buildInfoCard(
+                            "images/coin.png", screenWidth, "Tích điểm", "50"),
                       ],
                     ),
-                    Column(
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  children: [
+                    const Row(
                       children: [
-                        _buildCircleIcon('images/voucher.png'),
-                        const Text("Voucher",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text("Khám phá ngay",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold)),
+                        SizedBox(width: 6),
+                        Icon(FontAwesomeIcons.arrowRight, size: 22)
                       ],
                     ),
-                    Column(
-                      children: [
-                        _buildCircleIcon('images/action_key.png'),
-                        const Text("Tất cả",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                    CarouselSlider(
+                      items: const [
+                        RoundedImage(imgPath: "images/banner_1.png"),
                       ],
+                      options: CarouselOptions(
+                        height: 200, // Set a fixed height
+                        viewportFraction: 1,
+                        autoPlay: true,
+                        autoPlayInterval: const Duration(seconds: 3),
+                        enlargeCenterPage: true,
+                      ),
                     )
                   ],
                 ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildInfoCard("images/wallet.png", screenWidth,
-                        "Thanh Toán", "Thêm thẻ"),
-                    _buildInfoCard(
-                        "images/coin.png", screenWidth, "Tích điểm", "50"),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              children: [
-                const Row(
-                  children: [
-                    Text("Khám phá ngay",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
-                    SizedBox(width: 6),
-                    Icon(FontAwesomeIcons.arrowRight, size: 22)
-                  ],
-                ),
-                CarouselSlider(
-                    items: const [
-                      RoundedImage(imgPath: "images/banner_1.png"),
-                      RoundedImage(imgPath: "images/banner_1.png"),
-                      RoundedImage(imgPath: "images/banner_1.png")
+              ),
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      RoundedImage(
+                        imgPath: "images/banner_2.png",
+                        width: screenWidth * 0.4,
+                      ),
+                      RoundedImage(
+                        imgPath: "images/banner_3.png",
+                        width: screenWidth * 0.4,
+                      ),
                     ],
-                    options: CarouselOptions(
-                      viewportFraction: 1,
-                      autoPlay: true,
-                      autoPlayInterval: const Duration(seconds: 3),
-                      aspectRatio: 16 / 9,
-                      enlargeCenterPage: true,
-                    ))
-              ],
-            ),
+                  ))
+            ],
           ),
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  RoundedImage(
-                    imgPath: "images/banner_2.png",
-                    width: screenWidth * 0.4,
-                  ),
-                  RoundedImage(
-                    imgPath: "images/banner_3.png",
-                    width: screenWidth * 0.4,
-                  ),
-                ],
-              ))
-        ],
+        ),
       ),
     );
   }

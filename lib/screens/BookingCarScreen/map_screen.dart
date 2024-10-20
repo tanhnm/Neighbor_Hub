@@ -9,6 +9,7 @@ import 'package:flutter_application_1/utils/api/api.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart'; // Add this import at the top
 import 'package:http/http.dart' as http;
@@ -40,7 +41,7 @@ class _MapScreenState extends State<MapScreen> {
   double distance = 0.0;
   double duration = 0.0;
   bool isLoading = false; // Add this to manage loading state
-  DateTime? bookingDateTime = null;
+  DateTime? bookingDateTime;
 
   final MapController _mapController = MapController();
   late LatLng _currentCenter;
@@ -51,7 +52,8 @@ class _MapScreenState extends State<MapScreen> {
   List<Map<String, String>> vehicles = [];
   String dropLocation = '';
   String pickLocation = '';
-  User? user = null;
+  User? user;
+  bool isDriver = false;
 
   String selectedVehicle = '';
   @override
@@ -79,6 +81,8 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> _loadUser() async {
     var userBox = await Hive.openBox<User>('users');
     user = userBox.get('user');
+    var box = await Hive.openBox('authBox');
+    isDriver = await box.get('is_driver');
   }
 
   getCoordinates(String firstPick, String secondPick) async {
@@ -277,6 +281,28 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
+  String convertToKilometers(String distance) {
+    // Extract the numeric part from the string (ignoring the " meters" part)
+    double meters = double.parse(distance.replaceAll(RegExp(r'[^0-9.]'), ''));
+
+    // Convert meters to kilometers
+    double kilometers = meters / 1000;
+
+    // Return the result as a string with " km" appended
+    return '${kilometers.toStringAsFixed(2)} km';
+  }
+
+  String formatPriceFromString(String priceString) {
+    // Convert the string to a double
+    double price = double.parse(priceString);
+
+    // Create a NumberFormat instance for Vietnamese currency
+    var formatter = NumberFormat.currency(locale: 'vi_VN', symbol: 'VNĐ');
+
+    // Format the price and return the formatted string
+    return formatter.format(price);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -334,7 +360,7 @@ class _MapScreenState extends State<MapScreen> {
                         color: Colors.red,
                       ),
                     ),
-              ButtonBottom(),
+              const ButtonBottom(),
               // Search Bar
               Positioned(
                   top: 20,
@@ -359,7 +385,7 @@ class _MapScreenState extends State<MapScreen> {
                           controller: _searchController,
                           onChanged: _onSearchChanged,
                           decoration: InputDecoration(
-                            hintText: 'Search for a location...',
+                            hintText: 'Tìm địa điểm gần đây...',
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.search),
                               onPressed: () {
@@ -423,7 +449,7 @@ class _MapScreenState extends State<MapScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                "Choose Vehicle",
+                                "Chọn Loại Phương Tiện",
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 16),
                               ),
@@ -479,11 +505,12 @@ class _MapScreenState extends State<MapScreen> {
                                                               FontWeight.bold),
                                                     ),
                                                     const SizedBox(height: 5),
-                                                    Text(
-                                                        'distance: ${vehicle['distance']!}'),
+                                                    Text(convertToKilometers(
+                                                        vehicle['distance']!)),
                                                     const SizedBox(height: 5),
                                                     Text(
-                                                        'Price: ${vehicle['price']}',
+                                                        formatPriceFromString(
+                                                            vehicle['price']!),
                                                         style: const TextStyle(
                                                             fontSize: 14,
                                                             color:
@@ -529,12 +556,11 @@ class _MapScreenState extends State<MapScreen> {
                       return StatefulBuilder(
                         builder: (BuildContext context, StateSetter setState) {
                           return AlertDialog(
-                            title: const Text('Confirm Vehicle'),
+                            title: const Text('Xác Nhận Tìm Xe'),
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Text(
-                                    'Do you want to make a pre-booking?'),
+                                const Text('Bạn có muốn đặt trước xe không?'),
                                 const SizedBox(height: 10),
                                 Row(
                                   mainAxisAlignment:
@@ -596,7 +622,7 @@ class _MapScreenState extends State<MapScreen> {
                                           }
                                         },
                                         child: bookingDateTime == null
-                                            ? Text('Select Date and Time')
+                                            ? const Text('Select Date and Time')
                                             : Text(
                                                 '${bookingDateTime!.day}/${bookingDateTime!.month}/${bookingDateTime!.year} ${bookingDateTime!.hour}:${bookingDateTime!.minute}',
                                               ),
@@ -610,7 +636,7 @@ class _MapScreenState extends State<MapScreen> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: const Text('Cancel'),
+                                child: const Text('Hủy'),
                               ),
                               ElevatedButton(
                                 onPressed: () async {
@@ -635,7 +661,7 @@ class _MapScreenState extends State<MapScreen> {
                                   // Proceed with vehicle confirmation logic
                                   print("Confirmed vehicle: $selectedVehicle");
                                 },
-                                child: const Text('Confirm'),
+                                child: const Text('Xác Nhận'),
                               ),
                             ],
                           );
@@ -678,29 +704,51 @@ class _MapScreenState extends State<MapScreen> {
                         ]),
                   ),
                   const SizedBox(height: 8),
-                  SizedBox(
-                    width:
-                        double.infinity, // Makes the button take up full width
-                    child: ElevatedButton(
-                      onPressed: _pickLocation,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green, // Same as Confirm button
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 15), // Ensure vertical padding
-                      ),
-                      child: selectedMarkers.length == 2
-                          ? const Text(
-                              'Clear',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            )
-                          : const Text(
-                              "Choose Location",
+                  isDriver
+                      ? SizedBox(
+                          width: double
+                              .infinity, // Makes the button take up full width
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Active Driver RUN
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Colors.green, // Same as Confirm button
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 15), // Ensure vertical padding
+                            ),
+                            child: const Text(
+                              "Bấm Vào Đây Để Tìm Hàng Xóm",
                               style:
                                   TextStyle(color: Colors.white, fontSize: 16),
                             ),
-                    ),
-                  ),
+                          ),
+                        )
+                      : SizedBox(
+                          width: double
+                              .infinity, // Makes the button take up full width
+                          child: ElevatedButton(
+                            onPressed: _pickLocation,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Colors.green, // Same as Confirm button
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 15), // Ensure vertical padding
+                            ),
+                            child: selectedMarkers.length == 2
+                                ? const Text(
+                                    'Xóa',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  )
+                                : const Text(
+                                    "Chọn điểm đến",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  ),
+                          ),
+                        ),
                 ],
               ),
             ),

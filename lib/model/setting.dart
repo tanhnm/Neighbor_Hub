@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/screens/login_screen.dart';
 import 'package:hive/hive.dart'; // Ensure Hive is imported
 
@@ -32,7 +33,14 @@ final List<Setting> settings = [
     icon: Icons.logout,
     action: (BuildContext context) async {
       var box = await Hive.openBox('appBox');
-      await box.delete('authToken');
+      var userBox =
+          await Hive.openBox<User>('users'); // Otherwise, open the box
+      var authBox = await Hive.openBox('authBox');
+      await authBox.clear(); // Clears all data in the authBox
+      // Optionally, you can also close the box
+      await authBox.close();
+      await box.clear();
+      await userBox.clear();
       print('Token cleared');
       Navigator.pushReplacement(
         context,

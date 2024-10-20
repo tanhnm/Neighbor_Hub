@@ -5,7 +5,7 @@ import 'package:flutter_application_1/services/remote_service/remote_auth.dart';
 class RegisterScreen extends StatefulWidget {
   final String phone;
 
-  RegisterScreen({super.key, required this.phone});
+  const RegisterScreen({super.key, required this.phone});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();

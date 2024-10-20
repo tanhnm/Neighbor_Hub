@@ -17,7 +17,7 @@ class VoucherService {
   Future<void> getVoucher() async {
     try {
       final response =
-          await http.get(Uri.parse(_baseUrl + 'voucher/viewAllVoucher'));
+          await http.get(Uri.parse('${_baseUrl}voucher/viewAllVoucher'));
       if (response.statusCode == 200) {
         var box = await Hive.openBox('authBox');
         // Store the token in Hive
@@ -48,7 +48,7 @@ class VoucherService {
         title: Text('Error occurred: $e'),
         autoCloseDuration: const Duration(seconds: 5),
       );
-      throw e;
+      rethrow;
     }
   }
 }

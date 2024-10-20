@@ -31,6 +31,10 @@ class FareController {
       "listVoucher": listVoucher ?? []
     };
 
+    print("distance: $distance");
+
+    print("travelTime: $travelTime");
+
     try {
       // Get the token
       String? token = await _getToken();
@@ -52,14 +56,8 @@ class FareController {
       String formattedDate =
           DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'").format(newDateTime);
 
-      print(formattedDate); // The time after adding 752 seconds to now in UTC
-
-      print("formattedDate: $formattedDate"); // Output in ISO 8601 format
-
-      print('TOKEN HEADERS $token');
-
       final response = await http.post(
-        Uri.parse(_baseUrl + 'booking/calculateFare'),
+        Uri.parse('${_baseUrl}booking/calculateFare'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -93,7 +91,7 @@ class FareController {
         title: Text('Error occurred: $e'),
         autoCloseDuration: const Duration(seconds: 5),
       );
-      throw e;
+      rethrow;
     }
 
     return [];
@@ -103,7 +101,7 @@ class FareController {
   Future<void> getFareTypes() async {
     try {
       final response = await http.get(
-        Uri.parse(_baseUrl + 'fare/types'),
+        Uri.parse('${_baseUrl}fare/types'),
       );
 
       if (response.statusCode == 200) {
@@ -128,7 +126,7 @@ class FareController {
         title: Text('Error occurred: $e'),
         autoCloseDuration: const Duration(seconds: 5),
       );
-      throw e;
+      rethrow;
     }
   }
 
@@ -142,7 +140,7 @@ class FareController {
 
     try {
       final response = await http.put(
-        Uri.parse(_baseUrl + 'fare/update'),
+        Uri.parse('${_baseUrl}fare/update'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(requestBody), // Convert body to JSON
       );
@@ -168,7 +166,7 @@ class FareController {
         title: Text('Error occurred: $e'),
         autoCloseDuration: const Duration(seconds: 5),
       );
-      throw e;
+      rethrow;
     }
   }
 }

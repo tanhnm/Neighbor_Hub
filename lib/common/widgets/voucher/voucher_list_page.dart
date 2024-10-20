@@ -47,6 +47,8 @@ class VoucherCard extends StatelessWidget {
 
 // VoucherListPage widget
 class VoucherListPage extends StatefulWidget {
+  const VoucherListPage({super.key});
+
   @override
   State<VoucherListPage> createState() => _VoucherListPageState();
 }

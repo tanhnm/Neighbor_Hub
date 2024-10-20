@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/screens/confirm_otp_screen.dart';
 import 'package:flutter_application_1/services/remote_service/remote_auth.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -90,17 +90,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
                 const SizedBox(height: 36),
-                isLoading
-                    ? const Center(
-                        child: CircularProgressIndicator()) // Loading spinner
-                    : ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 50),
-                          backgroundColor:
-                              isPhoneValidated ? const Color(0xFFFDC6D6) : null,
-                        ),
-                        onPressed: isPhoneValidated ? _submit : null,
-                        child: Text(
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                    backgroundColor: isPhoneValidated && !isLoading
+                        ? const Color(0xFFFDC6D6)
+                        : null,
+                  ),
+                  onPressed: isPhoneValidated && !isLoading ? _submit : null,
+                  child: isLoading
+                      ? LoadingAnimationWidget.waveDots(
+                          color: Colors.white, size: 20)
+                      : Text(
                           'Tiếp tục',
                           style: TextStyle(
                             fontSize: 20,
@@ -108,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 isPhoneValidated ? Colors.black : Colors.grey,
                           ),
                         ),
-                      ),
+                ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 25.0),
                   child: Row(

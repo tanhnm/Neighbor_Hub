@@ -1,23 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/screens/auth/profile_screen.dart';
+import 'package:hive/hive.dart';
 
 class MessageScreen extends StatefulWidget {
   final Map<String, dynamic> driver;
-
-  MessageScreen({required this.driver});
+  final Map<String, dynamic> booking;
+  const MessageScreen({super.key, required this.driver, required this.booking});
 
   @override
   _MessageScreenState createState() => _MessageScreenState();
 }
 
 class _MessageScreenState extends State<MessageScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getUserInfo();
+  }
+
   final TextEditingController _controller = TextEditingController();
 
   final CollectionReference _messagesRef =
       FirebaseFirestore.instance.collection('chats');
-  final String currentUserId =
-      '123'; // Example user ID, use FirebaseAuth for real user ID
+  int currentUserId = 0; // Example user ID, use FirebaseAuth for real user ID
+
+  Future<void> getUserInfo() async {
+    var userBox = await Hive.openBox<User>('users');
+    if (userBox.get('user')?.userId == null) {
+      throw Exception('User not found');
+    }
+    currentUserId = userBox.get('user')!.userId;
+    print(currentUserId);
+  }
 
   void _sendMessage() async {
     final message = _controller.text.trim();
@@ -25,8 +41,9 @@ class _MessageScreenState extends State<MessageScreen> {
 
     try {
       await _messagesRef.add({
+        'booking': '${widget.booking['bookingId']}',
         'text': message,
-        'senderId': currentUserId,
+        'senderId': currentUserId.toString(),
         'driverId': widget.driver['driverId'],
         'timestamp': FieldValue.serverTimestamp(),
       });
@@ -65,25 +82,25 @@ class _MessageScreenState extends State<MessageScreen> {
                       "username": widget.driver['username'],
                       "phone": widget.driver['phone'],
                       "email": widget.driver['email'],
-                      "averageRating": 4,
-                      "revenue": 1000000,
+                      'averageRating': widget.driver['averageRating'],
+                      'revenue': widget.driver['revenue'],
                     },
                   ),
                 ),
               );
             },
             child: Container(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Row(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     backgroundImage: NetworkImage(
                         'https://media.muanhatructuyen.vn/post/226/50/3/hinh-nen-mau-hong-4k.jpg'), // Replace with your image URL
                     radius: 30,
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Text(widget.driver['username'],
-                      style: TextStyle(fontSize: 20)),
+                      style: const TextStyle(fontSize: 20)),
                 ],
               ),
             ),
@@ -92,16 +109,18 @@ class _MessageScreenState extends State<MessageScreen> {
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: _messagesRef
+                  .where('booking', isEqualTo: '${widget.booking['bookingId']}')
                   .where('driverId', isEqualTo: widget.driver['driverId'])
                   .orderBy('timestamp', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
+                  print('Error: ${snapshot.error}');
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
 
                 if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 final messages = snapshot.data!.docs;
@@ -111,7 +130,8 @@ class _MessageScreenState extends State<MessageScreen> {
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     final message = messages[index];
-                    final bool isMine = message['senderId'] == currentUserId;
+                    final bool isMine =
+                        message['senderId'] == currentUserId.toString();
 
                     return Align(
                       alignment:
@@ -157,7 +177,7 @@ class _MessageScreenState extends State<MessageScreen> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   onPressed: _sendMessage,
                 ),
               ],

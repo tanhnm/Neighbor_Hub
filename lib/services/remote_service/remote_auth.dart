@@ -17,8 +17,8 @@ class RemoteAuth {
 
   Future<void> checkPhone({required String phone}) async {
     try {
-      final response = await http
-          .get(Uri.parse('${_baseUrl}user/getByPhoneNumber/${phone}'));
+      final response =
+          await http.get(Uri.parse('${_baseUrl}user/getByPhoneNumber/$phone'));
 
       if (response.statusCode == 200) {
         print('Response: ${response.body}');
@@ -29,7 +29,7 @@ class RemoteAuth {
         );
       } else if (response.body == "User does not exist") {
         print('User does not exist');
-        print('phone: ${phone}');
+        print('phone: $phone');
         sendSMSOTP(phone: phone);
       } else {
         toastification.show(
@@ -45,7 +45,7 @@ class RemoteAuth {
         context: context,
         style: ToastificationStyle
             .flat, // optional if you use ToastificationWrapper
-        title: Text('${e}'),
+        title: Text('$e'),
         autoCloseDuration: const Duration(seconds: 5),
       );
     }
@@ -59,7 +59,7 @@ class RemoteAuth {
     try {
       // Make the POST request
       final response = await http.post(
-        Uri.parse(_baseUrl + 'OTP/start-verification')
+        Uri.parse('${_baseUrl}OTP/start-verification')
             .replace(queryParameters: {
           'toPhoneNumber': '+84$phoneCut', // Append the country code
         }),
@@ -94,7 +94,7 @@ class RemoteAuth {
     try {
       // Make the POST request
       final response = await http.post(
-        Uri.parse(_baseUrl + 'OTP/check-verification')
+        Uri.parse('${_baseUrl}OTP/check-verification')
             .replace(queryParameters: {
           'toPhoneNumber': '+84$phoneCut',
           'code': code, // Append the country code
@@ -142,7 +142,7 @@ class RemoteAuth {
     print('password: $password');
     try {
       final response = await http.post(
-        Uri.parse(_baseUrl + 'auth/login'),
+        Uri.parse('${_baseUrl}auth/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(requestBody), // Convert body to JSON
       );
@@ -161,25 +161,33 @@ class RemoteAuth {
         var userBox = await Hive.openBox<User>('users');
         User user = User.fromJson(jsonResponse['user']);
 
+        await box.put('is_logged_in', true); // Mark the user as logged in
+
         // Store the token in Hive
         await box.put('token', token);
         // Store the user
         await userBox.put('user', user);
         // Retrieve the user
         User? retrievedUser = userBox.get('user');
+        print('Retrieved User: $retrievedUser');
         print(
             'Retrieved User: ${retrievedUser?.username}'); // Output: Retrieved User: Huynh Nguyen Minh Tan
 
         // Navigate to the bottom nav screen
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => BottomNavBar()),
+          MaterialPageRoute(builder: (context) => const BottomNavBar()),
         );
-      } else if (response.body == "Wrong password") {
-        print('Wrong password');
       } else {
         print('Failed to get user. Status code: ${response.statusCode}');
-        print('Error response: ${response.body}');
+        print('Error responses: ${response.body}');
+        toastification.show(
+          context: context,
+          style: ToastificationStyle
+              .flat, // optional if you use ToastificationWrapper
+          title: Text('${jsonDecode(response.body)['message']}'),
+          autoCloseDuration: const Duration(seconds: 2),
+        );
       }
     } catch (e) {
       print(e);
@@ -203,7 +211,7 @@ class RemoteAuth {
     try {
       // Make the POST request
       final response = await http.post(
-        Uri.parse(_baseUrl + 'auth/signup'),
+        Uri.parse('${_baseUrl}auth/signup'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(requestBody), // Convert body to JSON
       );

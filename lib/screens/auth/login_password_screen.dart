@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/services/remote_service/remote_auth.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class LoginPasswordScreen extends StatefulWidget {
   final String phoneNumber;
-  LoginPasswordScreen({super.key, required this.phoneNumber});
+  const LoginPasswordScreen({super.key, required this.phoneNumber});
 
   @override
   State<LoginPasswordScreen> createState() => _LoginPasswordScreenState();
@@ -12,17 +13,26 @@ class LoginPasswordScreen extends StatefulWidget {
 class _LoginPasswordScreenState extends State<LoginPasswordScreen> {
   final passwordTextEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool isLoading = false;
   bool isPasswordValidated = false; // Track password validation
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
-      print("phone: ${widget.phoneNumber}");
-      print("Password: ${passwordTextEditingController.text}");
-      // Process the password
-      await RemoteAuth(context: context).signIn(
-          phone: widget.phoneNumber,
-          password: passwordTextEditingController.text);
-      // Add your logic for password authentication here
+      setState(() {
+        isLoading = true; // Set loading to true when submitting
+      });
+      try {
+        print("phone: ${widget.phoneNumber}");
+        print("Password: ${passwordTextEditingController.text}");
+        // Process the password
+        await RemoteAuth(context: context).signIn(
+            phone: widget.phoneNumber,
+            password: passwordTextEditingController.text);
+      } finally {
+        setState(() {
+          isLoading = false; // Stop loading after the process completes
+        });
+      }
     }
   }
 
@@ -50,7 +60,7 @@ class _LoginPasswordScreenState extends State<LoginPasswordScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Lên Xe Cùng Neighbor Hub',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
                 ),
@@ -86,16 +96,21 @@ class _LoginPasswordScreenState extends State<LoginPasswordScreen> {
                     backgroundColor:
                         isPasswordValidated ? const Color(0xFFFDC6D6) : null,
                   ),
-                  onPressed: isPasswordValidated
+                  onPressed: isPasswordValidated && !isLoading
                       ? _submit // Enable button if password is validated
                       : null, // Disable button if not validated
-                  child: Text(
-                    'Đăng nhập',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: isPasswordValidated ? Colors.black : Colors.grey,
-                    ),
-                  ),
+                  child: isLoading
+                      ? LoadingAnimationWidget.waveDots(
+                          color: Colors.black, size: 18)
+                      : Text(
+                          'Đăng nhập',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: isPasswordValidated
+                                ? Colors.black
+                                : Colors.grey,
+                          ),
+                        ),
                 ),
               ],
             ),

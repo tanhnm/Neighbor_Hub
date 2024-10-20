@@ -21,23 +21,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           const AvatarCard(),
           const SizedBox(height: 20),
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: List.generate(
-                    settings.length,
-                    (index) => Column(
-                          children: [
-                            SettingTile(
-                              setting: settings[index],
-                            ),
-                            const SizedBox(
-                              height: 2,
-                            ),
-                            const Divider()
-                          ],
-                        )),
-              )),
+          SingleChildScrollView(
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: List.generate(
+                      settings.length,
+                      (index) => Column(
+                            children: [
+                              SettingTile(
+                                setting: settings[index],
+                              ),
+                              const SizedBox(
+                                height: 2,
+                              ),
+                              const Divider()
+                            ],
+                          )),
+                )),
+          ),
         ],
       ),
     );

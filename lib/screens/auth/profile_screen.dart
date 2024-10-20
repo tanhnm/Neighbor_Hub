@@ -5,7 +5,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 class ProfileScreen extends StatefulWidget {
   final Map<String, dynamic> driver;
 
-  ProfileScreen({required this.driver});
+  const ProfileScreen({super.key, required this.driver});
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -35,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _simulateDriverDecision() async {
     // Simulate driver decision after some delay (e.g., 3 seconds)
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
 
     setState(() {
       _isWaitingForDecision = false;
@@ -63,29 +63,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Driver Image Section
-            CircleAvatar(
+            const CircleAvatar(
               backgroundImage: NetworkImage(
                 'https://media.muanhatructuyen.vn/post/226/50/3/hinh-nen-mau-hong-4k.jpg', // Replace with your image URL
               ),
               radius: 50,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Driver Info Section
             Text(
               widget.driver['username'],
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               widget.driver['phone'],
               style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               widget.driver['email'],
               style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Ratings and Revenue Section
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -96,11 +96,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       'Rating',
                       style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       widget.driver['averageRating'].toString(),
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -110,30 +110,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       'Lương',
                       style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       '\$${widget.driver['revenue']}',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Driver Comments Section
-            Text(
+            const Text(
               'Bình Luận:',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
                 itemCount: comments.length,
                 itemBuilder: (context, index) {
                   final comment = comments[index];
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
@@ -144,17 +144,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: [
                               Text(
                                 comment['username'],
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               Text(
                                 '⭐️' * comment['rating'], // Rating stars
-                                style: TextStyle(color: Colors.amber),
+                                style: const TextStyle(color: Colors.amber),
                               ),
                             ],
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(comment['comment']),
                         ],
                       ),
@@ -169,7 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Đang đợi tài xế chấp nhận deal',
+                      const Text('Đang đợi tài xế chấp nhận deal',
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold)),
                       LoadingAnimationWidget.waveDots(
@@ -178,7 +178,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   )
                 : _isDealAccepted
                     ? const Text(
-                        'Tài xế đã chấp nhận deal!',
+                        'Người chở bạn đã chấp nhận deal!',
                         style: TextStyle(
                             color: Colors.green,
                             fontWeight: FontWeight.bold,
@@ -191,30 +191,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             fontWeight: FontWeight.bold,
                             fontSize: 18),
                       ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             // Action Buttons
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                    backgroundColor: _isDealAccepted
+                        ? const Color(0xFFFDC6D6)
+                        : Colors.grey),
                 onPressed: _isDealAccepted
                     ? () {
                         // Handle action for accepted deal
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PaymentMethods(),
+                          ), // SelectRatingScreen
+                        );
                       }
                     : null, // Disable button if deal is not accepted
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PaymentMethodsScreen()));
-                  },
-                  style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 50),
-                      backgroundColor:
-                          _isDealAccepted ? Color(0xFFFDC6D6) : Colors.grey),
-                  child: Text('Chốt Deal Với Tài Xế Này',
-                      style: TextStyle(fontSize: 18, color: Colors.black)),
-                ),
+                child: const Text('Chốt Deal Với Tài Xế Này',
+                    style: TextStyle(fontSize: 18, color: Colors.black)),
                 // Disable button color if not accepted
               ),
             ),

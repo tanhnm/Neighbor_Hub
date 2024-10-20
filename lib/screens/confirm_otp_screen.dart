@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/screens/register_screen.dart';
 import 'package:flutter_application_1/services/remote_service/remote_auth.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 

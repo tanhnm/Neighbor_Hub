@@ -1,21 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/login_screen.dart';
-import 'dart:async';
+import 'package:flutter_application_1/screens/login_screen.dart'; // Adjust this import based on your project structure
+import 'package:flutter_application_1/screens/navbar_screen.dart';
+import 'package:flutter_application_1/services/driver_service/driver_service.dart';
+import 'package:flutter_application_1/model/user_model.dart';
+import 'package:hive/hive.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  User? user;
   @override
   void initState() {
     super.initState();
-    // Navigate to the IntroductionScreen after 3 seconds
-    Timer(Duration(seconds: 3), () {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => IntroductionScreen()));
-    });
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    var authBox = await Hive.openBox('authBox');
+    bool isLoggedIn = authBox.get('is_logged_in', defaultValue: false);
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (isLoggedIn) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const BottomNavBar()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => IntroductionScreen()),
+      );
+    }
   }
 
   @override
@@ -23,21 +43,21 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Image.asset('images/Logo.png',
-            width: 150, height: 150), // Logo image
+        child: Image.asset('images/Logo.png', width: 150, height: 150),
       ),
     );
   }
 }
 
-// Introduction Screen
 class IntroductionScreen extends StatefulWidget {
+  const IntroductionScreen({super.key});
+
   @override
   _IntroductionScreenState createState() => _IntroductionScreenState();
 }
 
 class _IntroductionScreenState extends State<IntroductionScreen> {
-  int _currentIndex = 0; // Keep track of the current page
+  int _currentIndex = 0;
 
   final List<String> _featureTexts = [
     "Welcome to our App!",
@@ -69,64 +89,60 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                 return Stack(
                   fit: StackFit.expand,
                   children: [
-                    // Full-screen image in the background
                     Image.asset(
                       _featureImages[index],
-                      fit: BoxFit.cover, // Fills the screen
+                      fit: BoxFit.cover,
                     ),
-                    // Overlay for text and other widgets
-                    Container(
-                      color: Colors
-                          .black54, // Optional: Adds a semi-transparent overlay for better text visibility
-                    ),
-                    // Feature text in the foreground
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          _featureTexts[index],
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white, // Text color
-                          ),
-                          textAlign: TextAlign.center,
+                    Positioned(
+                      bottom: 100,
+                      left: 20,
+                      right: 20,
+                      child: Text(
+                        _featureTexts[index],
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
+                    // Display "Get Started" button on the last page
+                    if (index == _featureTexts.length - 1)
+                      Positioned(
+                        bottom: 40,
+                        left: 50,
+                        right: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Navigate to the login screen
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginScreen(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color(0xFFFDC6D6), // Button color
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                          ),
+                          child: const Text(
+                            "Get Started",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 );
               },
             ),
           ),
-          // Page indicator
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              _featureTexts.length,
-              (index) => Container(
-                margin: EdgeInsets.symmetric(horizontal: 5.0),
-                width: _currentIndex == index ? 12.0 : 8.0,
-                height: _currentIndex == index ? 12.0 : 8.0,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _currentIndex == index ? Colors.blue : Colors.grey,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _currentIndex == _featureTexts.length - 1
-                ? () {
-                    // If the user is on the last page, navigate to the login screen
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()));
-                  }
-                : null, // Disable the button if not on the last page
-            child: Text("Get Started"),
-          ),
-          SizedBox(height: 40),
         ],
       ),
     );

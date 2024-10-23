@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/Driver/map_driver_screen.dart';
+import 'package:flutter_application_1/services/driver_service/registration_service.dart';
 import 'package:flutter_application_1/utils/api/api.dart';
 import 'package:geolocator/geolocator.dart'; // Import Geolocator for location services
 import 'package:flutter_application_1/screens/BookingCarScreen/map_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:toastification/toastification.dart';
 
@@ -19,11 +22,66 @@ class _DestinationPickState extends State<DestinationPick> {
 
   // List of sample destinations (for demonstration purposes)
   List<dynamic> places = [];
+  int? user;
+  bool is_driver = false;
+  Box? userBox;
+  Future<int>? userIdFuture;
+  int? registrationFormId;
+  int? registrationStatus;
 
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
+    _initializeHiveBox();
+  }
+
+  Future<void> _initializeHiveBox() async {
+    try {
+      userBox = await Hive.openBox('authBox');
+      if (userBox == null) {
+        print('Hive box not opened');
+        return;
+      }
+
+      is_driver = userBox?.get('is_driver', defaultValue: false) ?? false;
+      print('is_driver: $is_driver');
+
+      setState(() {
+        userIdFuture = _loadUser();
+        userIdFuture?.then((value) {
+          user = value;
+        });
+      });
+
+      if (user != null) {
+        final forms =
+            await RegistrationService().getAllRegistrationForms(user!);
+        if (forms.isNotEmpty) {
+          registrationFormId = forms[0]['registrationId'] as int?;
+          registrationStatus = forms[0]['status'] as int?;
+          print('Registration Form ID: $registrationFormId');
+        } else {
+          print('No registration forms found.');
+        }
+      }
+    } catch (e) {
+      print('Error opening Hive box: $e');
+    }
+  }
+
+  Future<int> _loadUser() async {
+    try {
+      user = userBox?.get('driverId');
+      if (user == null) {
+        throw Exception('No user found in the Hive box.');
+      }
+      print(user);
+      return user!;
+    } catch (e) {
+      print('Error loading user: $e');
+      rethrow;
+    }
   }
 
   // Function to request location permission and get current position
@@ -38,12 +96,11 @@ class _DestinationPickState extends State<DestinationPick> {
         _currentPosition = position;
       });
       final fetchedPlaces =
-          await getNearbyPlaces(position.latitude!, position.longitude!);
+          await getNearbyPlaces(position.latitude, position.longitude);
       setState(() {
         places = fetchedPlaces;
       });
     } catch (e) {
-      // Handle any errors that occur during permission request
       toastification.show(
         context: context,
         style: ToastificationStyle.flat,
@@ -126,10 +183,20 @@ class _DestinationPickState extends State<DestinationPick> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MapScreen(
-                                initialLatitude: _currentPosition!.latitude,
-                                initialLongitude: _currentPosition!.longitude,
-                              ),
+                              builder: (context) => is_driver
+                                  ? MapDriverScreen(
+                                      driverId: user!,
+                                      registrationID: registrationFormId!,
+                                      lat: _currentPosition!.latitude,
+                                      lon: _currentPosition!.longitude,
+                                      registrationStatus: registrationStatus!,
+                                    )
+                                  : MapScreen(
+                                      initialLatitude:
+                                          _currentPosition!.latitude,
+                                      initialLongitude:
+                                          _currentPosition!.longitude,
+                                    ),
                             ),
                           );
                         } else {
@@ -188,10 +255,19 @@ class _DestinationPickState extends State<DestinationPick> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => MapScreen(
-                              initialLatitude: _currentPosition!.latitude,
-                              initialLongitude: _currentPosition!.longitude,
-                            ),
+                            builder: (context) => is_driver
+                                ? MapDriverScreen(
+                                    driverId: user!,
+                                    registrationID: registrationFormId!,
+                                    lat: _currentPosition!.latitude,
+                                    lon: _currentPosition!.longitude,
+                                    registrationStatus: registrationStatus!,
+                                  )
+                                : MapScreen(
+                                    initialLatitude: _currentPosition!.latitude,
+                                    initialLongitude:
+                                        _currentPosition!.longitude,
+                                  ),
                           ),
                         );
                       } else {

@@ -8,7 +8,6 @@ import 'package:flutter_application_1/services/fare_service/booking_controller.d
 import 'package:flutter_application_1/utils/convertTime/convert_time.dart';
 import 'package:hive/hive.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:toastification/toastification.dart';
 
 class ActivityScreen extends StatefulWidget {
   const ActivityScreen({super.key});
@@ -40,7 +39,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
       final response = await BookingController(context: context)
           .getBookingsByUserId(user?.userId ?? 0);
       setState(() {
-        bookings = json.decode(response.body); // Decode the JSON response
+        bookings = response; // Decode the JSON response
       });
     } finally {
       setState(() {
@@ -57,9 +56,10 @@ class _ActivityScreenState extends State<ActivityScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.push(
+            Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => const BottomNavBar()),
+              (Route<dynamic> route) => false,
             );
           },
         ),
@@ -98,17 +98,21 @@ class _ActivityScreenState extends State<ActivityScreen> {
                         Text(
                           "Điểm đón: $pickupLocation",
                           style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto'),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           "Điểm đi: $dropoffLocation",
                           style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto'),
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "$pickupTime",
+                          pickupTime,
                           style: const TextStyle(fontSize: 16),
                         ),
                         const SizedBox(height: 8),
@@ -165,6 +169,10 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                   ['driver']['revenue'] ??
                                               0,
                                         },
+                                        registrationFormId:
+                                            booking['registration']
+                                                ['registrationId'],
+                                        booking: booking,
                                       ),
                                     ),
                                   );
@@ -173,12 +181,12 @@ class _ActivityScreenState extends State<ActivityScreen> {
                               ? Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                      Text('Đang Tìm Tài Xế'),
-                                      SizedBox(width: 8),
+                                      const Text('Đang Tìm Tài Xế'),
+                                      const SizedBox(width: 8),
                                       LoadingAnimationWidget.waveDots(
                                           color: Colors.black, size: 16),
                                     ])
-                              : Row(
+                              : const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [Text('Deal Với Tài Xế Ngay')]),
                         )

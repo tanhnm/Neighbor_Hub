@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/driver_model.dart';
 import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/screens/Driver/registration_form_screen.dart';
 import 'package:flutter_application_1/screens/Driver/user_list_screen.dart';
@@ -26,8 +25,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
     const MainScreen(),
     const ActivityScreen(),
     const ProfileScreen(),
-    UserListScreen(),
-    RegistrationFormScreen()
+    const UserListScreen(),
+    const RegistrationFormScreen()
     // UserListScreen() will be conditionally added
   ];
 

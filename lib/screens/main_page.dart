@@ -1,7 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/common/widgets/imageRounded/rounded_img.dart';
+import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/screens/BookingCarScreen/destination_pick.dart';
+import 'package:flutter_application_1/screens/Driver/map_driver_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive/hive.dart';
 
@@ -13,6 +15,41 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  User? user;
+  Box? userBox;
+  Future<User>? userIdFuture;
+  @override
+  void initState() {
+    super.initState();
+    _initializeHiveBox();
+  }
+
+  Future<void> _initializeHiveBox() async {
+    try {
+      userBox = await Hive.openBox<User>('users');
+      setState(() {
+        userIdFuture = _loadUser();
+        userIdFuture!.then((value) => user = value);
+      });
+    } catch (e) {
+      print('Error opening Hive box: $e');
+    }
+  }
+
+  Future<User> _loadUser() async {
+    try {
+      user = userBox?.get('user');
+      if (user == null) {
+        throw Exception('No user found in the Hive box.');
+      }
+      print('User: ${user?.username.toString()}');
+      return user!;
+    } catch (e) {
+      print('Error loading user: $e');
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -84,18 +121,18 @@ class _MainScreenState extends State<MainScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      "Chào buổi tối",
+                      "Chào Bạn Đã Đến Với NeighborHub",
                       style: TextStyle(
                         color: Color(0xFFCC2C70),
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 4),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
                       child: Text(
-                        "xin chào, Huỳnh Nguyễn Minh Tân",
-                        style: TextStyle(
+                        "xin chào, ${user?.username ?? "Bạn".toUpperCase()}",
+                        style: const TextStyle(
                           color: Colors.black,
                           fontSize: 14,
                         ),
@@ -125,19 +162,41 @@ class _MainScreenState extends State<MainScreen> {
                             ],
                           ),
                         ),
-                        Column(
-                          children: [
-                            _buildCircleIcon('images/bike.png'),
-                            const Text("Xe máy",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                          ],
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const DestinationPick(),
+                              ),
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              _buildCircleIcon('images/bike.png'),
+                              const Text("Xe máy",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            ],
+                          ),
                         ),
-                        Column(
-                          children: [
-                            _buildCircleIcon('images/clock.png'),
-                            const Text("Đặt trước",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                          ],
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const DestinationPick(),
+                              ),
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              _buildCircleIcon('images/clock.png'),
+                              const Text("Đặt trước",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            ],
+                          ),
                         ),
                         Column(
                           children: [

@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/PaymentScreen/payment_method_screen.dart';
+import 'package:flutter_application_1/screens/PaymentScreen/qrcode_payment_screen.dart';
+import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
   final Map<String, dynamic> driver;
+  final Map<String, dynamic> booking;
+  final int registrationFormId;
 
-  const ProfileScreen({super.key, required this.driver});
+  const ProfileScreen(
+      {super.key,
+      required this.driver,
+      required this.booking,
+      required this.registrationFormId});
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -14,6 +22,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _isWaitingForDecision = true; // Initially, waiting for decision
   bool _isDealAccepted = false; // Initially, no decision made
+  Map<String, dynamic> driverAmount = {'amount': 0.0};
+  String price = '0.0';
 
   final List<Map<String, dynamic>> comments = [
     {
@@ -48,6 +58,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _simulateDriverDecision(); // Start simulating the driver's decision
+    _loadInfoBooking();
+  }
+
+  Future<void> _loadInfoBooking() async {
+    final Map<String, dynamic> amount =
+        await BookingController(context: context).getDriverAmount(
+      widget.driver['driverId'],
+      widget.booking['bookingId'],
+    );
+    setState(() {
+      if (amount.isEmpty) return;
+      driverAmount = amount;
+      if (driverAmount['amount'] > 0.0) {
+        price = driverAmount['amount'].toString();
+      }
+    });
+    print(driverAmount['amount'] > 0.0);
   }
 
   @override
@@ -165,32 +192,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 10),
             // Add Deal Price Driver waiting for decision
-            _isWaitingForDecision
+            driverAmount['amount'] > 0.0
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Đang đợi tài xế chấp nhận deal',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
-                      LoadingAnimationWidget.waveDots(
-                          color: Colors.black, size: 20.0),
-                    ],
-                  )
-                : _isDealAccepted
-                    ? const Text(
-                        'Người chở bạn đã chấp nhận deal!',
-                        style: TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                      )
-                    : const Text(
-                        'The driver has rejected the deal.',
-                        style: TextStyle(
+                      Text(
+                        'Người chở ra giá \$$price',
+                        style: const TextStyle(
                             color: Colors.red,
                             fontWeight: FontWeight.bold,
                             fontSize: 18),
                       ),
+                    ],
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Đang đợi tài xế chấp nhận deal',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      LoadingAnimationWidget.waveDots(
+                          color: Colors.black, size: 20.0),
+                    ],
+                  ),
             const SizedBox(height: 10),
             // Action Buttons
             Padding(
@@ -198,16 +224,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
-                    backgroundColor: _isDealAccepted
+                    backgroundColor: driverAmount['amount'] > 0.0
                         ? const Color(0xFFFDC6D6)
                         : Colors.grey),
-                onPressed: _isDealAccepted
+                onPressed: driverAmount['amount'] > 0.0
                     ? () {
                         // Handle action for accepted deal
+                        Future<void> addDriver() async {
+                          await BookingController(context: context).addDriver(
+                              registrationId: widget.registrationFormId,
+                              bookingId: widget.booking['bookingId']);
+                        }
+
+                        String imgUrlPayment = '';
+                        // Handle action for accepted deal
+                        Future<void> simulateDriverDecision() async {
+                          imgUrlPayment = await BookingController(
+                                  context: context)
+                              .createQrCodePayment(widget.booking['bookingId']);
+                        }
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => PaymentMethods(),
+                            builder: (context) => QRCodeScanPage(
+                              imgUrl: imgUrlPayment,
+                            ),
                           ), // SelectRatingScreen
                         );
                       }

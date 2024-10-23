@@ -1,16 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Onboarding/onboarding_screen.dart';
-import 'package:flutter_application_1/common/widgets/voucher/voucher_list_page.dart';
-import 'package:flutter_application_1/screens/BookingCarScreen/destination_pick.dart';
-import 'package:flutter_application_1/screens/BookingCarScreen/map_screen.dart';
-import 'package:flutter_application_1/screens/PaymentScreen/payment_method_screen.dart';
-import 'package:flutter_application_1/screens/auth/login_password_screen.dart';
-import 'package:flutter_application_1/screens/confirm_otp_screen.dart';
-import 'package:flutter_application_1/screens/login_screen.dart';
-import 'package:flutter_application_1/screens/register_screen.dart';
 import 'package:flutter_application_1/splashScreen/splash_screen.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:toastification/toastification.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart'; // For getting the app directory
@@ -24,7 +14,7 @@ void main() async {
   await Hive.initFlutter(); // Initialize Hive
   Hive.registerAdapter(UserAdapter());
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -39,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(brightness: Brightness.light),
       darkTheme: ThemeData(brightness: Brightness.dark),
       themeMode: ThemeMode.light,
-      home: SplashScreen(),
+      home: const SplashScreen(),
     ));
   }
 }

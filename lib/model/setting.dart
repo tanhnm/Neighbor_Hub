@@ -33,14 +33,19 @@ final List<Setting> settings = [
     icon: Icons.logout,
     action: (BuildContext context) async {
       var box = await Hive.openBox('appBox');
+      var locationBox = await Hive.openBox('locationBox');
+
       var userBox =
           await Hive.openBox<User>('users'); // Otherwise, open the box
       var authBox = await Hive.openBox('authBox');
       await authBox.clear(); // Clears all data in the authBox
-      // Optionally, you can also close the box
       await authBox.close();
       await box.clear();
       await userBox.clear();
+      await userBox.close();
+      await locationBox.clear();
+      await locationBox.close();
+      await box.close();
       print('Token cleared');
       Navigator.pushReplacement(
         context,

@@ -18,7 +18,7 @@ class PaymentMethodsScreen extends StatelessWidget {
             },
           ),
         ),
-        body: PaymentMethods(),
+        body: const PaymentMethods(),
       ),
     );
   }
@@ -104,7 +104,8 @@ class _PaymentMethodsState extends State<PaymentMethods> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => VoucherSelectionScreen()));
+                            builder: (context) =>
+                                const VoucherSelectionScreen()));
                   }
                 : null,
             child: const Text('Confirm Payment Method',

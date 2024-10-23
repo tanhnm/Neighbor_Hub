@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/common/widgets/avatar/avatar_card.dart';
 import 'package:flutter_application_1/model/setting.dart';
+import 'package:flutter_application_1/model/user_model.dart';
+import 'package:hive/hive.dart';
 
 import '../common/widgets/settingTile/setting_tile.dart';
 
@@ -12,6 +14,41 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  User? user;
+  Box? userBox;
+  Future<User>? userIdFuture;
+  @override
+  void initState() {
+    super.initState();
+    _initializeHiveBox();
+  }
+
+  Future<void> _initializeHiveBox() async {
+    try {
+      userBox = await Hive.openBox<User>('users');
+      setState(() {
+        userIdFuture = _loadUser();
+        userIdFuture!.then((value) => user = value);
+      });
+    } catch (e) {
+      print('Error opening Hive box: $e');
+    }
+  }
+
+  Future<User> _loadUser() async {
+    try {
+      user = userBox?.get('user');
+      if (user == null) {
+        throw Exception('No user found in the Hive box.');
+      }
+      print('User: ${user?.username.toString()}');
+      return user!;
+    } catch (e) {
+      print('Error loading user: $e');
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const AvatarCard(),
+          AvatarCard(name: user?.username ?? ""),
           const SizedBox(height: 20),
           SingleChildScrollView(
             child: Padding(

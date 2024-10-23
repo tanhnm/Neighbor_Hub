@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/screens/Driver/user_info_screen.dart';
-import 'package:flutter_application_1/screens/auth/profile_screen.dart';
 import 'package:flutter_application_1/services/driver_service/driver_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -33,7 +32,7 @@ class _MessageScreenDriverState extends State<MessageScreenDriver> {
         'booking': '${widget.booking.booking.bookingId}',
         'text': messageText,
         'senderId': widget.user['userId'],
-        'driverId': currentUserId,
+        'driverId': widget.booking.bookingDriverId,
         'timestamp': FieldValue.serverTimestamp(),
       });
       _messageController.clear();

@@ -53,7 +53,6 @@ class _MapScreenState extends State<MapScreen> {
   String dropLocation = '';
   String pickLocation = '';
   User? user;
-  bool isDriver = false;
 
   String selectedVehicle = '';
   @override
@@ -81,8 +80,6 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> _loadUser() async {
     var userBox = await Hive.openBox<User>('users');
     user = userBox.get('user');
-    var box = await Hive.openBox('authBox');
-    isDriver = await box.get('is_driver');
   }
 
   getCoordinates(String firstPick, String secondPick) async {
@@ -704,51 +701,29 @@ class _MapScreenState extends State<MapScreen> {
                         ]),
                   ),
                   const SizedBox(height: 8),
-                  isDriver
-                      ? SizedBox(
-                          width: double
-                              .infinity, // Makes the button take up full width
-                          child: ElevatedButton(
-                            onPressed: () {
-                              // Active Driver RUN
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Colors.green, // Same as Confirm button
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 15), // Ensure vertical padding
-                            ),
-                            child: const Text(
-                              "Bấm Vào Đây Để Tìm Hàng Xóm",
+                  SizedBox(
+                    width:
+                        double.infinity, // Makes the button take up full width
+                    child: ElevatedButton(
+                      onPressed: _pickLocation,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green, // Same as Confirm button
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15), // Ensure vertical padding
+                      ),
+                      child: selectedMarkers.length == 2
+                          ? const Text(
+                              'Xóa',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                            )
+                          : const Text(
+                              "Chọn điểm đến",
                               style:
                                   TextStyle(color: Colors.white, fontSize: 16),
                             ),
-                          ),
-                        )
-                      : SizedBox(
-                          width: double
-                              .infinity, // Makes the button take up full width
-                          child: ElevatedButton(
-                            onPressed: _pickLocation,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Colors.green, // Same as Confirm button
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 15), // Ensure vertical padding
-                            ),
-                            child: selectedMarkers.length == 2
-                                ? const Text(
-                                    'Xóa',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16),
-                                  )
-                                : const Text(
-                                    "Chọn điểm đến",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16),
-                                  ),
-                          ),
-                        ),
+                    ),
+                  ),
                 ],
               ),
             ),

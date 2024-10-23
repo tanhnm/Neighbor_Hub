@@ -2,16 +2,12 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/booking.dart';
-import 'package:flutter_application_1/model/user_model.dart';
-import 'package:flutter_application_1/screens/BookingCarScreen/driver_list_screen.dart';
 import 'package:flutter_application_1/screens/activity_screen.dart';
-import 'package:flutter_application_1/utils/api/api.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import 'package:latlong2/latlong.dart';
 
 class BookingController {
-  Dio _dio = Dio();
+  final Dio _dio = Dio();
 
   BuildContext context;
   BookingController({required this.context});
@@ -25,24 +21,20 @@ class BookingController {
   }
 
   // Method to fetch bookings by user ID
-  Future<http.Response> getBookingsByUserId(int userid) async {
+  Future<List<dynamic>> getBookingsByUserId(int userid) async {
     try {
-      print('$_baseUrl/booking/getBookingByUserId/${userid}');
+      print('$_baseUrl/booking/getBookingByUserId/$userid');
 
       // Call the API to get bookings
-      final response = await http.get(
-        Uri.parse('$_baseUrl/booking/getBookingByUserId/${userid}'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
+      final response =
+          await _dio.get('$_baseUrl/booking/getBookingByUserId/$userid');
 
       // Check for response status
       if (response.statusCode == 200) {
-        print(response.body);
-        return response; // Return the response if successful
+        print('res ${response.data}');
+        return response.data; // Return the response if successful
       } else {
-        print('$_baseUrl/booking/getBookingByUserId/${userid}');
+        print('$_baseUrl/booking/getBookingByUserId/$userid');
         throw Exception('Failed to load bookings');
       }
     } catch (e) {
@@ -99,8 +91,8 @@ class BookingController {
         print('No token found');
         return [];
       }
-      double lon = double.parse(currentLocation.split(',')[0]);
-      double lat = double.parse(currentLocation.split(',')[1]);
+      double lon = double.parse(currentLocation.split(',')[1]);
+      double lat = double.parse(currentLocation.split(',')[0]);
       final response = await http.get(
         Uri.parse(
             '$_baseUrl/booking/getDriverNearUser?userLat=$lat&userLon=$lon&bookingId=${booking['bookingId']}'),
@@ -118,7 +110,10 @@ class BookingController {
 
           // Cast each item in the list to Map<String, dynamic>
           return data
-              .map((driverInfo) => driverInfo['driver'] as Map<String, dynamic>)
+              .map((driverInfo) => {
+                    "driver": driverInfo['driver'],
+                    "registrationId": driverInfo['registrationId']
+                  })
               .toList();
         } else {
           // Handle error response
@@ -134,12 +129,93 @@ class BookingController {
     return [];
   }
 
+  Future<Map<String, dynamic>> getDriverAmount(
+      int driverId, int bookingId) async {
+    try {
+      // Get the token
+      String? token = await _getToken();
+
+      // Make sure the token exists
+      if (token == null) {
+        print('No token found');
+        return {};
+      }
+      print(
+          '$_baseUrl/booking/getDriverAmount?driverId=$driverId&bookingId=$bookingId');
+      final response = await http.get(
+        Uri.parse(
+            '$_baseUrl/booking/getDriverAmount?driverId=$driverId&bookingId=$bookingId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      // Check if the response is successful
+      if (response.statusCode == 200) {
+        // Return the response data
+        Map<String, dynamic> data;
+        return data = json.decode(response.body);
+      } else {
+        // Handle error response
+        print(
+            'Failed to get driver amount. Status code: ${response.statusCode}');
+        print('Error response: ${response.body}');
+        return {};
+      }
+    } catch (e) {
+      print(e);
+      return {};
+    }
+  }
+
+  Future<Map<String, dynamic>> addDriver({
+    required int registrationId,
+    required int bookingId,
+  }) async {
+    final Map<String, dynamic> requestBody = {
+      "registrationId": registrationId,
+      "bookingId": bookingId,
+    };
+    try {
+      // Get the token
+      String? token = await _getToken();
+
+      // Make sure the token exists
+      if (token == null) {
+        print('No token found');
+        return {};
+      }
+      final response = await http.post(
+        Uri.parse('$_baseUrl/booking/addDriver'),
+        body: json.encode(requestBody),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      // Check if the response is successful
+      if (response.statusCode == 200) {
+        // Return the response data
+        print(response.body);
+        Map<String, dynamic> data;
+        return data = json.decode(response.body);
+      } else {
+        // Handle error response
+        throw Exception('Failed to add driver: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle Dio error
+      throw Exception('addDriver error: $e');
+    }
+  }
+
   Future<Map<String, dynamic>> addDriverAmount({
     required int driverId,
     required double amount,
     required int bookingId,
   }) async {
-    final String url = '$baseUrl/booking/addDriverAmount';
     final Map<String, dynamic> requestBody = {
       "driverId": driverId,
       "amount": amount,
@@ -155,7 +231,7 @@ class BookingController {
         return {};
       }
       final response = await http.post(
-        Uri.parse(url),
+        Uri.parse('$_baseUrl/booking/addDriverAmount'),
         body: json.encode(requestBody),
         headers: {
           'Content-Type': 'application/json',
@@ -166,6 +242,7 @@ class BookingController {
       // Check if the response is successful
       if (response.statusCode == 200) {
         // Return the response data
+        print(response.body);
         Map<String, dynamic> data;
         return data = json.decode(response.body);
       } else {
@@ -175,6 +252,33 @@ class BookingController {
     } catch (e) {
       // Handle Dio error
       throw Exception('Dio error: $e');
+    }
+  }
+
+  Future<String> createQrCodePayment(int bookingId) async {
+    try {
+      String? token = await _getToken();
+      if (token == null) {
+        print('No token found');
+        return '';
+      }
+      final response = await http.post(
+        Uri.parse('$_baseUrl/booking/createQrCode/$bookingId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        print('QR code payment created successfully');
+        return response.body;
+      } else {
+        print('Failed to create QR code payment');
+        return '';
+      }
+    } catch (e) {
+      print(e);
+      return '';
     }
   }
 

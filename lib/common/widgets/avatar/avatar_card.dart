@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AvatarCard extends StatelessWidget {
-  const AvatarCard({super.key});
+  final String name;
+  const AvatarCard({super.key, required this.name});
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -15,8 +17,8 @@ class AvatarCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            const Text(
-              "Huỳnh Nguyễn Minh Tân",
+            Text(
+              "${name.toUpperCase()}",
               style: TextStyle(
                   fontSize: 20,
                   color: Colors.white,

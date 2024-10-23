@@ -7,7 +7,12 @@ import 'package:hive/hive.dart';
 class MessageScreen extends StatefulWidget {
   final Map<String, dynamic> driver;
   final Map<String, dynamic> booking;
-  const MessageScreen({super.key, required this.driver, required this.booking});
+  final int registrationId;
+  const MessageScreen(
+      {super.key,
+      required this.driver,
+      required this.booking,
+      required this.registrationId});
 
   @override
   _MessageScreenState createState() => _MessageScreenState();
@@ -85,6 +90,8 @@ class _MessageScreenState extends State<MessageScreen> {
                       'averageRating': widget.driver['averageRating'],
                       'revenue': widget.driver['revenue'],
                     },
+                    booking: widget.booking,
+                    registrationFormId: widget.registrationId,
                   ),
                 ),
               );

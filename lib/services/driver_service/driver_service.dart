@@ -25,8 +25,10 @@ class DriverService {
         // Parse the response to create a Driver instance
         Driver driver = Driver.fromJson(response.data);
         var box = await Hive.openBox('authBox');
+        await box.put('driverId', response.data['driverId']);
         await box.put('is_driver', true);
         print('is_driver: ${box.get('is_driver')}');
+        print('Driver ID: ${box.get('driverId')}');
         // Save the driver to Hive
       } else {
         throw Exception('Failed to load driver data');
@@ -34,6 +36,78 @@ class DriverService {
     } catch (e) {
       print('Error fetching driver: $e');
     }
+  }
+
+  Future<bool> activateDriver(
+      {required int registrationId,
+      required double lat,
+      required double lon}) async {
+    try {
+      String? token = await _getToken();
+      if (token == null) {
+        print('No token found');
+        return false;
+      }
+      Map<String, dynamic> requestBody = {
+        "registrationId": registrationId,
+        "lat": lat,
+        "lon": lon,
+      };
+
+      final response =
+          await http.put(Uri.parse('$baseUrl/registrationForm/isActive'),
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer $token',
+              },
+              body: jsonEncode(requestBody));
+      print("Response: $requestBody");
+
+      if (response.statusCode == 200) {
+        print("Driver activated successfully: ${response.body}");
+        if (response.body == "Is Active") {
+          return true;
+        }
+      } else {
+        print('Failed to activate driver: ${response.body}');
+        throw Exception('Failed to activate driver');
+      }
+    } catch (e) {
+      print('Error activating driver: $e');
+    }
+
+    return false;
+  }
+
+  Future<bool> deactivateDriver(int registrationId) async {
+    try {
+      String? token = await _getToken();
+      if (token == null) {
+        print('No token found');
+        return false;
+      }
+
+      final response = await http.put(
+        Uri.parse('$baseUrl/registrationForm/unActive/$registrationId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print("Driver deactivated successfully: ${response.body}");
+        if (response.body == "UnActive") {
+          return true;
+        }
+      } else {
+        print('Failed to deactivate driver: ${response.body}');
+        throw Exception('Failed to deactivate driver');
+      }
+    } catch (e) {
+      print('Error deactivating driver: $e');
+    }
+    return false;
   }
 
   Future<List<Booking>> getAllBookings(int driverId) async {
@@ -53,7 +127,7 @@ class DriverService {
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      print("jsonResponse: ${jsonResponse}");
+      print("jsonResponse: $jsonResponse");
       return jsonResponse.map((booking) => Booking.fromJson(booking)).toList();
     } else {
       throw Exception('Failed to load bookings');

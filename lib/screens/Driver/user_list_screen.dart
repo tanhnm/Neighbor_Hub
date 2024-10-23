@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/user_model.dart' as UserModel;
+import 'package:flutter_application_1/screens/navbar_screen.dart';
 import 'package:flutter_application_1/services/driver_service/driver_service.dart';
 import 'package:flutter_application_1/screens/Driver/message_screen_driver.dart';
+import 'package:flutter_application_1/services/driver_service/registration_service.dart';
 import 'package:hive/hive.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class UserListScreen extends StatefulWidget {
-  const UserListScreen({Key? key}) : super(key: key);
+  const UserListScreen({super.key});
 
   @override
   _UserListScreenState createState() => _UserListScreenState();
@@ -13,9 +16,12 @@ class UserListScreen extends StatefulWidget {
 
 class _UserListScreenState extends State<UserListScreen> {
   final DriverService driverService = DriverService();
-  UserModel.User? user;
-  Box<UserModel.User>? userBox;
+  int? user;
+  Box? userBox;
   Future<int>? userIdFuture;
+
+  int? registrationFormId;
+  int? registrationStatus;
 
   @override
   void initState() {
@@ -25,10 +31,23 @@ class _UserListScreenState extends State<UserListScreen> {
 
   Future<void> _initializeHiveBox() async {
     try {
-      userBox = await Hive.openBox<UserModel.User>('users');
+      userBox = await Hive.openBox('authBox');
       setState(() {
         userIdFuture = _loadUser();
+        userIdFuture!.then((value) => user = value);
       });
+      // Call to get all registration forms
+      final forms = await RegistrationService().getAllRegistrationForms(user!);
+      if (forms.isNotEmpty) {
+        // Assign the first registrationId to registrationFormId
+        registrationFormId = forms[0]['registrationId'] as int;
+        setState(() {
+          registrationStatus = forms[0]['status'] as int;
+        });
+        print('Registration Form ID: $registrationStatus'); // Debugging line
+      } else {
+        print('No registration forms found.');
+      }
     } catch (e) {
       print('Error opening Hive box: $e');
     }
@@ -36,36 +55,48 @@ class _UserListScreenState extends State<UserListScreen> {
 
   Future<int> _loadUser() async {
     try {
-      user = userBox?.get('user');
+      user = userBox?.get('driverId');
       if (user == null) {
         throw Exception('No user found in the Hive box.');
       }
-      print(user!.userId);
-      return user!.userId;
+      print(user);
+      return user!;
     } catch (e) {
       print('Error loading user: $e');
-      throw e;
+      rethrow;
     }
-  }
-
-  @override
-  void dispose() {
-    userBox?.close();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('User List')),
-      body: userIdFuture == null
-          ? const Center(child: CircularProgressIndicator())
+      appBar: AppBar(
+        title: const Text('User List'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const BottomNavBar()),
+              (Route<dynamic> route) => false,
+            );
+          },
+        ),
+      ),
+      body: registrationStatus == 0
+          ? Center(
+              child: registrationStatus == 0
+                  ? const Text("Hãy Bật Chế Độ Đang Rảnh Để Xem")
+                  : LoadingAnimationWidget.waveDots(
+                      color: Colors.black, size: 40))
           : FutureBuilder<List<Booking>>(
-              future: userIdFuture!
-                  .then((userId) => driverService.getAllBookings(userId)),
+              future: userIdFuture
+                  ?.then((userId) => driverService.getAllBookings(user!)),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                      child: LoadingAnimationWidget.waveDots(
+                          color: Colors.black, size: 40));
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -77,34 +108,44 @@ class _UserListScreenState extends State<UserListScreen> {
                     itemBuilder: (context, index) {
                       final booking = bookings[index];
                       return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MessageScreenDriver(
-                                user: {
-                                  'userId': booking.booking.user.userId,
-                                  'username': booking.booking.user.username,
-                                  'phone': booking.booking.user.phone,
-                                  'email': booking.booking.user.email,
-                                  'location': booking.booking.pickupLocation,
-                                  'destination':
-                                      booking.booking.dropoffLocation,
-                                },
-                                booking: booking,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MessageScreenDriver(
+                                  user: {
+                                    'userId': booking.booking.user.userId,
+                                    'username': booking.booking.user.username,
+                                    'phone': booking.booking.user.phone,
+                                    'email': booking.booking.user.email,
+                                    'location': booking.booking.pickupLocation,
+                                    'destination':
+                                        booking.booking.dropoffLocation,
+                                  },
+                                  booking: booking,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        child: UserCard(
-                          name: booking.booking.user.username,
-                          phone: booking.booking.user.phone,
-                          kilometers: '${booking.booking.distance} km',
-                          price: "\$${booking.amount}",
-                          image: 'https://via.placeholder.com/50',
-                          userId: booking.booking.user.userId,
-                        ),
-                      );
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              Text(
+                                'Booking ID: ${booking.booking.bookingId}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey),
+                              ),
+                              const SizedBox(height: 8),
+                              UserCard(
+                                name: booking.booking.user.username,
+                                phone: booking.booking.user.phone,
+                                kilometers: '${booking.booking.distance} km',
+                                price: "\$${booking.amount}",
+                                image: 'https://via.placeholder.com/50',
+                                userId: booking.booking.user.userId,
+                              ),
+                            ],
+                          ));
                     },
                   );
                 }
@@ -123,14 +164,14 @@ class UserCard extends StatelessWidget {
   final int userId;
 
   const UserCard({
-    Key? key,
+    super.key,
     required this.name,
     required this.phone,
     required this.kilometers,
     required this.price,
     required this.image,
     required this.userId,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

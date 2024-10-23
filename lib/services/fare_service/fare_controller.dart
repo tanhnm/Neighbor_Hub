@@ -1,9 +1,7 @@
 import 'dart:convert'; // For jsonEncode
-import 'dart:io';
 import 'package:flutter_application_1/model/trip.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/services/remote_service/remote_auth.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:toastification/toastification.dart';

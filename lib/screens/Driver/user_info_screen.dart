@@ -3,7 +3,6 @@ import 'package:flutter_application_1/services/driver_service/driver_service.dar
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:flutter_application_1/screens/PaymentScreen/payment_method_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_application_1/utils/api/api.dart';
 import 'dart:convert';
@@ -22,8 +21,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   bool _isWaitingForDecision = true; // Initially, waiting for decision
   bool _isDealAccepted = false; // Initially, no decision made
   final TextEditingController _priceController = TextEditingController();
-  final double _minPrice = 10.0; // Minimum acceptable price
-  final double _maxPrice = 100.0; // Maximum acceptable price
+  final double _minPrice = 1000.0; // Minimum acceptable price
+  final double _maxPrice = 100000.0; // Maximum acceptable price
   String? _priceError; // To show validation error
   final MapController _mapController = MapController();
 

@@ -7,6 +7,7 @@ import 'package:flutter_application_1/utils/api/truncate/truncate_words.dart';
 import 'package:flutter_application_1/utils/convertTime/convert_time.dart';
 import 'package:hive/hive.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:toastification/toastification.dart';
 
 class UserListScreen extends StatefulWidget {
   const UserListScreen({super.key});
@@ -47,12 +48,19 @@ class _UserListScreenState extends State<UserListScreen> {
           registrationStatus = forms[0]['status'] as int;
           vehicleType = forms[0]['vehicleType'] as String;
         });
-        print('Registration Form ID: $registrationStatus'); // Debugging line
       } else {
-        print('No registration forms found.');
+        toastification.show(
+          context: context,
+          style: ToastificationStyle.flat,
+          title: const Text('No registration forms found.'),
+        );
       }
     } catch (e) {
-      print('Error opening Hive box: $e');
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: const Text('Error opening Hive box'),
+      );
     }
   }
 
@@ -62,10 +70,8 @@ class _UserListScreenState extends State<UserListScreen> {
       if (user == null) {
         throw Exception('No user found in the Hive box.');
       }
-      print(user);
       return user!;
     } catch (e) {
-      print('Error loading user: $e');
       rethrow;
     }
   }

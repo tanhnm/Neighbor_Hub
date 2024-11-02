@@ -64,10 +64,6 @@ class _VoucherListPageState extends State<VoucherListPage> {
     userBox = Hive.box('authBox');
   }
 
-  getVouchers() async {
-    print(userBox.get('vouchers'));
-  }
-
   final List<Voucher> vouchers = [
     Voucher(
       voucherId: 1,
@@ -90,7 +86,6 @@ class _VoucherListPageState extends State<VoucherListPage> {
 
   @override
   Widget build(BuildContext context) {
-    getVouchers();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vouchers'),

@@ -28,13 +28,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       // Process the form (Full Name, Email, Optional Invite Code)
-      print('Full Name: ${fullNameController.text}');
-      print('Email: ${emailController.text}');
-      print('Email: ${passwordController.text}');
-      print('phone: ${widget.phone}');
-      if (inviteCodeController.text.isNotEmpty) {
-        print('Invite Code: ${inviteCodeController.text}');
-      }
       RemoteAuth(context: context).signUp(
         username: fullNameController.text,
         email: emailController.text,

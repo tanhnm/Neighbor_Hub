@@ -41,14 +41,9 @@ final List<Setting> settings = [
       var userBox = Hive.box<User>('users'); // Otherwise, open the box
       var authBox = Hive.box('authBox');
       await authBox.clear(); // Clears all data in the authBox
-      await authBox.close();
       await userBox.clear();
-      await userBox.close();
       await locationBox.clear();
-      await locationBox.close();
       await box.clear();
-      await box.close();
-      print('Token cleared');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),

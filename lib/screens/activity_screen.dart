@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/screens/BookingCarScreen/driver_list_screen.dart';
@@ -87,6 +88,9 @@ class _ActivityScreenState extends State<ActivityScreen> {
                 var dropoffLocation = booking['dropoffLocation'];
                 var pickupTime =
                     convertToVietnameseTime(booking['pickupTime'].toString());
+                var pickupTimeStr = booking['pickupTime'].toString();
+                var pickupTimeCheck = DateTime.parse(pickupTimeStr);
+                var isPastPickupTime = pickupTimeCheck.isBefore(DateTime.now());
                 var status = booking['status'];
                 var amount = booking['amount'];
                 var driver =
@@ -147,63 +151,79 @@ class _ActivityScreenState extends State<ActivityScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "Giá Thỏa Thuận: \$$amount",
+                          "Giá Thỏa Thuận: ${convertNum(amount)} VNĐ",
                           style: const TextStyle(fontSize: 16),
                         ),
                         const SizedBox(height: 8),
                         ElevatedButton(
-                          onPressed: driver == 'N/A'
-                              ? () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              DriverListScreen(
-                                                booking: booking,
-                                              )));
-                                }
+                          onPressed: isPastPickupTime
+                              ? null
                               : () {
-                                  // Handle view booking details logic here
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ProfileScreen(
-                                        driver: {
-                                          "driverId": driverId,
-                                          "username": booking['registration']
-                                              ['driver']['username'],
-                                          "phone": booking['registration']
-                                              ['driver']['phone'],
-                                          "email": booking['registration']
-                                              ['driver']['email'],
-                                          "averageRating":
-                                              booking['registration']['driver']
-                                                      ['averageRating'] ??
-                                                  0,
-                                          "revenue": booking['registration']
-                                                  ['driver']['revenue'] ??
-                                              0,
-                                        },
-                                        registrationFormId:
-                                            booking['registration']
-                                                ['registrationId'],
-                                        booking: booking,
-                                      ),
-                                    ),
-                                  );
+                                  driver == 'N/A'
+                                      ? () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DriverListScreen(
+                                                        booking: booking,
+                                                      )));
+                                        }
+                                      :
+                                      // Handle view booking details logic here
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => ProfileScreen(
+                                              driver: {
+                                                "driverId": driverId,
+                                                "username":
+                                                    booking['registration']
+                                                        ['driver']['username'],
+                                                "phone": booking['registration']
+                                                    ['driver']['phone'],
+                                                "email": booking['registration']
+                                                    ['driver']['email'],
+                                                "averageRating":
+                                                    booking['registration']
+                                                                ['driver']
+                                                            ['averageRating'] ??
+                                                        0,
+                                                "revenue":
+                                                    booking['registration']
+                                                                ['driver']
+                                                            ['revenue'] ??
+                                                        0,
+                                              },
+                                              registrationFormId:
+                                                  booking['registration']
+                                                      ['registrationId'],
+                                              booking: booking,
+                                            ),
+                                          ),
+                                        );
                                 },
-                          child: driver == 'N/A'
-                              ? Row(
+                          child: isPastPickupTime
+                              ? const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                      const Text('Đang Tìm Tài Xế'),
-                                      const SizedBox(width: 8),
-                                      LoadingAnimationWidget.waveDots(
-                                          color: Colors.black, size: 16),
+                                      const Text(
+                                          'Đã quá thời gian để tìm tài xế!'),
                                     ])
-                              : const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [Text('Deal Với Tài Xế Ngay')]),
+                              : driver == 'N/A'
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                          const Text('Đang Tìm Tài Xế'),
+                                          const SizedBox(width: 8),
+                                          LoadingAnimationWidget.waveDots(
+                                              color: Colors.black, size: 16),
+                                        ])
+                                  : const Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [Text('Deal Với Tài Xế Ngay')]),
                         )
                       ],
                     ),
@@ -242,7 +262,7 @@ class BookingDetailsScreen extends StatelessWidget {
             Text("Dropoff Location: $dropoffLocation"),
             Text("Status: $status"),
             Text("Driver: $driver"),
-            Text("Amount: \$$amount"),
+            Text("Amount: ${convertNum(amount)}"),
           ],
         ),
       ),

@@ -18,7 +18,6 @@ class RegistrationService {
     try {
       String? token = await _getToken();
       if (token == null) {
-        print('No token found');
         return [];
       }
       final response = await http.get(
@@ -33,11 +32,9 @@ class RegistrationService {
       if (response.statusCode == 200) {
         // Decode and return the list of registration forms
         List<dynamic> data = jsonDecode(response.body);
-        print("Retrieved registration forms: $data");
         return data.map((form) => form as Map<String, dynamic>).toList();
       } else {
         // Handle error response
-        print('Failed to retrieve registration forms: ${response.statusCode}');
       }
     } catch (e) {
       // Handle error
@@ -78,12 +75,9 @@ class RegistrationService {
       'tin': tin,
     };
 
-    print('requestBody: $requestBody');
-
     try {
       String? token = await _getToken();
       if (token == null) {
-        print('No token found');
         return {};
       }
       final response = await http.post(
@@ -99,11 +93,9 @@ class RegistrationService {
       if (response.statusCode == 200) {
         // Return the response data
         var data = jsonDecode(response.body);
-        print("Create registration form successful: $data");
         return jsonDecode(response.body);
       } else {
         // Handle error response
-        print('Failed to create registration form: ${response.statusCode}');
       }
     } catch (e) {
       // Handle error

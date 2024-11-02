@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/services/driver_service/registration_service.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:toastification/toastification.dart';
 
 class RegistrationFormScreen extends StatefulWidget {
   const RegistrationFormScreen({super.key});
@@ -62,7 +63,11 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
         registrationStatus = forms[0]['status'] as int?;
       }
     } catch (e) {
-      print('Error opening Hive box: $e');
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: Text('Error: $e'),
+      );
     }
   }
 
@@ -72,10 +77,8 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
       if (user == null) {
         throw Exception('No user found in the Hive box.');
       }
-      print(user);
       return user!;
     } catch (e) {
-      print('Error loading user: $e');
       rethrow;
     }
   }
@@ -89,7 +92,7 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
         _selectedImage = File(returnedImage.path);
       });
     } catch (e) {
-      print('Failed to pick image: $e');
+      rethrow;
     }
   }
 
@@ -151,7 +154,6 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                       ElevatedButton(
                         onPressed: () {
                           // Action to perform when the button is pressed
-                          print('Button pressed!');
                           setState(() {
                             registrationStatus = 0;
                           });
@@ -401,8 +403,6 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
             vehicleInsuranceImgBack ?? 'vehicleInsuranceImgBack+$user',
         'tin': tinController.text,
       };
-
-      print(requestBody);
 
       // Call API to submit the data
       await RegistrationService().createRegistrationForm(

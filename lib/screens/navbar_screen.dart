@@ -43,7 +43,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
     await driverService.getDriverByPhoneNumber(phoneNumber!);
     // Assuming you have this method to get the current driver
     is_driver = box.get('is_driver', defaultValue: false);
-    print('is_driver: $is_driver');
     if (is_driver) {
       setState(() {
         is_driver = true;

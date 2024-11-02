@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:toastification/toastification.dart';
 
 Future<String> uploadImageToFirebase(
-    File image, String fileName, int userId) async {
+    BuildContext context, File image, String fileName, int userId) async {
   try {
     if (userId == 0) {
       throw Exception("User ID not found.");
@@ -19,13 +21,19 @@ Future<String> uploadImageToFirebase(
     if (snapshot.state == TaskState.success) {
       // Get download URL
       String downloadUrl = await snapshot.ref.getDownloadURL();
-      print('Image uploaded successfully. URL: $downloadUrl');
+      // print('Image uploaded successfully. URL: $downloadUrl');
       return downloadUrl;
     } else {
       throw Exception('Image upload failed');
     }
   } catch (e) {
-    print('Error uploading image: $e');
+    // print('Error uploading image: $e');
+    toastification.show(
+      context: context,
+      style: ToastificationStyle.flat,
+      title: Text('Error uploading image: $e'),
+      autoCloseDuration: const Duration(seconds: 3),
+    );
   }
   return "";
 }

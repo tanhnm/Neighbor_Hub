@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/PaymentScreen/qrcode_payment_screen.dart';
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
@@ -66,9 +67,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       widget.driver['driverId'],
       widget.booking['bookingId'],
     );
-    print("loading info price");
-    print("widget.driver['driverId']: ${widget.driver['driverId']}");
-    print("widget.booking['bookingId']: ${widget.booking['bookingId']}");
     setState(() {
       if (amount.isEmpty) return;
       driverAmount = amount;
@@ -76,7 +74,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         price = driverAmount['amount'].toString();
       }
     });
-    print(driverAmount['amount'] > 0.0);
   }
 
   @override
@@ -141,7 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '\$${widget.driver['revenue']}',
+                      '${convertNum(widget.driver['revenue'])} VND',
                       style: const TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold),
                     ),
@@ -199,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Người chở ra giá \$$price',
+                        'Người chở ra giá ${convertNum(driverAmount['amount'])} VND',
                         style: const TextStyle(
                             color: Colors.red,
                             fontWeight: FontWeight.bold,
@@ -232,7 +229,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onPressed: driverAmount['amount'] > 0.0
                     ? () async {
                         // Handle action for accepted deal
-                        print('Accepted deal!');
                         Future<Map<String, dynamic>> addDriver() async {
                           return BookingController(context: context).addDriver(
                               registrationId: widget.registrationFormId,

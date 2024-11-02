@@ -23,15 +23,12 @@ class RemoteAuth {
           await http.get(Uri.parse('${_baseUrl}user/getByPhoneNumber/$phone'));
 
       if (response.statusCode == 200) {
-        print('Response: ${response.body}');
         Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => LoginPasswordScreen(phoneNumber: phone)),
         );
       } else if (response.body == "User does not exist") {
-        print('User does not exist');
-        print('phone: $phone');
         sendSMSOTP(phone: phone);
       } else {
         toastification.show(
@@ -71,19 +68,29 @@ class RemoteAuth {
 
       // Check the response status
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Send OTP successful');
-        print('Response: ${response.body}');
         Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => ConfirmOtpScreen(phoneNumber: phone)),
         );
       } else {
-        print('Failed to send OTP. Status code: ${response.statusCode}');
-        print('Error response: ${response.body}');
+        toastification.show(
+          context: context,
+          style: ToastificationStyle
+              .flat, // optional if you use ToastificationWrapper
+          title:
+              Text('Failed to send OTP. Status code: ${response.statusCode}'),
+          autoCloseDuration: const Duration(seconds: 3),
+        );
       }
     } catch (e) {
-      print('Error occurred while sending OTP: $e');
+      toastification.show(
+        context: context,
+        style: ToastificationStyle
+            .flat, // optional if you use ToastificationWrapper
+        title: Text('$e'),
+        autoCloseDuration: const Duration(seconds: 3),
+      );
     }
   }
 
@@ -106,8 +113,6 @@ class RemoteAuth {
       );
       // Check the response status
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Verify OTP successful');
-        print('Response: ${response.body}');
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -116,7 +121,6 @@ class RemoteAuth {
                   )),
         );
       } else {
-        print('Failed to verify OTP. Status code: ${response.statusCode}');
         toastification.show(
           context: context,
           style: ToastificationStyle
@@ -125,10 +129,15 @@ class RemoteAuth {
               Text('Failed to verify OTP. Status code: ${response.statusCode}'),
           autoCloseDuration: const Duration(seconds: 5),
         );
-        print('Error response: ${response.body}');
       }
     } catch (e) {
-      print('Error occurred while verify OTP: $e');
+      toastification.show(
+        context: context,
+        style: ToastificationStyle
+            .flat, // optional if you use ToastificationWrapper
+        title: Text('$e'),
+        autoCloseDuration: const Duration(seconds: 3),
+      );
     }
   }
 
@@ -140,8 +149,6 @@ class RemoteAuth {
       'phoneOrEmail': phone,
       'password': password,
     };
-    print('phone: $phone');
-    print('password: $password');
     try {
       final response = await _dio.post(
         '${_baseUrl}auth/login',
@@ -149,10 +156,6 @@ class RemoteAuth {
       );
 
       if (response.statusCode == 200) {
-        print('Response: ${response.data}');
-        // Assuming the token is in the response body, modify if your response format differs
-
-        print("jsonResponse: $response");
         String token = response.data['access_token'];
         String refreshToken = response.data['refresh_token'];
 
@@ -169,18 +172,12 @@ class RemoteAuth {
         await userBox.put('user', user);
         // Retrieve the user
         User? retrievedUser = userBox.get('user');
-        print('Retrieved User: $retrievedUser');
-        print(
-            'Retrieved User: ${retrievedUser?.username}'); // Output: Retrieved User: Huynh Nguyen Minh Tan
-
         // Navigate to the bottom nav screen
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const BottomNavBar()),
         );
       } else {
-        print('Failed to get user. Status code: ${response.statusCode}');
-        print('Error responses: ${response.data}');
         toastification.show(
           context: context,
           style: ToastificationStyle
@@ -190,7 +187,13 @@ class RemoteAuth {
         );
       }
     } catch (e) {
-      print(e);
+      toastification.show(
+        context: context,
+        style: ToastificationStyle
+            .flat, // optional if you use ToastificationWrapper
+        title: Text('$e'),
+        autoCloseDuration: const Duration(seconds: 2),
+      );
     }
   }
 
@@ -218,19 +221,28 @@ class RemoteAuth {
 
       // Check the response status
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Sign-up successful');
-        print('Response: ${response.body}');
         Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => LoginPasswordScreen(phoneNumber: phone)),
         );
       } else {
-        print('Failed to sign up. Status code: ${response.statusCode}');
-        print('Error response: ${response.body}');
+        toastification.show(
+          context: context,
+          style: ToastificationStyle
+              .flat, // optional if you use ToastificationWrapper
+          title: Text('Failed to sign up. Status code: ${response.statusCode}'),
+          autoCloseDuration: const Duration(seconds: 3),
+        );
       }
     } catch (e) {
-      print('Error occurred while signing up: $e');
+      toastification.show(
+        context: context,
+        style: ToastificationStyle
+            .flat, // optional if you use ToastificationWrapper
+        title: Text('$e'),
+        autoCloseDuration: const Duration(seconds: 3),
+      );
     }
   }
 }

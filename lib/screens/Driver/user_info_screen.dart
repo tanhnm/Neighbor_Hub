@@ -71,8 +71,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
               locationUser = "$lonLocation, $latLocation";
               destinationUser = "$lonDes, $latDes";
             });
-            print(locationUser);
-            print(destinationUser);
             getCoordinates(locationUser, destinationUser);
           }
         }
@@ -130,11 +128,15 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
             ),
           );
         } else {
-          print("Error: ${response.body}");
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Lỗi tìm kiếm')),
+          );
         }
       });
     } catch (e) {
-      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Lỗi tìm kiếm')),
+      );
     }
   }
 

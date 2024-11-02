@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_application_1/model/driver_model.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:toastification/toastification.dart';
 
 class DriverService {
   final _dio = Dio(); // Create an instance of Dio
@@ -21,20 +22,17 @@ class DriverService {
           await _dio.get('$baseUrl/driver/getDriverByPhoneNumber/$phoneNumber');
 
       if (response.statusCode == 200) {
-        print('Response: ${response.data}');
         // Parse the response to create a Driver instance
         Driver driver = Driver.fromJson(response.data);
         var box = Hive.box('authBox');
         await box.put('driverId', response.data['driverId']);
         await box.put('is_driver', true);
-        print('is_driver: ${box.get('is_driver')}');
-        print('Driver ID: ${box.get('driverId')}');
         // Save the driver to Hive
       } else {
         throw Exception('Failed to load driver data');
       }
     } catch (e) {
-      print('Error fetching driver: $e');
+      rethrow;
     }
   }
 
@@ -45,7 +43,6 @@ class DriverService {
     try {
       String? token = await _getToken();
       if (token == null) {
-        print('No token found');
         return false;
       }
       Map<String, dynamic> requestBody = {
@@ -61,19 +58,16 @@ class DriverService {
                 'Authorization': 'Bearer $token',
               },
               body: jsonEncode(requestBody));
-      print("Response: $requestBody");
 
       if (response.statusCode == 200) {
-        print("Driver activated successfully: ${response.body}");
         if (response.body == "Is Active") {
           return true;
         }
       } else {
-        print('Failed to activate driver: ${response.body}');
         throw Exception('Failed to activate driver');
       }
     } catch (e) {
-      print('Error activating driver: $e');
+      return false;
     }
 
     return false;
@@ -83,7 +77,6 @@ class DriverService {
     try {
       String? token = await _getToken();
       if (token == null) {
-        print('No token found');
         return false;
       }
 
@@ -96,16 +89,14 @@ class DriverService {
       );
 
       if (response.statusCode == 200) {
-        print("Driver deactivated successfully: ${response.body}");
         if (response.body == "UnActive") {
           return true;
         }
       } else {
-        print('Failed to deactivate driver: ${response.body}');
         throw Exception('Failed to deactivate driver');
       }
     } catch (e) {
-      print('Error deactivating driver: $e');
+      return false;
     }
     return false;
   }
@@ -113,7 +104,6 @@ class DriverService {
   Future<List<Booking>> getAllBookings(int driverId) async {
     String? token = await _getToken();
     if (token == null) {
-      print('No token found');
       return [];
     }
 
@@ -127,7 +117,6 @@ class DriverService {
 
     if (response.statusCode == 200) {
       List jsonResponse = response.data;
-      print("jsonResponse: ${response.data}");
       return jsonResponse.map((booking) => Booking.fromJson(booking)).toList();
     } else {
       throw Exception('Failed to load bookings');

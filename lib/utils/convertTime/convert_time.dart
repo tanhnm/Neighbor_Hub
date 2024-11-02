@@ -16,7 +16,6 @@ String convertToVietnameseTime(String dateString) {
     return formattedDate;
   } catch (e) {
     // Handle any parsing errors
-    print('Error: $e');
     return 'Invalid date';
   }
 }

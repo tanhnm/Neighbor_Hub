@@ -5,6 +5,7 @@ import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/screens/BookingCarScreen/destination_pick.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive/hive.dart';
+import 'package:toastification/toastification.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -31,7 +32,11 @@ class _MainScreenState extends State<MainScreen> {
         userIdFuture!.then((value) => user = value);
       });
     } catch (e) {
-      print('Error opening Hive box: $e');
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: Text('Error: $e'),
+      );
     }
   }
 
@@ -41,10 +46,18 @@ class _MainScreenState extends State<MainScreen> {
       if (user == null) {
         throw Exception('No user found in the Hive box.');
       }
-      print('User: ${user?.username.toString()}');
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: Text('User: ${user!.username}'),
+      );
       return user!;
     } catch (e) {
-      print('Error loading user: $e');
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: Text('Error: $e'),
+      );
       rethrow;
     }
   }
@@ -52,17 +65,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-
-    getToken() async {
-      var box = Hive.box('authBox');
-      String token = box.get('token', defaultValue: null);
-      return token;
-    }
-
-    getToken().then((value) {
-      print(value);
-    });
-
     return Scaffold(
       body: SingleChildScrollView(
         child: ConstrainedBox(

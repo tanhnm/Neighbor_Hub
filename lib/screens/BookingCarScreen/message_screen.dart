@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/screens/auth/profile_screen.dart';
 import 'package:hive/hive.dart';
+import 'package:toastification/toastification.dart';
 
 class MessageScreen extends StatefulWidget {
   final Map<String, dynamic> driver;
@@ -37,7 +38,6 @@ class _MessageScreenState extends State<MessageScreen> {
       throw Exception('User not found');
     }
     currentUserId = userBox.get('user')!.userId;
-    print(currentUserId);
   }
 
   void _sendMessage() async {
@@ -55,7 +55,11 @@ class _MessageScreenState extends State<MessageScreen> {
       });
       _controller.clear();
     } catch (e) {
-      print('Error sending message: $e'); // Print any error to debug console
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: Text('Error: $e'),
+      );
     }
   }
 
@@ -125,7 +129,6 @@ class _MessageScreenState extends State<MessageScreen> {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  print('Error: ${snapshot.error}');
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
 
@@ -134,7 +137,6 @@ class _MessageScreenState extends State<MessageScreen> {
                 }
 
                 final messages = snapshot.data!.docs;
-                print('driverID: ${widget.driver['driverId'].toString()}');
 
                 return ListView.builder(
                   reverse: true, // Latest messages at the bottom

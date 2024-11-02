@@ -3,6 +3,7 @@ import 'package:flutter_application_1/common/widgets/avatar/avatar_card.dart';
 import 'package:flutter_application_1/model/setting.dart';
 import 'package:flutter_application_1/model/user_model.dart';
 import 'package:hive/hive.dart';
+import 'package:toastification/toastification.dart';
 
 import '../common/widgets/settingTile/setting_tile.dart';
 
@@ -31,7 +32,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         userIdFuture!.then((value) => user = value);
       });
     } catch (e) {
-      print('Error opening Hive box: $e');
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: Text('Error: $e'),
+        autoCloseDuration: const Duration(seconds: 3),
+      );
     }
   }
 
@@ -41,10 +47,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (user == null) {
         throw Exception('No user found in the Hive box.');
       }
-      print('User: ${user?.username.toString()}');
       return user!;
     } catch (e) {
-      print('Error loading user: $e');
       rethrow;
     }
   }

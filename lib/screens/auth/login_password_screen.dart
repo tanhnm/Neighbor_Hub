@@ -22,8 +22,6 @@ class _LoginPasswordScreenState extends State<LoginPasswordScreen> {
         isLoading = true; // Set loading to true when submitting
       });
       try {
-        print("phone: ${widget.phoneNumber}");
-        print("Password: ${passwordTextEditingController.text}");
         // Process the password
         await RemoteAuth(context: context).signIn(
             phone: widget.phoneNumber,

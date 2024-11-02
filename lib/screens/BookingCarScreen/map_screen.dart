@@ -6,6 +6,8 @@ import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
 import 'package:flutter_application_1/services/fare_service/fare_controller.dart';
 import 'package:flutter_application_1/utils/api/api.dart';
+import 'package:flutter_application_1/utils/api/convertDistance/convert_distance.dart';
+import 'package:flutter_application_1/utils/api/convertPrice/conver_price.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive/hive.dart';
@@ -85,7 +87,6 @@ class _MapScreenState extends State<MapScreen> {
   getCoordinates(String firstPick, String secondPick) async {
     // Call the API with reversed coordinates
     List<String> placeName = firstPick.split(',');
-    print(firstPick);
     pickLocation = await getPlaceName(placeName[1], placeName[0]);
     try {
       isLoading = true;
@@ -104,7 +105,6 @@ class _MapScreenState extends State<MapScreen> {
                   e[0].toDouble())) // Reverse them back for the map
               .toList();
         } else {
-          print("Error: ${response.body}");
           toastification.show(
             context: context,
             style: ToastificationStyle
@@ -123,7 +123,6 @@ class _MapScreenState extends State<MapScreen> {
           'duration': '${trip.travelTimeSeconds}',
           'price': trip.tripCost.toString()
         });
-        print('Vehicle Type: ${trip.vehicleType}, Trip Cost: ${trip.tripCost}');
       }
     } catch (e) {
       toastification.show(
@@ -276,28 +275,6 @@ class _MapScreenState extends State<MapScreen> {
         firstPickDone = false;
       }
     });
-  }
-
-  String convertToKilometers(String distance) {
-    // Extract the numeric part from the string (ignoring the " meters" part)
-    double meters = double.parse(distance.replaceAll(RegExp(r'[^0-9.]'), ''));
-
-    // Convert meters to kilometers
-    double kilometers = meters / 1000;
-
-    // Return the result as a string with " km" appended
-    return '${kilometers.toStringAsFixed(2)} km';
-  }
-
-  String formatPriceFromString(String priceString) {
-    // Convert the string to a double
-    double price = double.parse(priceString);
-
-    // Create a NumberFormat instance for Vietnamese currency
-    var formatter = NumberFormat.currency(locale: 'vi_VN', symbol: 'VNĐ');
-
-    // Format the price and return the formatted string
-    return formatter.format(price);
   }
 
   @override
@@ -569,13 +546,6 @@ class _MapScreenState extends State<MapScreen> {
                                       onChanged: (bool value) {
                                         setState(() {
                                           isPreBooking = value;
-                                          if (value) {
-                                            // Trigger additional behavior when pre-booking is ON
-                                            print("Pre-booking is enabled.");
-                                          } else {
-                                            // Trigger behavior when pre-booking is OFF
-                                            print("Pre-booking is disabled.");
-                                          }
                                         });
                                       },
                                     ),
@@ -613,8 +583,6 @@ class _MapScreenState extends State<MapScreen> {
                                                 );
                                               });
                                               // Do something with the selected date and time
-                                              print(
-                                                  'Booking for: $bookingDateTime');
                                             }
                                           }
                                         },
@@ -656,7 +624,6 @@ class _MapScreenState extends State<MapScreen> {
                                                   "${bookingDateTime?.toIso8601String()}Z");
                                   // Navigator.pop(context); // Close the modal
                                   // Proceed with vehicle confirmation logic
-                                  print("Confirmed vehicle: $selectedVehicle");
                                 },
                                 child: const Text('Xác Nhận'),
                               ),

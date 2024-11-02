@@ -166,7 +166,13 @@ class _MapDriverScreenState extends State<MapDriverScreen> {
         // Automatically deactivate after 10 seconds
       }
     } catch (e) {
-      print('Error toggling active status: $e');
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: const Text('Failed to toggle active status'),
+        autoCloseDuration: const Duration(seconds: 5),
+        backgroundColor: Colors.red,
+      );
     }
   }
 

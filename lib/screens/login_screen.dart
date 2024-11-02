@@ -110,70 +110,70 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 25.0),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Divider(
-                          color: Colors.grey,
-                          thickness: 1,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          "Hoặc",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          color: Colors.grey,
-                          thickness: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        // Apple login logic
-                      },
-                      child: Image.asset(
-                        'images/apple_logo.png',
-                        width: 40,
-                        height: 40,
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    GestureDetector(
-                      onTap: () {
-                        // Facebook login logic
-                      },
-                      child: Image.asset(
-                        'images/facebook_logo.png',
-                        width: 40,
-                        height: 40,
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    GestureDetector(
-                      onTap: () {
-                        // Google login logic
-                      },
-                      child: Image.asset(
-                        'images/google_logo.png',
-                        width: 40,
-                        height: 40,
-                      ),
-                    ),
-                  ],
-                ),
+                // const Padding(
+                //   padding: EdgeInsets.symmetric(vertical: 25.0),
+                //   child: Row(
+                //     children: <Widget>[
+                //       Expanded(
+                //         child: Divider(
+                //           color: Colors.grey,
+                //           thickness: 1,
+                //         ),
+                //       ),
+                //       Padding(
+                //         padding: EdgeInsets.symmetric(horizontal: 8.0),
+                //         child: Text(
+                //           "Hoặc",
+                //           style: TextStyle(
+                //               fontSize: 20, fontWeight: FontWeight.bold),
+                //         ),
+                //       ),
+                //       Expanded(
+                //         child: Divider(
+                //           color: Colors.grey,
+                //           thickness: 1,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     GestureDetector(
+                //       onTap: () {
+                //         // Apple login logic
+                //       },
+                //       child: Image.asset(
+                //         'images/apple_logo.png',
+                //         width: 40,
+                //         height: 40,
+                //       ),
+                //     ),
+                //     const SizedBox(width: 20),
+                //     GestureDetector(
+                //       onTap: () {
+                //         // Facebook login logic
+                //       },
+                //       child: Image.asset(
+                //         'images/facebook_logo.png',
+                //         width: 40,
+                //         height: 40,
+                //       ),
+                //     ),
+                //     const SizedBox(width: 20),
+                //     GestureDetector(
+                //       onTap: () {
+                //         // Google login logic
+                //       },
+                //       child: Image.asset(
+                //         'images/google_logo.png',
+                //         width: 40,
+                //         height: 40,
+                //       ),
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),

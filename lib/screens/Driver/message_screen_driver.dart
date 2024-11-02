@@ -109,9 +109,6 @@ class _MessageScreenDriverState extends State<MessageScreenDriver> {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  print(
-                      "widget.booking.booking.bookingId: ${widget.booking.booking.bookingId}");
-                  print("widget.user['userId']: ${widget.user['userId']}");
                   return const Center(child: Text('Error loading messages'));
                 }
 

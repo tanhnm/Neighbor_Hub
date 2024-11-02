@@ -32,7 +32,6 @@ Future<String> getPlaceName(String latitude, String longitude) async {
       return 'No place found';
     }
   } else {
-    print(response.body);
     return 'Error: ${response.statusCode}';
   }
 }

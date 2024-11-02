@@ -40,12 +40,10 @@ class _DestinationPickState extends State<DestinationPick> {
     try {
       userBox = Hive.box('authBox');
       if (userBox == null) {
-        print('Hive box not opened');
         return;
       }
 
       is_driver = userBox?.get('is_driver', defaultValue: false) ?? false;
-      print('is_driver: $is_driver');
       if (is_driver) {
         setState(() {
           userIdFuture = _loadUser();
@@ -59,14 +57,16 @@ class _DestinationPickState extends State<DestinationPick> {
           if (forms.isNotEmpty) {
             registrationFormId = forms[0]['registrationId'] as int?;
             registrationStatus = forms[0]['status'] as int?;
-            print('Registration Form ID: $registrationFormId');
-          } else {
-            print('No registration forms found.');
           }
         }
       }
     } catch (e) {
-      print('Error opening Hive box: $e');
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: Text('Error: $e'),
+        autoCloseDuration: const Duration(seconds: 3),
+      );
     }
   }
 
@@ -76,10 +76,8 @@ class _DestinationPickState extends State<DestinationPick> {
       if (user == null) {
         throw Exception('No user found in the Hive box.');
       }
-      print(user);
       return user!;
     } catch (e) {
-      print('Error loading user: $e');
       rethrow;
     }
   }
@@ -324,10 +322,6 @@ class _DestinationPickState extends State<DestinationPick> {
                                   FontAwesomeIcons.chevronRight,
                                   color: Colors.grey,
                                 ),
-                                onTap: () {
-                                  // Action when a destination is selected
-                                  print('Selected destination: $placeName');
-                                },
                               ),
                             );
                           },

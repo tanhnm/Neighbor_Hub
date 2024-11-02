@@ -29,17 +29,12 @@ class FareController {
       "listVoucher": listVoucher ?? []
     };
 
-    print("distance: $distance");
-
-    print("travelTime: $travelTime");
-
     try {
       // Get the token
       String? token = await _getToken();
 
       // Make sure the token exists
       if (token == null) {
-        print('No token found');
         return [];
       }
 
@@ -65,7 +60,6 @@ class FareController {
       );
 
       if (response.statusCode == 200) {
-        print('Fare calculation response: ${response.body}');
         List<dynamic> jsonResponse = json.decode(response.body);
         // Map the JSON response to a list of Trip objects
         List<Trip> trips =
@@ -78,11 +72,8 @@ class FareController {
           title: Text(
               'Failed to calculate fare. Status code: ${response.statusCode}'),
         );
-        print('Failed to calculate fare. Status code: ${response.statusCode}');
-        print('Error response: ${response.body}');
       }
     } catch (e) {
-      print('Error occurred while calculating fare: $e');
       toastification.show(
         context: context,
         style: ToastificationStyle.flat,
@@ -103,7 +94,6 @@ class FareController {
       );
 
       if (response.statusCode == 200) {
-        print('Fare types response: ${response.body}');
         // Process the response to display the fare types
         toastification.show(
           context: context,
@@ -112,12 +102,15 @@ class FareController {
           autoCloseDuration: const Duration(seconds: 5),
         );
       } else {
-        print(
-            'Failed to fetch fare types. Status code: ${response.statusCode}');
-        print('Error response: ${response.body}');
+        toastification.show(
+          context: context,
+          style: ToastificationStyle.flat,
+          title: Text(
+              'Failed to fetch fare types. Status code: ${response.statusCode}'),
+          autoCloseDuration: const Duration(seconds: 3),
+        );
       }
     } catch (e) {
-      print('Error occurred while fetching fare types: $e');
       toastification.show(
         context: context,
         style: ToastificationStyle.flat,
@@ -144,7 +137,6 @@ class FareController {
       );
 
       if (response.statusCode == 200) {
-        print('Fare update response: ${response.body}');
         // You can display the updated fare details here
         toastification.show(
           context: context,
@@ -153,11 +145,15 @@ class FareController {
           autoCloseDuration: const Duration(seconds: 5),
         );
       } else {
-        print('Failed to update fare. Status code: ${response.statusCode}');
-        print('Error response: ${response.body}');
+        toastification.show(
+          context: context,
+          style: ToastificationStyle.flat,
+          title: Text(
+              'Failed to update fare. Status code: ${response.statusCode}'),
+          autoCloseDuration: const Duration(seconds: 3),
+        );
       }
     } catch (e) {
-      print('Error occurred while updating fare: $e');
       toastification.show(
         context: context,
         style: ToastificationStyle.flat,

@@ -5,6 +5,7 @@ import 'package:flutter_application_1/model/booking.dart';
 import 'package:flutter_application_1/screens/activity_screen.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:toastification/toastification.dart';
 
 class BookingController {
   final Dio _dio = Dio();
@@ -23,18 +24,14 @@ class BookingController {
   // Method to fetch bookings by user ID
   Future<List<dynamic>> getBookingsByUserId(int userid) async {
     try {
-      print('$_baseUrl/booking/getBookingByUserId/$userid');
-
       // Call the API to get bookings
       final response =
           await _dio.get('$_baseUrl/booking/getBookingByUserId/$userid');
 
       // Check for response status
       if (response.statusCode == 200) {
-        print('res ${response.data}');
         return response.data; // Return the response if successful
       } else {
-        print('$_baseUrl/booking/getBookingByUserId/$userid');
         throw Exception('Failed to load bookings');
       }
     } catch (e) {
@@ -69,13 +66,20 @@ class BookingController {
 
         return bookings;
       } else {
+        toastification.show(
+          context: context,
+          style: ToastificationStyle.flat,
+          title: Text('Error'),
+        );
         // Handle any errors
-        print('Failed to load bookings. Status code: ${response.statusCode}');
-        print('Error response: ${response.body}');
         return [];
       }
     } catch (e) {
-      print('Error occurred while fetching bookings: $e');
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: Text('Error: $e'),
+      );
       return [];
     }
   }
@@ -88,7 +92,6 @@ class BookingController {
 
       // Make sure the token exists
       if (token == null) {
-        print('No token found');
         return [];
       }
       double lon = double.parse(currentLocation.split(',')[1]);
@@ -102,8 +105,6 @@ class BookingController {
         },
       );
       if (response.statusCode == 200) {
-        print('Driver(s) retrieved successfully');
-        print('Response: ${response.body}');
         if (response.statusCode == 200) {
           // Parse the response body as JSON and cast it to the correct type
           List<dynamic> data = json.decode(response.body);
@@ -117,14 +118,20 @@ class BookingController {
               .toList();
         } else {
           // Handle error response
-          print('Failed to load driver data');
+          toastification.show(
+            context: context,
+            style: ToastificationStyle.flat,
+            title: Text('Error something went wrong!'),
+          );
         }
-      } else {
-        print('Failed to get drivers. Status code: ${response.statusCode}');
-        print('Error response: ${response.body}');
-      }
+      } else {}
     } catch (e) {
-      print(e);
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: Text('Error: $e'),
+      );
+      return [];
     }
     return [];
   }
@@ -137,11 +144,8 @@ class BookingController {
 
       // Make sure the token exists
       if (token == null) {
-        print('No token found');
         return {};
       }
-      print(
-          '$_baseUrl/booking/getDriverAmount?driverId=$driverId&bookingId=$bookingId');
       final response = await http.get(
         Uri.parse(
             '$_baseUrl/booking/getDriverAmount?driverId=$driverId&bookingId=$bookingId'),
@@ -151,17 +155,22 @@ class BookingController {
       if (response.statusCode == 200) {
         // Return the response data
         Map<String, dynamic> data;
-        print(response.body);
         return data = json.decode(response.body);
       } else {
+        toastification.show(
+          context: context,
+          style: ToastificationStyle.flat,
+          title: Text('Error'),
+        );
         // Handle error response
-        print(
-            'Failed to get driver amount. Status code: ${response.statusCode}');
-        print('Error response: ${response.body}');
         return {};
       }
     } catch (e) {
-      print(e);
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: Text('Error: $e'),
+      );
       return {};
     }
   }
@@ -180,7 +189,6 @@ class BookingController {
 
       // Make sure the token exists
       if (token == null) {
-        print('No token found');
         throw Exception('No token found');
       }
       final response = await http.post(
@@ -195,7 +203,6 @@ class BookingController {
       // Check if the response is successful
       if (response.statusCode == 200) {
         // Return the response data
-        print(response.body);
         Map<String, dynamic> data;
         return data = json.decode(response.body);
       } else {
@@ -224,7 +231,6 @@ class BookingController {
 
       // Make sure the token exists
       if (token == null) {
-        print('No token found');
         return {};
       }
       final response = await http.post(
@@ -239,7 +245,6 @@ class BookingController {
       // Check if the response is successful
       if (response.statusCode == 200) {
         // Return the response data
-        print(response.body);
         Map<String, dynamic> data;
         return data = json.decode(response.body);
       } else {
@@ -256,7 +261,6 @@ class BookingController {
     try {
       String? token = await _getToken();
       if (token == null) {
-        print('No token found');
         return '';
       }
       final response = await http.post(
@@ -267,14 +271,16 @@ class BookingController {
         },
       );
       if (response.statusCode == 200) {
-        print('QR code payment created successfully');
         return response.body;
       } else {
-        print('Failed to create QR code payment');
         return '';
       }
     } catch (e) {
-      print(e);
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: Text('Error: $e'),
+      );
       return '';
     }
   }
@@ -290,9 +296,6 @@ class BookingController {
     DateTime now = DateTime.now(); // Convert to UTC
     // Format the date to ISO 8601 format
     String iso8601String = now.toIso8601String();
-
-    print(
-        'pick: $pickupLocation, drop: $dropoffLocation, time: $iso8601String, distance: $distance, userId: $userId');
 
     // Prepare the request body
     final Map<String, dynamic> requestBody = {
@@ -310,7 +313,6 @@ class BookingController {
 
       // Make sure the token exists
       if (token == null) {
-        print('No token found');
         return;
       }
 
@@ -325,21 +327,19 @@ class BookingController {
 
       // Check the response status
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Booking created successfully');
-        print('Response: ${response.body}');
         var box = Hive.box('locationBox');
         await box.put('currentLocation', currentLocation);
-        print(box.get('currentLocation'));
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const ActivityScreen()),
         );
-      } else {
-        print('Failed to create booking. Status code: ${response.statusCode}');
-        print('Error response: ${response.body}');
-      }
+      } else {}
     } catch (e) {
-      print('Error occurred while creating booking: $e');
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: Text('Error: $e'),
+      );
     }
   }
 
@@ -355,9 +355,6 @@ class BookingController {
     DateTime now = DateTime.now().toUtc(); // Convert to UTC
     // Format the date to ISO 8601 format
     String iso8601String = now.toIso8601String();
-
-    print(
-        'pick: $pickupLocation, drop: $dropoffLocation, time: $iso8601String, distance: $distance, userId: $userId');
 
     // Prepare the request body
     final Map<String, dynamic> requestBody = {
@@ -375,7 +372,6 @@ class BookingController {
 
       // Make sure the token exists
       if (token == null) {
-        print('No token found');
         return;
       }
 
@@ -390,21 +386,19 @@ class BookingController {
 
       // Check the response status
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Booking created successfully');
-        print('Response: ${response.body}');
         var box = Hive.box('locationBox');
         await box.put('currentLocation', currentLocation);
-        print(box.get('currentLocation'));
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const ActivityScreen()),
         );
-      } else {
-        print('Failed to create booking. Status code: ${response.statusCode}');
-        print('Error response: ${response.body}');
-      }
+      } else {}
     } catch (e) {
-      print('Error occurred while creating booking: $e');
+      toastification.show(
+        context: context,
+        style: ToastificationStyle.flat,
+        title: Text('Error: $e'),
+      );
     }
   }
 }

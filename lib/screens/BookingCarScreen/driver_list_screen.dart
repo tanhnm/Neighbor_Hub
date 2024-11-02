@@ -33,16 +33,10 @@ class _DriverListScreenState extends State<DriverListScreen> {
         List<String> userLocationArray = userLocation.split(',');
 
         if (userLocationArray.length == 2) {
-          print(
-              'user location: ${userLocationArray[0]}:${userLocationArray[1]}');
-          print('booking id: ${widget.booking['bookingId']}');
-
           // Fetch driver data from the API
           List<Map<String, dynamic>>? fetchedDrivers =
               await BookingController(context: context)
                   .getDriverNearUser(userLocation, widget.booking);
-          print(
-              'fetchedDrivers: ${fetchedDrivers.map((driver) => driver['driver'])}');
           if (fetchedDrivers.isNotEmpty) {
             setState(() {
               drivers = fetchedDrivers
@@ -56,8 +50,6 @@ class _DriverListScreenState extends State<DriverListScreen> {
                   .where((id) => id != null)
                   .toList();
             });
-            print(
-                "fetchedDrivers : ${fetchedDrivers.map((registration) => registration['registrationId']).toList()}");
           } else {
             setState(() {
               errorMessage = "No drivers found.";

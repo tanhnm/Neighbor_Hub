@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/services/remote_service/remote_auth.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:toastification/toastification.dart';
 
 class ConfirmOtpScreen extends StatefulWidget {
   final String phoneNumber;
@@ -45,16 +46,17 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
         setState(() {
           isLoading = true;
         });
-        print("test confirm otp");
-        print(widget.phoneNumber);
-        print(
-            '${otpController1.text}${otpController2.text}${otpController3.text}${otpController4.text}');
         await RemoteAuth(context: context).verifySMSOTP(
             phone: widget.phoneNumber,
             code:
                 '${otpController1.text}${otpController2.text}${otpController3.text}${otpController4.text}');
       } catch (e) {
-        print(e);
+        toastification.show(
+          context: context,
+          style: ToastificationStyle.flat,
+          title: Text('Error: $e'),
+          autoCloseDuration: const Duration(seconds: 2),
+        );
       } finally {
         setState(() {
           isLoading = false;

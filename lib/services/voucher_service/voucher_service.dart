@@ -19,7 +19,6 @@ class VoucherService {
         var box = Hive.box('authBox');
         // Store the token in Hive
         await box.put('vouchers', response.body);
-        print('Fare calculation response: ${response.body}');
         // You can use the response here to show the fare details
         toastification.show(
           context: context,
@@ -34,11 +33,8 @@ class VoucherService {
           title: Text(
               'Failed to viewAllVoucher. Status code: ${response.statusCode}'),
         );
-        print('Failed to viewAllVoucher. Status code: ${response.statusCode}');
-        print('Error response: ${response.body}');
       }
     } catch (e) {
-      print('Error occurred while viewAllVoucher: $e');
       toastification.show(
         context: context,
         style: ToastificationStyle.flat,

@@ -1,9 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/services/driver_service/registration_service.dart';
-import 'package:flutter_application_1/utils/storageService/storage_service.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -43,6 +41,8 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
   int? user;
   Box? userBox;
   Future<int>? userIdFuture;
+  int? registrationFormId;
+  int? registrationStatus;
   @override
   void initState() {
     super.initState();
@@ -51,11 +51,16 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
 
   Future<void> _initializeHiveBox() async {
     try {
-      userBox = await Hive.openBox('authBox');
+      userBox = Hive.box('authBox');
       setState(() {
         userIdFuture = _loadUser();
         userIdFuture!.then((value) => user = value);
       });
+      final forms = await RegistrationService().getAllRegistrationForms(user!);
+      if (forms.isNotEmpty) {
+        registrationFormId = forms[0]['registrationId'] as int?;
+        registrationStatus = forms[0]['status'] as int?;
+      }
     } catch (e) {
       print('Error opening Hive box: $e');
     }
@@ -128,80 +133,133 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: ListView(
-            children: [
-              _buildTextField(
-                  licensePlateController, 'Biển Số Xe', Icons.directions_car),
-              // Two fields in one row
-              _buildTextField(
-                  vehicleTypeController, 'Loại Xe', Icons.local_shipping),
-              const SizedBox(width: 8),
-
-              _buildTextField(driversLicenseNumberController, 'Mã Số Bằng Lái',
-                  Icons.credit_card),
-              const SizedBox(height: 16),
-              const SizedBox(
-                height: 40,
-                child: Text('Giấy Tờ Xe',
-                    style: TextStyle(fontSize: 22, color: Color(0xFFEF3167))),
-              ),
-              _buildImagePicker('Mặt Trước', vehicleRegistrationImg,
-                  'vehicleRegistrationImg'),
-              // Image upload section
-              const SizedBox(height: 16),
-              const SizedBox(
-                height: 40,
-                child: Text('Bằng Lái Xe',
-                    style: TextStyle(fontSize: 22, color: Color(0xFFEF3167))),
-              ),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                _buildImagePicker('Mặt Trước', driversLicenseImgFront,
-                    'driversLicenseImgFront'),
-                _buildImagePicker(
-                    'Mặt Sau', driversLicenseImgBack, 'driversLicenseImgBack'),
-              ]),
-              const SizedBox(height: 16),
-              const SizedBox(
-                height: 40,
-                child: Text('Bảo Hiểm',
-                    style: TextStyle(fontSize: 22, color: Color(0xFFEF3167))),
-              ),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                _buildImagePicker('Mặt Trước', vehicleInsuranceImgFront,
-                    'vehicleInsuranceImgFront'),
-                _buildImagePicker('Mặt Sau', vehicleInsuranceImgBack,
-                    'vehicleInsuranceImgBack'),
-              ]),
-
-              _buildTextField(healthCheckDayController,
-                  'Ngày Kiểm Tra Sức Khỏe (YYYY-MM-DD)', Icons.calendar_today),
-              _buildTextField(tinController, 'TIN', Icons.confirmation_number),
-
-              const SizedBox(height: 30),
-              isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          _submitForm();
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        backgroundColor: const Color(
-                            0xFFEF3167), // Themed color for your app
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+          child: registrationStatus != 0
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment:
+                        MainAxisAlignment.center, // Center vertically
+                    crossAxisAlignment:
+                        CrossAxisAlignment.center, // Center horizontally
+                    children: [
+                      const Text(
+                        'Bạn đã đăng ký xe rồi',
+                        textAlign: TextAlign.center, // Center text
+                        style: TextStyle(
+                            fontSize: 18), // Optional: Adjust text size
                       ),
-                      child: const Text('Submit Registration',
-                          style: TextStyle(fontSize: 18, color: Colors.white)),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Action to perform when the button is pressed
+                          print('Button pressed!');
+                          setState(() {
+                            registrationStatus = 0;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color(0xFFEF3167), // Background color
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(12), // Rounded corners
+                          ),
+                        ),
+                        child: const Text('Bạn muốn đăng ký thêm xe?',
+                            style:
+                                TextStyle(fontSize: 16, color: Colors.white)),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView(
+                  children: [
+                    _buildTextField(licensePlateController, 'Biển Số Xe',
+                        Icons.directions_car),
+                    // Two fields in one row
+                    _buildTextField(
+                        vehicleTypeController, 'Loại Xe', Icons.local_shipping),
+                    const SizedBox(width: 8),
+
+                    _buildTextField(driversLicenseNumberController,
+                        'Mã Số Bằng Lái', Icons.credit_card),
+                    const SizedBox(height: 16),
+                    const SizedBox(
+                      height: 40,
+                      child: Text('Giấy Tờ Xe',
+                          style: TextStyle(
+                              fontSize: 22, color: Color(0xFFEF3167))),
                     ),
-            ],
-          ),
+                    _buildImagePicker('Mặt Trước', vehicleRegistrationImg,
+                        'vehicleRegistrationImg'),
+                    // Image upload section
+                    const SizedBox(height: 16),
+                    const SizedBox(
+                      height: 40,
+                      child: Text('Bằng Lái Xe',
+                          style: TextStyle(
+                              fontSize: 22, color: Color(0xFFEF3167))),
+                    ),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildImagePicker('Mặt Trước', driversLicenseImgFront,
+                              'driversLicenseImgFront'),
+                          _buildImagePicker('Mặt Sau', driversLicenseImgBack,
+                              'driversLicenseImgBack'),
+                        ]),
+                    const SizedBox(height: 16),
+                    const SizedBox(
+                      height: 40,
+                      child: Text('Bảo Hiểm',
+                          style: TextStyle(
+                              fontSize: 22, color: Color(0xFFEF3167))),
+                    ),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildImagePicker(
+                              'Mặt Trước',
+                              vehicleInsuranceImgFront,
+                              'vehicleInsuranceImgFront'),
+                          _buildImagePicker('Mặt Sau', vehicleInsuranceImgBack,
+                              'vehicleInsuranceImgBack'),
+                        ]),
+
+                    _buildTextField(
+                        healthCheckDayController,
+                        'Ngày Kiểm Tra Sức Khỏe (YYYY-MM-DD)',
+                        Icons.calendar_today),
+                    _buildTextField(
+                        tinController, 'TIN', Icons.confirmation_number),
+
+                    const SizedBox(height: 30),
+                    isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                _submitForm();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              backgroundColor: const Color(
+                                  0xFFEF3167), // Themed color for your app
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text('Đăng ký thôi',
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.white)),
+                          ),
+                  ],
+                ),
         ),
       ),
     );

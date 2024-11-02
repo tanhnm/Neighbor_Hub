@@ -11,7 +11,7 @@ class DriverService {
       'https://gh-neighborhub-569199407036.asia-southeast1.run.app/api/v1';
 
   Future<String?> _getToken() async {
-    var box = await Hive.openBox('authBox');
+    var box = Hive.box('authBox');
     return box.get('token', defaultValue: null);
   }
 
@@ -24,7 +24,7 @@ class DriverService {
         print('Response: ${response.data}');
         // Parse the response to create a Driver instance
         Driver driver = Driver.fromJson(response.data);
-        var box = await Hive.openBox('authBox');
+        var box = Hive.box('authBox');
         await box.put('driverId', response.data['driverId']);
         await box.put('is_driver', true);
         print('is_driver: ${box.get('is_driver')}');
@@ -117,17 +117,17 @@ class DriverService {
       return [];
     }
 
-    final response = await http.get(
-      Uri.parse('$baseUrl/driver/getAllBooking/$driverId'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
+    final response = await _dio.get('$baseUrl/driver/getAllBooking/$driverId',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ));
 
     if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
-      print("jsonResponse: $jsonResponse");
+      List jsonResponse = response.data;
+      print("jsonResponse: ${response.data}");
       return jsonResponse.map((booking) => Booking.fromJson(booking)).toList();
     } else {
       throw Exception('Failed to load bookings');

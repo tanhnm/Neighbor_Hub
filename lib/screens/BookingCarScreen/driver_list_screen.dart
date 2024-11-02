@@ -26,7 +26,7 @@ class _DriverListScreenState extends State<DriverListScreen> {
 
   Future<void> fetchDrivers() async {
     try {
-      var box = await Hive.openBox('locationBox');
+      var box = Hive.box('locationBox');
       String? userLocation = box.get('currentLocation') as String?;
 
       if (userLocation != null && userLocation.isNotEmpty) {
@@ -42,8 +42,8 @@ class _DriverListScreenState extends State<DriverListScreen> {
               await BookingController(context: context)
                   .getDriverNearUser(userLocation, widget.booking);
           print(
-              'fetchedDrivers: ${fetchedDrivers?.map((driver) => driver['driver'])}');
-          if (fetchedDrivers != null && fetchedDrivers.isNotEmpty) {
+              'fetchedDrivers: ${fetchedDrivers.map((driver) => driver['driver'])}');
+          if (fetchedDrivers.isNotEmpty) {
             setState(() {
               drivers = fetchedDrivers
                   .map((driver) => driver['driver'] as Map<String, dynamic>?)
@@ -95,6 +95,9 @@ class _DriverListScreenState extends State<DriverListScreen> {
           actions: [
             TextButton(
               onPressed: () {
+                setState(() {
+                  isLoading = true;
+                });
                 Navigator.of(context).pop(); // Close the dialog
                 // Use Future.microtask to avoid blocking the UI
                 Future.microtask(() async {
@@ -126,7 +129,7 @@ class _DriverListScreenState extends State<DriverListScreen> {
         String userLocation = '${position.latitude},${position.longitude}';
 
         // Update Hive box with the new location
-        var box = await Hive.openBox('locationBox');
+        var box = Hive.box('locationBox');
         await box.put('currentLocation', userLocation);
 
         // Call fetchDrivers to refresh the drivers list

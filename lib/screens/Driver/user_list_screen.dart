@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/user_model.dart' as UserModel;
 import 'package:flutter_application_1/screens/navbar_screen.dart';
 import 'package:flutter_application_1/services/driver_service/driver_service.dart';
 import 'package:flutter_application_1/screens/Driver/message_screen_driver.dart';
 import 'package:flutter_application_1/services/driver_service/registration_service.dart';
+import 'package:flutter_application_1/utils/api/truncate/truncate_words.dart';
+import 'package:flutter_application_1/utils/convertTime/convert_time.dart';
 import 'package:hive/hive.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -22,6 +23,7 @@ class _UserListScreenState extends State<UserListScreen> {
 
   int? registrationFormId;
   int? registrationStatus;
+  String? vehicleType;
 
   @override
   void initState() {
@@ -31,7 +33,7 @@ class _UserListScreenState extends State<UserListScreen> {
 
   Future<void> _initializeHiveBox() async {
     try {
-      userBox = await Hive.openBox('authBox');
+      userBox = Hive.box('authBox');
       setState(() {
         userIdFuture = _loadUser();
         userIdFuture!.then((value) => user = value);
@@ -40,9 +42,10 @@ class _UserListScreenState extends State<UserListScreen> {
       final forms = await RegistrationService().getAllRegistrationForms(user!);
       if (forms.isNotEmpty) {
         // Assign the first registrationId to registrationFormId
-        registrationFormId = forms[0]['registrationId'] as int;
         setState(() {
+          registrationFormId = forms[0]['registrationId'] as int;
           registrationStatus = forms[0]['status'] as int;
+          vehicleType = forms[0]['vehicleType'] as String;
         });
         print('Registration Form ID: $registrationStatus'); // Debugging line
       } else {
@@ -102,50 +105,122 @@ class _UserListScreenState extends State<UserListScreen> {
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(child: Text('No bookings found.'));
                 } else {
-                  final bookings = snapshot.data!;
+                  // Remove duplicate bookings based on bookingId
+                  final seenBookingIds = <int>{};
+                  final bookings = snapshot.data!.where((booking) {
+                    final bookingId = booking.booking.bookingId;
+                    if (seenBookingIds.contains(bookingId)) {
+                      return false; // Duplicate found
+                    } else {
+                      seenBookingIds.add(bookingId); // Mark as seen
+                      return true; // Keep the booking
+                    }
+                  }).toList();
                   return ListView.builder(
                     itemCount: bookings.length,
                     itemBuilder: (context, index) {
                       final booking = bookings[index];
-                      return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MessageScreenDriver(
-                                  user: {
-                                    'userId': booking.booking.user.userId,
-                                    'username': booking.booking.user.username,
-                                    'phone': booking.booking.user.phone,
-                                    'email': booking.booking.user.email,
-                                    'location': booking.booking.pickupLocation,
-                                    'destination':
-                                        booking.booking.dropoffLocation,
-                                  },
-                                  booking: booking,
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MessageScreenDriver(
+                                    user: {
+                                      'userId': booking.booking.user.userId,
+                                      'username': booking.booking.user.username,
+                                      'phone': booking.booking.user.phone,
+                                      'email': booking.booking.user.email,
+                                      'location':
+                                          booking.booking.pickupLocation,
+                                      'destination':
+                                          booking.booking.dropoffLocation,
+                                    },
+                                    booking: booking,
+                                    driver: user!,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Card(
+                              elevation: 2,
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 6, horizontal: 4),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Booking ID: ${booking.booking.bookingId}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                        'Điểm đón: ${booking.booking.pickupLocation}',
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black54,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Điểm đến ${booking.booking.dropoffLocation}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black54,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Ngày: ${convertToVietnameseTime(booking.booking.pickupTime)}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black54,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Loại xe: $vehicleType',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black54,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    UserCard(
+                                      name: booking.booking.user.username,
+                                      phone: booking.booking.user.phone,
+                                      kilometers:
+                                          '${booking.booking.distance} km',
+                                      price: "${booking.amount} VNĐ",
+                                      image: 'https://via.placeholder.com/50',
+                                      userId: booking.booking.user.userId,
+                                    ),
+                                  ],
                                 ),
                               ),
-                            );
-                          },
-                          child: Column(
-                            children: [
-                              Text(
-                                'Booking ID: ${booking.booking.bookingId}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey),
-                              ),
-                              const SizedBox(height: 8),
-                              UserCard(
-                                name: booking.booking.user.username,
-                                phone: booking.booking.user.phone,
-                                kilometers: '${booking.booking.distance} km',
-                                price: "\$${booking.amount}",
-                                image: 'https://via.placeholder.com/50',
-                                userId: booking.booking.user.userId,
-                              ),
-                            ],
-                          ));
+                            )),
+                      );
                     },
                   );
                 }
@@ -177,7 +252,7 @@ class UserCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
@@ -193,8 +268,12 @@ class UserCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name,
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(truncateWithWords(name, 3),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1),
                     Text(phone),
                   ],
                 ),

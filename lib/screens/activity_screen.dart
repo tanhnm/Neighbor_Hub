@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/screens/BookingCarScreen/driver_list_screen.dart';
@@ -28,7 +27,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
   }
 
   Future<void> _loadUser() async {
-    var userBox = await Hive.openBox<User>('users');
+    var userBox = Hive.box<User>('users');
     user = userBox.get('user');
   }
 
@@ -38,9 +37,12 @@ class _ActivityScreenState extends State<ActivityScreen> {
       await _loadUser();
       final response = await BookingController(context: context)
           .getBookingsByUserId(user?.userId ?? 0);
-      setState(() {
-        bookings = response; // Decode the JSON response
-      });
+      if (mounted) {
+        // Check if the widget is still in the tree
+        setState(() {
+          bookings = response;
+        });
+      }
     } finally {
       setState(() {
         isLoading = false;
@@ -71,7 +73,9 @@ class _ActivityScreenState extends State<ActivityScreen> {
                       color: Colors.black, size: 50))
               : const Center(
                   child: Text(
-                      'No bookings found'))) // Show loading indicator while fetching data
+                  'Bạn chưa đặt xe nào cả!',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ))) // Show loading indicator while fetching data
           : ListView.builder(
               padding: const EdgeInsets.all(16.0),
               itemCount: bookings.length,
@@ -87,6 +91,9 @@ class _ActivityScreenState extends State<ActivityScreen> {
                 var amount = booking['amount'];
                 var driver =
                     booking?['registration']?['driver']?['username'] ?? 'N/A';
+                var driverId =
+                    booking?['registration']?['driver']?['driverId'] ?? '0';
+
                 return Card(
                   margin: const EdgeInsets.only(bottom: 16.0),
                   elevation: 4,
@@ -95,6 +102,14 @@ class _ActivityScreenState extends State<ActivityScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(
+                          "BookingId: ${booking['bookingId']}",
+                          style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto'),
+                        ),
+                        const SizedBox(height: 8),
                         Text(
                           "Điểm đón: $pickupLocation",
                           style: const TextStyle(
@@ -154,7 +169,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                     MaterialPageRoute(
                                       builder: (context) => ProfileScreen(
                                         driver: {
-                                          "driverId": 1,
+                                          "driverId": driverId,
                                           "username": booking['registration']
                                               ['driver']['username'],
                                           "phone": booking['registration']

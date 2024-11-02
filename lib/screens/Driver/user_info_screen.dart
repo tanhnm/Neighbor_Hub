@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/services/driver_service/driver_service.dart';
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_application_1/utils/api/api.dart';
 import 'dart:convert';
+
+import 'package:toastification/toastification.dart';
 
 class UserInfoScreen extends StatefulWidget {
   final Map<String, dynamic> user;
@@ -35,6 +38,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
   String locationUser = "";
   String destinationUser = "";
+  String amount = '';
+  bool isDeal = false;
   @override
   void initState() {
     super.initState();
@@ -133,7 +138,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     }
   }
 
-  void _validateAndAcceptDeal() {
+  void _validateAndAcceptDeal() async {
     final enteredPrice = double.tryParse(_priceController.text);
     if (enteredPrice == null ||
         enteredPrice < _minPrice ||
@@ -145,10 +150,24 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       setState(() {
         _priceError = null; // Clear error if valid
       });
-      BookingController(context: context).addDriverAmount(
-          driverId: widget.booking.driverId,
-          amount: enteredPrice,
-          bookingId: widget.booking.booking.bookingId);
+      Map<String, dynamic> driverAmount =
+          await BookingController(context: context).addDriverAmount(
+              driverId: widget.booking.driverId,
+              amount: enteredPrice,
+              bookingId: widget.booking.booking.bookingId);
+      if (driverAmount.isNotEmpty) {
+        toastification.show(
+          context: context,
+          style: ToastificationStyle
+              .flat, // optional if you use ToastificationWrapper
+          title: Text('Đã đặt giá thành công: ${driverAmount['amount']}'),
+          autoCloseDuration: const Duration(seconds: 5),
+        );
+        setState(() {
+          amount = driverAmount['amount'].toString();
+          isDeal = false;
+        });
+      }
     }
   }
 
@@ -227,24 +246,69 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                 ),
                 const SizedBox(height: 20),
                 // Input price to deal with customer
-                TextField(
-                  controller: _priceController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Nhập giá thỏa thuận',
-                    border: const OutlineInputBorder(),
-                    errorText: _priceError, // Show error message if invalid
-                  ),
-                ),
+                amount != '' && !isDeal
+                    ? GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isDeal = true;
+                          });
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Text(
+                                  'Giá thỏa thuận: ',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  amount,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            const Icon(
+                              FontAwesomeIcons.edit,
+                              size: 20,
+                              color: Colors.black,
+                            ),
+                          ],
+                        ),
+                      )
+                    : TextField(
+                        controller: _priceController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            labelText: 'Nhập giá thỏa thuận',
+                            border: const OutlineInputBorder(),
+                            errorText:
+                                _priceError, // Show error message if invalid
+                            suffixIcon: IconButton(
+                              icon: const Icon(FontAwesomeIcons.check),
+                              onPressed: () {
+                                setState(() {
+                                  isDeal = false;
+                                });
+                              },
+                            )),
+                      ),
                 const SizedBox(height: 20),
                 // Action Buttons
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
-                    backgroundColor:
-                        _isDealAccepted ? const Color(0xFFFDC6D6) : Colors.grey,
+                    backgroundColor: _isDealAccepted && isDeal
+                        ? const Color(0xFFFDC6D6)
+                        : Colors.grey,
                   ),
-                  onPressed: _isDealAccepted
+                  onPressed: _isDealAccepted && isDeal
                       ? _validateAndAcceptDeal
                       : null, // Disable button if deal is not accepted
                   child: const Text('Chốt Deal Với Người Này',

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/auth/profile_me_screen.dart';
 import 'package:flutter_application_1/splashScreen/splash_screen.dart';
 import 'package:toastification/toastification.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -13,7 +14,10 @@ void main() async {
   Hive.init(appDocumentDirectory.path);
   await Hive.initFlutter(); // Initialize Hive
   Hive.registerAdapter(UserAdapter());
-
+  await Hive.openBox('authBox');
+  await Hive.openBox('appBox');
+  await Hive.openBox('locationBox');
+  await Hive.openBox<User>('users');
   runApp(const MyApp());
 }
 
@@ -30,6 +34,10 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(brightness: Brightness.dark),
       themeMode: ThemeMode.light,
       home: const SplashScreen(),
+      routes: {
+        '/profile': (context) =>
+            const ProfileMeScreen(), // Define the route here
+      },
     ));
   }
 }

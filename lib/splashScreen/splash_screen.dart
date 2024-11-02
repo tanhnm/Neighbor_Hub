@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/login_screen.dart'; // Adjust this import based on your project structure
+// Adjust this import based on your project structure
 import 'package:flutter_application_1/screens/navbar_screen.dart';
 import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/splashScreen/introduction_screen.dart';
@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkLoginStatus() async {
-    var authBox = await Hive.openBox('authBox');
+    var authBox = Hive.box('authBox');
     bool isLoggedIn = authBox.get('is_logged_in', defaultValue: false);
     await Future.delayed(const Duration(seconds: 3));
 

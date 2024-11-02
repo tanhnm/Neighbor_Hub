@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/PaymentScreen/payment_method_screen.dart';
 import 'package:flutter_application_1/screens/PaymentScreen/qrcode_payment_screen.dart';
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -67,6 +66,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       widget.driver['driverId'],
       widget.booking['bookingId'],
     );
+    print("loading info price");
+    print("widget.driver['driverId']: ${widget.driver['driverId']}");
+    print("widget.booking['bookingId']: ${widget.booking['bookingId']}");
     setState(() {
       if (amount.isEmpty) return;
       driverAmount = amount;
@@ -228,22 +230,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ? const Color(0xFFFDC6D6)
                         : Colors.grey),
                 onPressed: driverAmount['amount'] > 0.0
-                    ? () {
+                    ? () async {
                         // Handle action for accepted deal
-                        Future<void> addDriver() async {
-                          await BookingController(context: context).addDriver(
+                        print('Accepted deal!');
+                        Future<Map<String, dynamic>> addDriver() async {
+                          return BookingController(context: context).addDriver(
                               registrationId: widget.registrationFormId,
                               bookingId: widget.booking['bookingId']);
                         }
 
+                        Map<String, dynamic> data = await addDriver();
                         String imgUrlPayment = '';
                         // Handle action for accepted deal
-                        Future<void> simulateDriverDecision() async {
-                          imgUrlPayment = await BookingController(
-                                  context: context)
+                        Future<String> simulateDriverDecision() async {
+                          return BookingController(context: context)
                               .createQrCodePayment(widget.booking['bookingId']);
                         }
 
+                        imgUrlPayment = await simulateDriverDecision();
                         Navigator.push(
                           context,
                           MaterialPageRoute(

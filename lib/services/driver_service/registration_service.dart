@@ -7,7 +7,7 @@ class RegistrationService {
       'https://gh-neighborhub-569199407036.asia-southeast1.run.app/api/v1/registrationForm'; // Replace with your actual base URL
 
   Future<String?> _getToken() async {
-    var box = await Hive.openBox('authBox');
+    var box = Hive.box('authBox');
     return box.get('token', defaultValue: null);
   }
 

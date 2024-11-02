@@ -15,7 +15,7 @@ class BookingController {
       'https://gh-neighborhub-569199407036.asia-southeast1.run.app/api/v1';
 
   Future<String?> _getToken() async {
-    var box = await Hive.openBox('authBox');
+    var box = Hive.box('authBox');
     String? token = box.get('token', defaultValue: null);
     return token;
   }
@@ -145,16 +145,13 @@ class BookingController {
       final response = await http.get(
         Uri.parse(
             '$_baseUrl/booking/getDriverAmount?driverId=$driverId&bookingId=$bookingId'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
       );
 
       // Check if the response is successful
       if (response.statusCode == 200) {
         // Return the response data
         Map<String, dynamic> data;
+        print(response.body);
         return data = json.decode(response.body);
       } else {
         // Handle error response
@@ -174,7 +171,7 @@ class BookingController {
     required int bookingId,
   }) async {
     final Map<String, dynamic> requestBody = {
-      "registrationId": registrationId,
+      "registrationFormId": registrationId,
       "bookingId": bookingId,
     };
     try {
@@ -184,7 +181,7 @@ class BookingController {
       // Make sure the token exists
       if (token == null) {
         print('No token found');
-        return {};
+        throw Exception('No token found');
       }
       final response = await http.post(
         Uri.parse('$_baseUrl/booking/addDriver'),
@@ -330,7 +327,7 @@ class BookingController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         print('Booking created successfully');
         print('Response: ${response.body}');
-        var box = await Hive.openBox('locationBox');
+        var box = Hive.box('locationBox');
         await box.put('currentLocation', currentLocation);
         print(box.get('currentLocation'));
         Navigator.push(
@@ -395,7 +392,7 @@ class BookingController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         print('Booking created successfully');
         print('Response: ${response.body}');
-        var box = await Hive.openBox('locationBox');
+        var box = Hive.box('locationBox');
         await box.put('currentLocation', currentLocation);
         print(box.get('currentLocation'));
         Navigator.push(

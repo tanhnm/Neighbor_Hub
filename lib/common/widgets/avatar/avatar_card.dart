@@ -18,8 +18,8 @@ class AvatarCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Text(
-              "${name.toUpperCase()}",
-              style: TextStyle(
+              name.toUpperCase(),
+              style: const TextStyle(
                   fontSize: 20,
                   color: Colors.white,
                   fontWeight: FontWeight.bold),

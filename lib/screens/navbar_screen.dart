@@ -37,9 +37,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
   }
 
   Future<void> _checkDriver() async {
-    var userBox = await Hive.openBox<User>('users');
+    var userBox = Hive.box<User>('users');
     String? phoneNumber = userBox.get('user')?.phone;
-    var box = await Hive.openBox('authBox');
+    var box = Hive.box('authBox');
     await driverService.getDriverByPhoneNumber(phoneNumber!);
     // Assuming you have this method to get the current driver
     is_driver = box.get('is_driver', defaultValue: false);

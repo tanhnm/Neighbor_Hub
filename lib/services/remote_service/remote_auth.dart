@@ -8,10 +8,12 @@ import 'package:flutter_application_1/screens/register_screen.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:toastification/toastification.dart';
+import 'package:dio/dio.dart';
 
 class RemoteAuth {
   final BuildContext context;
   RemoteAuth({required this.context});
+  final Dio _dio = Dio();
   final String _baseUrl =
       'https://gh-neighborhub-569199407036.asia-southeast1.run.app/api/v1/';
 
@@ -141,25 +143,23 @@ class RemoteAuth {
     print('phone: $phone');
     print('password: $password');
     try {
-      final response = await http.post(
-        Uri.parse('${_baseUrl}auth/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(requestBody), // Convert body to JSON
+      final response = await _dio.post(
+        '${_baseUrl}auth/login',
+        data: requestBody,
       );
 
       if (response.statusCode == 200) {
-        print('Response: ${response.body}');
+        print('Response: ${response.data}');
         // Assuming the token is in the response body, modify if your response format differs
-        var jsonResponse = jsonDecode(response.body);
-        print("jsonResponse: ${jsonResponse['refresh_token']}");
-        String token = jsonResponse['access_token'];
-        String refreshToken = jsonResponse['refresh_token'];
 
-        // Open a Hive box (you can create the box during app initialization)
-        var box = await Hive.openBox('authBox');
+        print("jsonResponse: $response");
+        String token = response.data['access_token'];
+        String refreshToken = response.data['refresh_token'];
+
+        var box = Hive.box('authBox');
         // Open a Hive box
-        var userBox = await Hive.openBox<User>('users');
-        User user = User.fromJson(jsonResponse['user']);
+        var userBox = Hive.box<User>('users');
+        User user = User.fromJson(response.data['user']);
 
         await box.put('is_logged_in', true); // Mark the user as logged in
 
@@ -180,12 +180,12 @@ class RemoteAuth {
         );
       } else {
         print('Failed to get user. Status code: ${response.statusCode}');
-        print('Error responses: ${response.body}');
+        print('Error responses: ${response.data}');
         toastification.show(
           context: context,
           style: ToastificationStyle
               .flat, // optional if you use ToastificationWrapper
-          title: Text('${jsonDecode(response.body)['message']}'),
+          title: Text('${jsonDecode(response.data)['message']}'),
           autoCloseDuration: const Duration(seconds: 2),
         );
       }

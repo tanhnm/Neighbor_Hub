@@ -38,7 +38,7 @@ class _DestinationPickState extends State<DestinationPick> {
 
   Future<void> _initializeHiveBox() async {
     try {
-      userBox = await Hive.openBox('authBox');
+      userBox = Hive.box('authBox');
       if (userBox == null) {
         print('Hive box not opened');
         return;
@@ -46,23 +46,23 @@ class _DestinationPickState extends State<DestinationPick> {
 
       is_driver = userBox?.get('is_driver', defaultValue: false) ?? false;
       print('is_driver: $is_driver');
-
-      setState(() {
-        userIdFuture = _loadUser();
-        userIdFuture?.then((value) {
-          user = value;
+      if (is_driver) {
+        setState(() {
+          userIdFuture = _loadUser();
+          userIdFuture?.then((value) {
+            user = value;
+          });
         });
-      });
-
-      if (user != null) {
-        final forms =
-            await RegistrationService().getAllRegistrationForms(user!);
-        if (forms.isNotEmpty) {
-          registrationFormId = forms[0]['registrationId'] as int?;
-          registrationStatus = forms[0]['status'] as int?;
-          print('Registration Form ID: $registrationFormId');
-        } else {
-          print('No registration forms found.');
+        if (user != null) {
+          final forms =
+              await RegistrationService().getAllRegistrationForms(user!);
+          if (forms.isNotEmpty) {
+            registrationFormId = forms[0]['registrationId'] as int?;
+            registrationStatus = forms[0]['status'] as int?;
+            print('Registration Form ID: $registrationFormId');
+          } else {
+            print('No registration forms found.');
+          }
         }
       }
     } catch (e) {
@@ -124,7 +124,7 @@ class _DestinationPickState extends State<DestinationPick> {
     // Test if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+      return Future.error('Bạn chưa mở vị trí trên điện thoại!.');
     }
 
     // Check for permission
@@ -132,13 +132,14 @@ class _DestinationPickState extends State<DestinationPick> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+        return Future.error(
+            'Quyền truy cập vị trí của điện thoại chưa được cho phép!');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+          'Quyền truy cập vị trí đã bị từ chối vui lòng mở lại nhé!.');
     }
 
     return await Geolocator.getCurrentPosition();

@@ -78,7 +78,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _loadUser() async {
-    var userBox = await Hive.openBox<User>('users');
+    var userBox = Hive.box<User>('users');
     user = userBox.get('user');
   }
 

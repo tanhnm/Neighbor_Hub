@@ -12,7 +12,7 @@ getRouteUrl(String startPoint, String endPoint) {
 }
 
 Future<String?> getHiveLocal(String key) async {
-  var box = await Hive.openBox('authBox');
+  var box = Hive.box('authBox');
   String? value = await box.get(key, defaultValue: null);
   return value;
 }

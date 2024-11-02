@@ -37,6 +37,35 @@ class _QRCodeScanPageState extends State<QRCodeScanPage> {
                     qrImageUrl!) // Display QR code image from backend
                 : const CircularProgressIndicator(), // Loading indicator while fetching the image
             const SizedBox(height: 20),
+            const SizedBox(
+              height: 16,
+            ),
+            const Text(
+              "Scan QR Code Để Thanh Toán",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            const Text(
+              "Hãy Chụp Màn Hình Lại Rồi Scan Nha Bạn Nhé",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            const Text(
+              "Ngân hàng nào cũng quét đc bạn nhé",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            const Text("Chủ Tài Khoản: TRAN HUONG GIANG"),
+            const SizedBox(
+              height: 16,
+            ),
+            const Text("Số Tài Khoản: 07966744822"),
           ],
         ),
       ),

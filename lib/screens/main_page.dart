@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/common/widgets/imageRounded/rounded_img.dart';
 import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/screens/BookingCarScreen/destination_pick.dart';
-import 'package:flutter_application_1/screens/Driver/map_driver_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive/hive.dart';
 
@@ -26,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> _initializeHiveBox() async {
     try {
-      userBox = await Hive.openBox<User>('users');
+      userBox = Hive.box<User>('users');
       setState(() {
         userIdFuture = _loadUser();
         userIdFuture!.then((value) => user = value);
@@ -55,8 +54,8 @@ class _MainScreenState extends State<MainScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     getToken() async {
-      var box = await Hive.openBox('authBox');
-      String token = await box.get('token', defaultValue: null);
+      var box = Hive.box('authBox');
+      String token = box.get('token', defaultValue: null);
       return token;
     }
 

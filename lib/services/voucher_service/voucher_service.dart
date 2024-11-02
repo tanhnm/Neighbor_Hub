@@ -16,7 +16,7 @@ class VoucherService {
       final response =
           await http.get(Uri.parse('${_baseUrl}voucher/viewAllVoucher'));
       if (response.statusCode == 200) {
-        var box = await Hive.openBox('authBox');
+        var box = Hive.box('authBox');
         // Store the token in Hive
         await box.put('vouchers', response.body);
         print('Fare calculation response: ${response.body}');

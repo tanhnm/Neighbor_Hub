@@ -13,7 +13,7 @@ class FareController {
       'https://gh-neighborhub-569199407036.asia-southeast1.run.app/api/v1/';
 
   Future<String?> _getToken() async {
-    var box = await Hive.openBox('authBox');
+    var box = Hive.box('authBox');
     String? token = box.get('token', defaultValue: null);
     return token;
   }

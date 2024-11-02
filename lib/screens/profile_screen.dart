@@ -25,7 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _initializeHiveBox() async {
     try {
-      userBox = await Hive.openBox<User>('users');
+      userBox = Hive.box<User>('users');
       setState(() {
         userIdFuture = _loadUser();
         userIdFuture!.then((value) => user = value);

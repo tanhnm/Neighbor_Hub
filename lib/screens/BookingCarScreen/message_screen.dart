@@ -32,7 +32,7 @@ class _MessageScreenState extends State<MessageScreen> {
   int currentUserId = 0; // Example user ID, use FirebaseAuth for real user ID
 
   Future<void> getUserInfo() async {
-    var userBox = await Hive.openBox<User>('users');
+    var userBox = Hive.box<User>('users');
     if (userBox.get('user')?.userId == null) {
       throw Exception('User not found');
     }
@@ -49,7 +49,8 @@ class _MessageScreenState extends State<MessageScreen> {
         'booking': '${widget.booking['bookingId']}',
         'text': message,
         'senderId': currentUserId.toString(),
-        'driverId': widget.driver['driverId'],
+        'userId': currentUserId.toString(),
+        'driverId': widget.driver['driverId'].toString(),
         'timestamp': FieldValue.serverTimestamp(),
       });
       _controller.clear();
@@ -83,7 +84,7 @@ class _MessageScreenState extends State<MessageScreen> {
                 MaterialPageRoute(
                   builder: (context) => ProfileScreen(
                     driver: {
-                      "driverId": 1,
+                      "driverId": widget.driver['driverId'],
                       "username": widget.driver['username'],
                       "phone": widget.driver['phone'],
                       "email": widget.driver['email'],
@@ -116,8 +117,10 @@ class _MessageScreenState extends State<MessageScreen> {
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: _messagesRef
-                  .where('booking', isEqualTo: '${widget.booking['bookingId']}')
-                  .where('driverId', isEqualTo: widget.driver['driverId'])
+                  .where('booking',
+                      isEqualTo: widget.booking['bookingId'].toString())
+                  .where('driverId',
+                      isEqualTo: widget.driver['driverId'].toString())
                   .orderBy('timestamp', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
@@ -131,6 +134,7 @@ class _MessageScreenState extends State<MessageScreen> {
                 }
 
                 final messages = snapshot.data!.docs;
+                print('driverID: ${widget.driver['driverId'].toString()}');
 
                 return ListView.builder(
                   reverse: true, // Latest messages at the bottom

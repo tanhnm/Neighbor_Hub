@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/screens/Driver/user_info_screen.dart';
 import 'package:flutter_application_1/services/driver_service/driver_service.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class MessageScreenDriver extends StatefulWidget {
   final Map<String, dynamic>
       user; // Contains user details (userId, username, phone)
   final Booking booking;
+  final int driver;
   const MessageScreenDriver(
-      {super.key, required this.user, required this.booking});
+      {super.key,
+      required this.user,
+      required this.booking,
+      required this.driver});
 
   @override
   _MessageScreenDriverState createState() => _MessageScreenDriverState();
@@ -19,32 +21,38 @@ class MessageScreenDriver extends StatefulWidget {
 class _MessageScreenDriverState extends State<MessageScreenDriver> {
   final TextEditingController _messageController = TextEditingController();
   final CollectionReference _messagesRef = FirebaseFirestore.instance
-      .collection('messages'); // Use 'messages' collection
+      .collection('chats'); // Use 'messages' collection
 
   String currentUserId = '';
+  @override
+  void initState() {
+    // loadUser();
+    currentUserId = widget.driver.toString();
+  }
 
   // Send message function
   void _sendMessage() async {
     final messageText = _messageController.text.trim();
-    await loadUser();
     if (messageText.isNotEmpty) {
       await _messagesRef.add({
         'booking': '${widget.booking.booking.bookingId}',
         'text': messageText,
-        'senderId': widget.user['userId'],
-        'driverId': widget.booking.bookingDriverId,
+        'userId': widget.user['userId'].toString(),
+        'senderId': currentUserId.toString(),
+        'driverId': currentUserId.toString(),
         'timestamp': FieldValue.serverTimestamp(),
       });
       _messageController.clear();
     }
   }
 
-  Future<void> loadUser() async {
-    var userBox = await Hive.openBox<User>('users');
-    setState(() {
-      currentUserId = userBox.get('user')?.userId.toString() ?? '';
-    });
-  }
+  // Future<void> loadUser() async {
+  //   var userBox = Hive.box<User>('users');
+  //   setState(() {
+  //     print("driver: ${userBox.get('user')?.userId.toString() ?? ''}");
+  //     currentUserId = userBox.get('user')?.userId.toString() ?? '';
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -95,12 +103,15 @@ class _MessageScreenDriverState extends State<MessageScreenDriver> {
             child: StreamBuilder<QuerySnapshot>(
               stream: _messagesRef
                   .where('booking',
-                      isEqualTo: '${widget.booking.booking.bookingId}')
-                  .where('senderId', isEqualTo: widget.user['userId'])
+                      isEqualTo: widget.booking.booking.bookingId.toString())
+                  .where('driverId', isEqualTo: widget.driver.toString())
                   .orderBy('timestamp', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
+                  print(
+                      "widget.booking.booking.bookingId: ${widget.booking.booking.bookingId}");
+                  print("widget.user['userId']: ${widget.user['userId']}");
                   return const Center(child: Text('Error loading messages'));
                 }
 
@@ -115,7 +126,7 @@ class _MessageScreenDriverState extends State<MessageScreenDriver> {
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     final message = messages[index];
-                    final isMe = message['driverId'] == currentUserId;
+                    final isMe = message['senderId'] == currentUserId;
 
                     return Align(
                       alignment:

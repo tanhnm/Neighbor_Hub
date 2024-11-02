@@ -19,7 +19,11 @@ class Setting {
 }
 
 final List<Setting> settings = [
-  Setting(title: "Personal Data", route: "/profile", icon: Icons.person),
+  Setting(
+    title: "Personal Data",
+    route: "/profile",
+    icon: Icons.person,
+  ),
   Setting(title: "Settings", route: "/settings", icon: Icons.settings),
   Setting(title: "Help", route: "/help", icon: Icons.help),
   Setting(title: "About", route: "/about", icon: Icons.info),
@@ -32,19 +36,17 @@ final List<Setting> settings = [
     route: "/logout",
     icon: Icons.logout,
     action: (BuildContext context) async {
-      var box = await Hive.openBox('appBox');
-      var locationBox = await Hive.openBox('locationBox');
-
-      var userBox =
-          await Hive.openBox<User>('users'); // Otherwise, open the box
-      var authBox = await Hive.openBox('authBox');
+      var box = Hive.box('appBox');
+      var locationBox = Hive.box('locationBox');
+      var userBox = Hive.box<User>('users'); // Otherwise, open the box
+      var authBox = Hive.box('authBox');
       await authBox.clear(); // Clears all data in the authBox
       await authBox.close();
-      await box.clear();
       await userBox.clear();
       await userBox.close();
       await locationBox.clear();
       await locationBox.close();
+      await box.clear();
       await box.close();
       print('Token cleared');
       Navigator.pushReplacement(

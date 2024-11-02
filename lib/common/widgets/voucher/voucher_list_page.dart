@@ -55,15 +55,17 @@ class VoucherListPage extends StatefulWidget {
 
 class _VoucherListPageState extends State<VoucherListPage> {
   List<dynamic> voucherss = [];
+  late Box userBox;
+
   @override
   void initState() {
     super.initState();
     VoucherService(context: context).getVoucher(); // Call the API here
+    userBox = Hive.box('authBox');
   }
 
   getVouchers() async {
-    var box = await Hive.openBox('authBox');
-    print(await box.get('vouchers'));
+    print(userBox.get('vouchers'));
   }
 
   final List<Voucher> vouchers = [

@@ -1,9 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/common/router.dart';
+import 'package:flutter_application_1/common/routes.dart';
 import 'package:flutter_application_1/view/rounded_img.dart';
 import 'package:flutter_application_1/domains/user_model.dart';
 import 'package:flutter_application_1/features/booking_car/destination_pick.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:toastification/toastification.dart';
 
@@ -18,6 +21,7 @@ class _MainScreenState extends State<MainScreen> {
   User? user;
   Box? userBox;
   Future<User>? userIdFuture;
+
   @override
   void initState() {
     super.initState();
@@ -61,6 +65,26 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      appBar: AppBar(
+        title: Image.asset('images/Logo.png'),
+        actions: const [
+          FaIcon(
+            FontAwesomeIcons.bell,
+            size: 24,
+            color: Colors.black,
+          ),
+          SizedBox(width: 16,),
+          Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: FaIcon(
+              FontAwesomeIcons.bars,
+              size: 25,
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
+
       body: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(
@@ -71,46 +95,6 @@ class _MainScreenState extends State<MainScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                height: 100,
-                color: const Color(0xFFCC2C70), // Set background color
-              ),
-              const SizedBox(height: 14),
-              Container(
-                height: 100,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 80,
-                      width: 80,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle, // Makes the container a circle
-                      ),
-                      child: Image.asset('images/Logo.png',
-                          width: 100, height: 100),
-                    ),
-                    const Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.bell,
-                          size: 24,
-                          color: Colors.black,
-                        ),
-                        SizedBox(width: 20),
-                        FaIcon(
-                          FontAwesomeIcons.bars,
-                          size: 25,
-                          color: Colors.black,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
@@ -141,12 +125,7 @@ class _MainScreenState extends State<MainScreen> {
                         GestureDetector(
                           onTap: () {
                             // Navigate to the Booking Car screen when tapped
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DestinationPick(),
-                              ),
-                            );
+                            context.pushNamed(Routes.destinationPick);
                           },
                           child: Column(
                             children: [
@@ -242,7 +221,8 @@ class _MainScreenState extends State<MainScreen> {
                         RoundedImage(imgPath: "images/banner_1.png"),
                       ],
                       options: CarouselOptions(
-                        height: 200, // Set a fixed height
+                        height: 200,
+                        // Set a fixed height
                         viewportFraction: 1,
                         autoPlay: true,
                         autoPlayInterval: const Duration(seconds: 3),

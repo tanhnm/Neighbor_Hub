@@ -1,5 +1,6 @@
 abstract class Routes {
   static const home = '/';
+  static const destinationPick = 'destinationPick';
   static const activity = '/activity';
 
 

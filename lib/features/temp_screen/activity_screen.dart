@@ -57,16 +57,6 @@ class _ActivityScreenState extends State<ActivityScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Activity"),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const BottomNavBar()),
-              (Route<dynamic> route) => false,
-            );
-          },
-        ),
       ),
       body: bookings.isEmpty
           ? (isLoading

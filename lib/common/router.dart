@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/features/booking_car/destination_pick.dart';
 import 'package:flutter_application_1/features/temp_screen/activity_screen.dart';
 import 'package:flutter_application_1/features/temp_screen/profile_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,12 +27,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           },
           branches: [
             //home
-            StatefulShellBranch(navigatorKey: _sectionANavigatorKey,routes: [
+            StatefulShellBranch(navigatorKey: _sectionANavigatorKey, routes: [
               GoRoute(
-                path: Routes.home,
-                name: Routes.home,
-                builder: (context, state) => const MainScreen(),
-              ),
+                  path: Routes.home,
+                  name: Routes.home,
+                  builder: (context, state) => const MainScreen(),
+                  routes: [
+                    GoRoute(
+                      path: Routes.destinationPick,
+                      name: Routes.destinationPick,
+                      builder: (context, state) => const DestinationPick(),
+                    ),
+                  ]),
             ]),
 
             //activity

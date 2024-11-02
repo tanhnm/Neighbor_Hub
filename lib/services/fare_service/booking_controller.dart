@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/booking.dart';
-import 'package:flutter_application_1/screens/activity_screen.dart';
+import 'package:flutter_application_1/domains/booking.dart';
+import 'package:flutter_application_1/features/temp_screen/activity_screen.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:toastification/toastification.dart';

@@ -1,5 +1,5 @@
 import 'dart:convert'; // For jsonEncode
-import 'package:flutter_application_1/model/trip.dart';
+import 'package:flutter_application_1/domains/trip.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';

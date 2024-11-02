@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:flutter_application_1/model/driver_model.dart';
+import 'package:flutter_application_1/domains/driver_model.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 

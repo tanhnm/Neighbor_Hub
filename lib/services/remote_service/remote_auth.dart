@@ -1,14 +1,15 @@
 import 'dart:convert'; // For jsonEncode
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/user_model.dart';
-import 'package:flutter_application_1/screens/auth/login_password_screen.dart';
-import 'package:flutter_application_1/screens/confirm_otp_screen.dart';
-import 'package:flutter_application_1/screens/navbar_screen.dart';
-import 'package:flutter_application_1/screens/register_screen.dart';
+import 'package:flutter_application_1/domains/user_model.dart';
+import 'package:flutter_application_1/features/auth/login_password_screen.dart';
+import 'package:flutter_application_1/features/temp_screen/navbar_screen.dart';
+import 'package:flutter_application_1/features/temp_screen/register_screen.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:toastification/toastification.dart';
 import 'package:dio/dio.dart';
+
+import '../../features/temp_screen/confirm_otp_screen.dart';
 
 class RemoteAuth {
   final BuildContext context;

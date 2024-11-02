@@ -1,11 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/auth/profile_me_screen.dart';
-import 'package:flutter_application_1/splashScreen/splash_screen.dart';
+import 'package:flutter_application_1/features/splash/splash_screen.dart';
 import 'package:toastification/toastification.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart'; // For getting the app directory
-import 'model/user_model.dart';
+import 'features/auth/profile_me_screen.dart';
+import 'domains/user_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

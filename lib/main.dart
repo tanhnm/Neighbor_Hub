@@ -1,9 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/features/splash/splash_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart'; // For getting the app directory
+import 'common/router.dart';
 import 'features/auth/profile_me_screen.dart';
 import 'domains/user_model.dart';
 
@@ -18,26 +20,28 @@ void main() async {
   await Hive.openBox('appBox');
   await Hive.openBox('locationBox');
   await Hive.openBox<User>('users');
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      overrides: [],
+      child: MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final goRouter = ref.watch(goRouterProvider);
     return ToastificationWrapper(
-        child: MaterialApp(
+        child: MaterialApp.router(
+      routerConfig: goRouter,
       title: 'Mapbox Flutter',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(brightness: Brightness.light),
       darkTheme: ThemeData(brightness: Brightness.dark),
       themeMode: ThemeMode.light,
-      home: const SplashScreen(),
-      routes: {
-        '/profile': (context) =>
-            const ProfileMeScreen(), // Define the route here
-      },
     ));
   }
 }

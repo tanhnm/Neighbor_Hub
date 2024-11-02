@@ -88,9 +88,9 @@ class _ActivityScreenState extends State<ActivityScreen> {
                 var dropoffLocation = booking['dropoffLocation'];
                 var pickupTime =
                     convertToVietnameseTime(booking['pickupTime'].toString());
-                var pickupTimeStr = booking['pickupTime'].toString();
-                var pickupTimeCheck = DateTime.parse(pickupTimeStr);
-                var isPastPickupTime = pickupTimeCheck.isBefore(DateTime.now());
+                var isPastPickupTime =
+                    DateTime.parse(booking['pickupTime'].toString())
+                        .isBefore(DateTime.now().subtract(Duration(days: 3)));
                 var status = booking['status'];
                 var amount = booking['amount'];
                 var driver =
@@ -159,56 +159,52 @@ class _ActivityScreenState extends State<ActivityScreen> {
                           onPressed: isPastPickupTime
                               ? null
                               : () {
-                                  driver == 'N/A'
-                                      ? () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      DriverListScreen(
-                                                        booking: booking,
-                                                      )));
-                                        }
-                                      :
-                                      // Handle view booking details logic here
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => ProfileScreen(
-                                              driver: {
-                                                "driverId": driverId,
-                                                "username":
-                                                    booking['registration']
-                                                        ['driver']['username'],
-                                                "phone": booking['registration']
-                                                    ['driver']['phone'],
-                                                "email": booking['registration']
-                                                    ['driver']['email'],
-                                                "averageRating":
-                                                    booking['registration']
-                                                                ['driver']
-                                                            ['averageRating'] ??
-                                                        0,
-                                                "revenue":
-                                                    booking['registration']
-                                                                ['driver']
-                                                            ['revenue'] ??
-                                                        0,
-                                              },
-                                              registrationFormId:
-                                                  booking['registration']
-                                                      ['registrationId'],
-                                              booking: booking,
-                                            ),
-                                          ),
-                                        );
+                                  if (driver == 'N/A') {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DriverListScreen(
+                                          booking: booking,
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    // Handle view booking details logic here
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProfileScreen(
+                                          driver: {
+                                            "driverId": driverId,
+                                            "username": booking['registration']
+                                                ['driver']['username'],
+                                            "phone": booking['registration']
+                                                ['driver']['phone'],
+                                            "email": booking['registration']
+                                                ['driver']['email'],
+                                            "averageRating":
+                                                booking['registration']
+                                                            ['driver']
+                                                        ['averageRating'] ??
+                                                    0,
+                                            "revenue": booking['registration']
+                                                    ['driver']['revenue'] ??
+                                                0,
+                                          },
+                                          registrationFormId:
+                                              booking['registration']
+                                                  ['registrationId'],
+                                          booking: booking,
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 },
                           child: isPastPickupTime
                               ? const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                      const Text(
-                                          'Đã quá thời gian để tìm tài xế!'),
+                                      Text('Đã quá thời gian để tìm tài xế!'),
                                     ])
                               : driver == 'N/A'
                                   ? Row(

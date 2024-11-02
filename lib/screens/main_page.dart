@@ -46,11 +46,6 @@ class _MainScreenState extends State<MainScreen> {
       if (user == null) {
         throw Exception('No user found in the Hive box.');
       }
-      toastification.show(
-        context: context,
-        style: ToastificationStyle.flat,
-        title: Text('User: ${user!.username}'),
-      );
       return user!;
     } catch (e) {
       toastification.show(

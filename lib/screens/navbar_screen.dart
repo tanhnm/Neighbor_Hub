@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/screens/Driver/registration_form_screen.dart';
 import 'package:flutter_application_1/screens/Driver/user_list_screen.dart';
 import 'package:flutter_application_1/screens/activity_screen.dart';
@@ -37,11 +36,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
   }
 
   Future<void> _checkDriver() async {
-    var userBox = Hive.box<User>('users');
-    String? phoneNumber = userBox.get('user')?.phone;
     var box = Hive.box('authBox');
-    await driverService.getDriverByPhoneNumber(phoneNumber!);
     // Assuming you have this method to get the current driver
+    print("Checking driver: ${box.get('is_driver')}");
     is_driver = box.get('is_driver', defaultValue: false);
     if (is_driver) {
       setState(() {

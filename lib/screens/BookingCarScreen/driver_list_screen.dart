@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/BookingCarScreen/message_screen.dart';
 import 'package:hive/hive.dart';
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
-import 'package:geolocator/geolocator.dart'; // Import Geolocator package
+import 'package:geolocator/geolocator.dart';
 
 class DriverListScreen extends StatefulWidget {
-  const DriverListScreen({super.key, required this.booking});
+  const DriverListScreen({Key? key, required this.booking}) : super(key: key);
   final Map<String, dynamic> booking;
 
   @override
@@ -21,52 +21,47 @@ class _DriverListScreenState extends State<DriverListScreen> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     fetchDrivers();
   }
 
   Future<void> fetchDrivers() async {
     try {
       var box = Hive.box('locationBox');
-      String? userLocation = box.get('currentLocation') as String?;
+      String userLocation = box.get('currentLocation') ?? '';
 
-      if (userLocation != null && userLocation.isNotEmpty) {
-        List<String> userLocationArray = userLocation.split(',');
+      if (userLocation.isNotEmpty) {
+        List<Map<String, dynamic>>? fetchedDrivers =
+            await BookingController(context: context)
+                .getDriverNearUser(userLocation, widget.booking);
 
-        if (userLocationArray.length == 2) {
-          // Fetch driver data from the API
-          List<Map<String, dynamic>>? fetchedDrivers =
-              await BookingController(context: context)
-                  .getDriverNearUser(userLocation, widget.booking);
-          if (fetchedDrivers.isNotEmpty) {
-            setState(() {
-              drivers = fetchedDrivers
-                  .map((driver) => driver['driver'] as Map<String, dynamic>?)
-                  .where((driver) => driver != null)
-                  .cast<Map<String, dynamic>>()
-                  .toList();
-
-              registrationDrivers = fetchedDrivers
-                  .map((registration) => registration['registrationId'])
-                  .where((id) => id != null)
-                  .toList();
-            });
-          } else {
-            setState(() {
-              errorMessage = "No drivers found.";
-            });
-          }
+        if (fetchedDrivers != null && fetchedDrivers.isNotEmpty) {
+          setState(() {
+            drivers = fetchedDrivers
+                .map(
+                    (driver) => driver['driver'] as Map<String, dynamic>? ?? {})
+                .toList();
+            registrationDrivers = fetchedDrivers
+                .map((registration) => registration['registrationId'])
+                .toList();
+            errorMessage = null;
+          });
         } else {
           setState(() {
-            errorMessage = "Invalid user location.";
+            errorMessage = "No drivers found.";
           });
         }
       } else {
-        // Ask the user to turn on their location
         _showLocationPrompt();
       }
     } catch (e) {
+      print(e.toString());
       setState(() {
-        errorMessage = e.toString();
+        errorMessage = "Error: ${e.toString()}";
       });
     } finally {
       setState(() {
@@ -75,7 +70,6 @@ class _DriverListScreenState extends State<DriverListScreen> {
     }
   }
 
-  // Function to show a dialog prompting the user to turn on location
   void _showLocationPrompt() {
     showDialog(
       context: context,
@@ -87,14 +81,8 @@ class _DriverListScreenState extends State<DriverListScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                setState(() {
-                  isLoading = true;
-                });
-                Navigator.of(context).pop(); // Close the dialog
-                // Use Future.microtask to avoid blocking the UI
-                Future.microtask(() async {
-                  await _getCurrentLocationAndUpdate();
-                });
+                Navigator.of(context).pop();
+                _getCurrentLocationAndUpdate();
               },
               child: const Text('OK'),
             ),
@@ -104,10 +92,8 @@ class _DriverListScreenState extends State<DriverListScreen> {
     );
   }
 
-  // Function to get current location and update the Hive box
   Future<void> _getCurrentLocationAndUpdate() async {
     try {
-      // Check and request location permission
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
@@ -115,19 +101,15 @@ class _DriverListScreenState extends State<DriverListScreen> {
 
       if (permission == LocationPermission.whileInUse ||
           permission == LocationPermission.always) {
-        // Get the current location
         Position position = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high);
         String userLocation = '${position.latitude},${position.longitude}';
 
-        // Update Hive box with the new location
         var box = Hive.box('locationBox');
         await box.put('currentLocation', userLocation);
 
-        // Call fetchDrivers to refresh the drivers list
         fetchDrivers();
       } else {
-        // Handle denied permission case
         setState(() {
           errorMessage =
               "Location permission denied. Please enable it in settings.";
@@ -144,26 +126,20 @@ class _DriverListScreenState extends State<DriverListScreen> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('Danh Sách Các Tài Xế'),
-        ),
+        appBar: AppBar(title: const Text('Danh Sách Các Tài Xế')),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (errorMessage != null) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('Danh Sách Các Tài Xế'),
-        ),
+        appBar: AppBar(title: const Text('Danh Sách Các Tài Xế')),
         body: Center(child: Text('Error: $errorMessage')),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Danh Sách Các Tài Xế'),
-      ),
+      appBar: AppBar(title: const Text('Danh Sách Các Tài Xế')),
       body: drivers.isEmpty
           ? const Center(child: Text('No drivers found'))
           : ListView.builder(
@@ -175,7 +151,7 @@ class _DriverListScreenState extends State<DriverListScreen> {
                   child: ListTile(
                     leading: const CircleAvatar(
                       backgroundImage: NetworkImage(
-                          'https://media.muanhatructuyen.vn/post/226/50/3/hinh-nen-mau-hong-4k.jpg'), // Replace with actual driver image URL if available
+                          'https://media.muanhatructuyen.vn/post/226/50/3/hinh-nen-mau-hong-4k.jpg'),
                     ),
                     title: Text(driver['username']),
                     subtitle: Text(driver['phone']),

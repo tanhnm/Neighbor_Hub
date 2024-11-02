@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/services/driver_service/driver_service.dart';
 import 'package:flutter_application_1/services/remote_service/remote_auth.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -15,6 +16,7 @@ class _LoginPasswordScreenState extends State<LoginPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
   bool isPasswordValidated = false; // Track password validation
+  final DriverService driverService = DriverService();
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
@@ -26,6 +28,7 @@ class _LoginPasswordScreenState extends State<LoginPasswordScreen> {
         await RemoteAuth(context: context).signIn(
             phone: widget.phoneNumber,
             password: passwordTextEditingController.text);
+        await driverService.getDriverByPhoneNumber(widget.phoneNumber);
       } finally {
         setState(() {
           isLoading = false; // Stop loading after the process completes

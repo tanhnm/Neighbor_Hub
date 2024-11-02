@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_application_1/model/driver_model.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import 'package:toastification/toastification.dart';
 
 class DriverService {
   final _dio = Dio(); // Create an instance of Dio
@@ -24,15 +23,13 @@ class DriverService {
       if (response.statusCode == 200) {
         // Parse the response to create a Driver instance
         Driver driver = Driver.fromJson(response.data);
+        print("driver: ${driver.toString()}");
         var box = Hive.box('authBox');
-        await box.put('driverId', response.data['driverId']);
-        await box.put('is_driver', true);
-        // Save the driver to Hive
-      } else {
-        throw Exception('Failed to load driver data');
+        box.put('driverId', response.data['driverId']);
+        box.put('is_driver', true);
       }
     } catch (e) {
-      rethrow;
+      print(e);
     }
   }
 

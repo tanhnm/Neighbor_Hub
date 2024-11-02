@@ -69,7 +69,7 @@ class BookingController {
         toastification.show(
           context: context,
           style: ToastificationStyle.flat,
-          title: Text('Error'),
+          title: const Text('Error'),
         );
         // Handle any errors
         return [];
@@ -121,7 +121,7 @@ class BookingController {
           toastification.show(
             context: context,
             style: ToastificationStyle.flat,
-            title: Text('Error something went wrong!'),
+            title: const Text('Error something went wrong!'),
           );
         }
       } else {}
@@ -160,7 +160,7 @@ class BookingController {
         toastification.show(
           context: context,
           style: ToastificationStyle.flat,
-          title: Text('Error'),
+          title: const Text('Error'),
         );
         // Handle error response
         return {};

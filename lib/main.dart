@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/features/splash/splash_screen.dart';
 import 'package:flutter_application_1/providers/current_position_provider.dart';
+import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -15,16 +16,21 @@ void main() async {
   await Firebase.initializeApp();
   final appDocumentDirectory = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDirectory.path);
-  await Hive.initFlutter(); // Initialize Hive
+  await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
   await Hive.openBox('authBox');
   await Hive.openBox('appBox');
   await Hive.openBox('locationBox');
   await Hive.openBox<User>('users');
+
+  // Load the user from Hive before running the app
+
+
   runApp(
-    const ProviderScope(
-      overrides: [],
-      child: MyApp(),
+     ProviderScope(
+      overrides: [
+      ],
+      child: const MyApp(),
     ),
   );
 }
@@ -35,7 +41,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final goRouter = ref.watch(goRouterProvider);
-    ref.watch(hiveInitializationProvider);
+    // ref.watch(hiveInitializationProvider);
     return ToastificationWrapper(
         child: MaterialApp.router(
       routerConfig: goRouter,

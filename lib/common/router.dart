@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/features/booking_car/destination_pick.dart';
+import 'package:flutter_application_1/features/home/main_page_new.dart';
 import 'package:flutter_application_1/features/temp_screen/activity_screen.dart';
 import 'package:flutter_application_1/features/temp_screen/profile_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +10,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 
 import '../features/booking_car/destination_pick_new.dart';
 import '../features/booking_car/driver_list_screen.dart';
-import '../features/temp_screen/main_page.dart';
+import '../features/home/main_page.dart';
 import 'routes.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
@@ -33,7 +34,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                   path: Routes.home,
                   name: Routes.home,
-                  builder: (context, state) => const MainScreen(),
+                  builder: (context, state) => const MainPageNew(),
                   routes: [
                     GoRoute(
                       path: Routes.destinationPick,

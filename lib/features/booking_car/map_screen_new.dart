@@ -66,7 +66,7 @@ class MapScreenNew extends HookConsumerWidget {
       ),
     ]);
 
-    final _searchController = useTextEditingController();
+    final searchController = useTextEditingController();
     final user = ref.watch(userProvider);
 
     Future<void> searchLocation(String query) async {
@@ -98,14 +98,18 @@ class MapScreenNew extends HookConsumerWidget {
             ),
           );
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Không tìm thấy vị trí')),
-          );
+          if(context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Lỗi gợi ý vị trí')),
+            );
+          }
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Lỗi tìm kiếm vị trí')),
-        );
+        if(context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Lỗi gợi ý vị trí')),
+          );
+        }
       }
     }
 
@@ -142,13 +146,15 @@ class MapScreenNew extends HookConsumerWidget {
           };
         }).toList();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
+        if(context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Lỗi gợi ý vị trí')),
         );
+        }
       }
     }
 
-    void _onSearchChanged(String value) {
+    void onSearchChanged(String value) {
       if (value.isNotEmpty) {
         getSuggestions(value); // Fetch suggestions as the user types
       } else {
@@ -156,13 +162,13 @@ class MapScreenNew extends HookConsumerWidget {
       }
     }
 
-    void _onSuggestionTapped(Map<String, dynamic> suggestion) {
-      _searchController.text = suggestion['display_name'];
+    void onSuggestionTapped(Map<String, dynamic> suggestion) {
+      searchController.text = suggestion['display_name'];
       searchLocation(suggestion['display_name']);
       suggestions.value = []; // Clear suggestions after selection
     }
 
-    void _pickLocation() async {
+    void pickLocation0() async {
       firstPickDone.value = true;
       if (firstPickDone.value) {
         secondPick.value =
@@ -281,14 +287,14 @@ class MapScreenNew extends HookConsumerWidget {
                           ],
                         ),
                         child: TextField(
-                          controller: _searchController,
-                          onChanged: _onSearchChanged,
+                          controller: searchController,
+                          onChanged: onSearchChanged,
                           decoration: InputDecoration(
                             hintText: 'Tìm địa điểm gần đây...',
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.search),
                               onPressed: () {
-                                searchLocation(_searchController.text);
+                                searchLocation(searchController.text);
                               },
                             ),
                             border: InputBorder.none,
@@ -322,7 +328,7 @@ class MapScreenNew extends HookConsumerWidget {
                         subtitle: Text(
                             '${suggestion['distance'].toStringAsFixed(2)} meters away'),
                         onTap: () {
-                          _onSuggestionTapped(suggestion);
+                          onSuggestionTapped(suggestion);
                         },
                       );
                     },
@@ -597,7 +603,7 @@ class MapScreenNew extends HookConsumerWidget {
                     width:
                         double.infinity, // Makes the button take up full width
                     child: ElevatedButton(
-                      onPressed: _pickLocation,
+                      onPressed: pickLocation0,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green, // Same as Confirm button
                         padding: const EdgeInsets.symmetric(

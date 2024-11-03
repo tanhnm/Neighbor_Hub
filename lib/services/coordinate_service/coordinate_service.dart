@@ -42,7 +42,7 @@ Future<void> getCoordinates({
       // Fetch fare details based on distance and duration
       List<Trip> trips = await FareController(context: context)
           .getFare(distance: distance.value, travelTime: duration.value);
-      
+
       // Populate the vehicles list with trip details
       for (var trip in trips) {
         vehicles.value.add({

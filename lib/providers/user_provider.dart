@@ -9,7 +9,8 @@ final userProvider = FutureProvider<User?>((ref) async {
     final userBox = await Hive.openBox<User>('users');
     final user = userBox.get('user');
     if (user == null) {
-      throw Exception('No user found in the Hive box.');
+      return User(userId: 1, username: '1', phone: '11', email: '11', role: '11', status: false);
+      // throw Exception('No user found in the Hive box...');
     }
     return user;
   } catch (e) {
@@ -27,3 +28,13 @@ final userIdFutureProvider = FutureProvider<int?>((ref) async {
   // Return the user ID (or null if not found)
   return userId;
 });
+
+final newUserProvider = Provider<User>((ref) {
+  throw UnimplementedError('User has not been loaded yet.');
+});
+
+Future<User?> getUserFromHive() async {
+  final userBox = await Hive.openBox<User>('users');
+  final user = userBox.get('user');
+  return user;
+}

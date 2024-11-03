@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../driver/registration_form_screen.dart';
-import 'main_page.dart';
+import '../home/main_page.dart';
 import 'profile_screen.dart';
 
 class BottomNavBar extends StatefulWidget {

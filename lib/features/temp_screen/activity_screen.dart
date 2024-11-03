@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/common/router.dart';
+import 'package:flutter_application_1/common/routes.dart';
 import 'package:flutter_application_1/domains/user_model.dart';
+import 'package:flutter_application_1/features/auth/profile_screen_new.dart';
 import 'package:flutter_application_1/features/booking_car/driver_list_screen.dart';
 import 'package:flutter_application_1/features/temp_screen/navbar_screen.dart';
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
 import 'package:flutter_application_1/utils/extensions/string_ext.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -151,20 +155,14 @@ class _ActivityScreenState extends State<ActivityScreen> {
                               ? null
                               : () {
                                   if (driver == 'N/A') {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DriverListScreen(
-                                          booking: booking,
-                                        ),
-                                      ),
-                                    );
+
+                                    context.pushNamed(Routes.driverList, extra: booking);
                                   } else {
                                     // Handle view booking details logic here
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ProfileScreen(
+                                        builder: (context) => ProfileScreenNew(
                                           driver: {
                                             "driverId": driverId,
                                             "username": booking['registration']

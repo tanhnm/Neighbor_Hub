@@ -139,12 +139,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DestinationPick(),
-                              ),
-                            );
+                            context.pushNamed(Routes.destinationPick);
                           },
                           child: Column(
                             children: [
@@ -157,12 +152,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DestinationPick(),
-                              ),
-                            );
+                            context.pushNamed(Routes.destinationPick);
                           },
                           child: Column(
                             children: [

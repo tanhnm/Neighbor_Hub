@@ -10,8 +10,8 @@ import 'package:toastification/toastification.dart';
 class BookingController {
   final Dio _dio = Dio();
 
-  BuildContext context;
-  BookingController({required this.context});
+  BuildContext? context;
+  BookingController({this.context});
   final String _baseUrl =
       'https://gh-neighborhub-569199407036.asia-southeast1.run.app/api/v1';
 
@@ -27,7 +27,7 @@ class BookingController {
       // Call the API to get bookings
       final response =
           await _dio.get('$_baseUrl/booking/getBookingByUserId/$userid');
-
+      print('$_baseUrl/booking/getBookingByUserId/$userid');
       // Check for response status
       if (response.statusCode == 200) {
         return response.data; // Return the response if successful
@@ -330,7 +330,7 @@ class BookingController {
         var box = Hive.box('locationBox');
         await box.put('currentLocation', currentLocation);
         Navigator.push(
-          context,
+          context!,
           MaterialPageRoute(builder: (context) => const ActivityScreen()),
         );
       } else {}
@@ -389,10 +389,10 @@ class BookingController {
         var box = Hive.box('locationBox');
         await box.put('currentLocation', currentLocation);
         Navigator.push(
-          context,
+          context!,
           MaterialPageRoute(builder: (context) => const ActivityScreen()),
         );
-      } else {}
+      }
     } catch (e) {
       toastification.show(
         context: context,

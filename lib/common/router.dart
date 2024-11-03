@@ -7,6 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
+import '../features/booking_car/destination_pick_new.dart';
+import '../features/booking_car/driver_list_screen.dart';
 import '../features/temp_screen/main_page.dart';
 import 'routes.dart';
 
@@ -36,7 +38,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     GoRoute(
                       path: Routes.destinationPick,
                       name: Routes.destinationPick,
-                      builder: (context, state) => const DestinationPick(),
+                      builder: (context, state) => const DestinationPickNew(),
                     ),
                   ]),
             ]),
@@ -47,6 +49,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 path: Routes.activity,
                 name: Routes.activity,
                 builder: (context, state) => const ActivityScreen(),
+                routes: [
+                  GoRoute(
+                    path: Routes.driverList,
+                    name: Routes.driverList,
+                    builder: (context, state) {
+                      final Map<String, dynamic> booking = state.extra as Map<String, dynamic>;
+                      return DriverListScreen(booking: booking);
+                    }
+                  ),
+                ]
               ),
             ]),
 

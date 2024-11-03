@@ -8,51 +8,17 @@ import 'package:toastification/toastification.dart';
 import '../../view/setting_tile.dart';
 
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class SettingScreen extends StatefulWidget {
+  const SettingScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<SettingScreen> createState() => _SettingScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _SettingScreenState extends State<SettingScreen> {
   User? user;
   Box? userBox;
   Future<User>? userIdFuture;
-  @override
-  void initState() {
-    super.initState();
-    _initializeHiveBox();
-  }
-
-  Future<void> _initializeHiveBox() async {
-    try {
-      userBox = Hive.box<User>('users');
-      setState(() {
-        userIdFuture = _loadUser();
-        userIdFuture!.then((value) => user = value);
-      });
-    } catch (e) {
-      toastification.show(
-        context: context,
-        style: ToastificationStyle.flat,
-        title: Text('Error: $e'),
-        autoCloseDuration: const Duration(seconds: 3),
-      );
-    }
-  }
-
-  Future<User> _loadUser() async {
-    try {
-      user = userBox?.get('user');
-      if (user == null) {
-        throw Exception('No user found in the Hive box.');
-      }
-      return user!;
-    } catch (e) {
-      rethrow;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -24,11 +24,13 @@ class RemoteAuth {
           await http.get(Uri.parse('${_baseUrl}user/getByPhoneNumber/$phone'));
 
       if (response.statusCode == 200) {
-        Navigator.push(
+        if(context.mounted) {
+          Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => LoginPasswordScreen(phoneNumber: phone)),
         );
+        }
       } else if (response.body == "User does not exist") {
         sendSMSOTP(phone: phone);
       } else {

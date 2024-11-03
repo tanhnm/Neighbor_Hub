@@ -29,12 +29,10 @@ final userIdFutureProvider = FutureProvider<int?>((ref) async {
   return userId;
 });
 
-final newUserProvider = Provider<User>((ref) {
-  throw UnimplementedError('User has not been loaded yet.');
-});
 
-Future<User?> getUserFromHive() async {
+
+Future<bool> isUserLoggedIn() async {
   final userBox = await Hive.openBox<User>('users');
   final user = userBox.get('user');
-  return user;
+  return user != null;  // Return true if user is found, otherwise false
 }

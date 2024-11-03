@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/features/auth/profile_me_screen.dart';
 import 'package:flutter_application_1/features/booking_car/destination_pick.dart';
 import 'package:flutter_application_1/features/home/main_page_new.dart';
 import 'package:flutter_application_1/features/temp_screen/activity_screen.dart';
-import 'package:flutter_application_1/features/temp_screen/profile_screen.dart';
+import 'package:flutter_application_1/features/temp_screen/setting_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +12,9 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import '../features/booking_car/destination_pick_new.dart';
 import '../features/booking_car/driver_list_screen.dart';
 import '../features/home/main_page.dart';
+import '../features/splash/splash_screen.dart';
+import '../features/temp_screen/login_screen.dart';
+import '../providers/user_provider.dart';
 import 'routes.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
@@ -22,6 +26,23 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: Routes.home,
+    redirect: (context, state) async {
+      // Check if the user is logged in
+      final isLoggedIn = await isUserLoggedIn();
+
+      // If the user is trying to access a protected route and is not logged in, redirect to login
+      if (!isLoggedIn && state.matchedLocation != Routes.login) {
+        return Routes.login;
+      }
+
+      // If the user is logged in and tries to go to the login page, redirect to home
+      if (isLoggedIn && state.matchedLocation == Routes.login) {
+        return Routes.home;
+      }
+
+      // No need to redirect if the user is on the correct route
+      return null;
+    },
     routes: [
       StatefulShellRoute.indexedStack(
           builder: (BuildContext context, GoRouterState state,
@@ -47,31 +68,44 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             //activity
             StatefulShellBranch(routes: [
               GoRoute(
-                path: Routes.activity,
-                name: Routes.activity,
-                builder: (context, state) => const ActivityScreen(),
-                routes: [
-                  GoRoute(
-                    path: Routes.driverList,
-                    name: Routes.driverList,
-                    builder: (context, state) {
-                      final Map<String, dynamic> booking = state.extra as Map<String, dynamic>;
-                      return DriverListScreen(booking: booking);
-                    }
-                  ),
-                ]
-              ),
+                  path: Routes.activity,
+                  name: Routes.activity,
+                  builder: (context, state) => const ActivityScreen(),
+                  routes: [
+                    GoRoute(
+                        path: Routes.driverList,
+                        name: Routes.driverList,
+                        builder: (context, state) {
+                          final Map<String, dynamic> booking =
+                              state.extra as Map<String, dynamic>;
+                          return DriverListScreen(booking: booking);
+                        }),
+                  ]),
             ]),
 
             //settings
             StatefulShellBranch(routes: [
               GoRoute(
-                path: Routes.settings,
-                name: Routes.settings,
-                builder: (context, state) => const ProfileScreen(),
-              ),
+                  path: Routes.settings,
+                  name: Routes.settings,
+                  builder: (context, state) => const SettingScreen(),
+                  routes: [
+                    GoRoute(
+                      path: Routes.profile,
+                      name: Routes.profile,
+                      builder: (context, state) => const ProfileMeScreen(),
+                    ),
+                  ]),
             ]),
           ]),
+      GoRoute(
+        path: Routes.splash,
+        builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: Routes.login,
+        builder: (context, state) => const LoginScreen(),
+      ),
     ],
   );
 });

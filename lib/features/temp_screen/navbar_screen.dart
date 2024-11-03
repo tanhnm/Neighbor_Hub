@@ -7,7 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import '../driver/registration_form_screen.dart';
 import '../home/main_page.dart';
-import 'profile_screen.dart';
+import 'setting_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -24,7 +24,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   List<dynamic> screens = [
     const MainScreen(),
     const ActivityScreen(),
-    const ProfileScreen(),
+    const SettingScreen(),
     const UserListScreen(),
     const RegistrationFormScreen()
     // UserListScreen() will be conditionally added

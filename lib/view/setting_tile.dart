@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/common/routes.dart';
 import 'package:flutter_application_1/domains/setting.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingTile extends StatelessWidget {
   final Setting setting;
@@ -18,7 +20,7 @@ class SettingTile extends StatelessWidget {
           await setting.action!(context); // Call the action with context
         } else {
           // If no action is provided, navigate to the specified route
-          Navigator.pushNamed(context, setting.route);
+          context.pushNamed(setting.route);
         }
       },
       child: Row(

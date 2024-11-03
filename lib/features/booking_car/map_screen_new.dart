@@ -1,69 +1,61 @@
-import 'dart:async';
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/domains/trip.dart';
-import 'package:flutter_application_1/domains/user_model.dart';
-import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
-import 'package:flutter_application_1/services/fare_service/fare_controller.dart';
-import 'package:flutter_application_1/data/api/api.dart';
+import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:flutter_application_1/utils/extensions/string_ext.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hive/hive.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geolocator/geolocator.dart'; // Add this import at the top
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:toastification/toastification.dart';
 
-class MapScreen extends StatefulWidget {
+import '../../data/api/api.dart';
+import '../../domains/trip.dart';
+import '../../domains/user_model.dart';
+import '../../services/coordinate_service/coordinate_service.dart';
+import '../../services/fare_service/booking_controller.dart';
+import '../../services/fare_service/fare_controller.dart';
+import '../../view/button_bottom.dart';
+
+class MapScreenNew extends HookConsumerWidget {
+  const MapScreenNew(this.initialLatitude, this.initialLongitude, {super.key});
+
   final double initialLatitude;
   final double initialLongitude;
 
-  const MapScreen(
-      {super.key,
-      required this.initialLatitude,
-      required this.initialLongitude});
-
   @override
-  _MapScreenState createState() => _MapScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final points = useState<List<LatLng>>([]);
+    final listOfPoint = useState([]);
+    final secondPick = useState<String>('');
+    final firstPickDone = useState<bool>(false);
+    final isPreBooking = useState<bool>(false);
+    final farePrice = useState<double>(0.0);
+    final distance = useState<double>(0.0);
+    final duration = useState<double>(0.0);
+    final isLoading = useState<bool>(false);
+    final bookingDateTime = useState<DateTime?>(null);
 
-class _MapScreenState extends State<MapScreen> {
-  Timer? _nearbyPlacesTimer; // Timer variable
-  List<LatLng> points = [];
-  List listOfPoint = [];
-  String firstPick = '';
-  String secondPick = '';
-  bool firstPickDone = false;
-  bool isPreBooking = false;
-  double farePrice = 0.0;
-  double distance = 0.0;
-  double duration = 0.0;
-  bool isLoading = false;
-  DateTime? bookingDateTime;
+    final mapController = useMemoized(() => MapController());
 
-  final MapController _mapController = MapController();
-  late LatLng _currentCenter;
+    final currentCenter =
+        useState<LatLng>(LatLng(initialLatitude, initialLongitude));
+    final suggestions = useState<List<Map<String, dynamic>>>([]);
+    final vehicles = useState<List<Map<String, String>>>([]);
+    final dropLocation = useState<String>('');
+    final pickLocation = useState<String>('');
 
-  List<Marker> selectedMarkers = [];
-  final TextEditingController _searchController = TextEditingController();
-  List<Map<String, dynamic>> _suggestions = [];
-  List<Map<String, String>> vehicles = [];
-  String dropLocation = '';
-  String pickLocation = '';
-  User? user;
-
-  String selectedVehicle = '';
-  @override
-  void initState() {
-    super.initState();
-    _currentCenter = LatLng(widget.initialLatitude, widget.initialLongitude);
-    firstPick = "${_currentCenter.longitude}, ${_currentCenter.latitude}";
-    selectedMarkers.add(
+    final selectedVehicle = useState<String>('');
+    final firstPick = useState<String>(
+        "${currentCenter.value.longitude}, ${currentCenter.value.latitude}");
+    final selectedMarkers = useState<List<Marker>>([
       Marker(
         rotate: true,
-        point: _currentCenter,
+        point: currentCenter.value,
         width: 30,
         height: 30,
         child: const Icon(
@@ -72,88 +64,27 @@ class _MapScreenState extends State<MapScreen> {
           color: Colors.blue,
         ),
       ),
-    );
+    ]);
 
-    _loadUser();
-  }
+    final _searchController = useTextEditingController();
+    final user = ref.watch(userProvider);
 
-  Future<void> _loadUser() async {
-    var userBox = Hive.box<User>('users');
-    user = userBox.get('user');
-  }
+    Future<void> searchLocation(String query) async {
+      final url = Uri.parse(
+          'https://nominatim.openstreetmap.org/search?q=$query&format=json&limit=1');
 
-  getCoordinates(String firstPick, String secondPick) async {
-    // Call the API with reversed coordinates
-    List<String> placeName = firstPick.split(',');
-    pickLocation = await getPlaceName(placeName[1], placeName[0]);
-    try {
-      isLoading = true;
-      var response = await http.get(getRouteUrl(firstPick, secondPick));
+      final response = await http.get(url);
 
-      setState(() {
-        if (response.statusCode == 200) {
-          var data = jsonDecode(response.body);
-          listOfPoint = data['features'][0]['geometry']['coordinates'];
-          distance =
-              data['features'][0]['properties']['segments'][0]['distance'];
-          duration =
-              data['features'][0]['properties']['segments'][0]['duration'];
-          points = listOfPoint
-              .map((e) => LatLng(e[1].toDouble(),
-                  e[0].toDouble())) // Reverse them back for the map
-              .toList();
-        } else {
-          toastification.show(
-            context: context,
-            style: ToastificationStyle
-                .flat, // optional if you use ToastificationWrapper
-            title: Text('Error response: ${response.body}'),
-            autoCloseDuration: const Duration(seconds: 5),
-          );
-        }
-      });
-      List<Trip> trips = await FareController(context: context)
-          .getFare(distance: distance, travelTime: duration);
-      for (var trip in trips) {
-        vehicles.add({
-          'type': trip.vehicleType,
-          'distance': '$distance',
-          'duration': '${trip.travelTimeSeconds}',
-          'price': trip.tripCost.toString()
-        });
-      }
-    } catch (e) {
-      toastification.show(
-        context: context,
-        style: ToastificationStyle
-            .flat, // optional if you use ToastificationWrapper
-        title: Text('Error: $e'),
-        autoCloseDuration: const Duration(seconds: 5),
-      );
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data.isNotEmpty) {
+          double lat = double.parse(data[0]['lat']);
+          double lon = double.parse(data[0]['lon']);
+          LatLng newLocation = LatLng(lat, lon);
 
-  Future<void> searchLocation(String query) async {
-    final url = Uri.parse(
-        'https://nominatim.openstreetmap.org/search?q=$query&format=json&limit=1');
-
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      if (data.isNotEmpty) {
-        double lat = double.parse(data[0]['lat']);
-        double lon = double.parse(data[0]['lon']);
-        LatLng newLocation = LatLng(lat, lon);
-
-        setState(() {
-          _mapController.move(newLocation, 15.0);
-          _currentCenter = newLocation;
-          selectedMarkers.add(
+          mapController.move(newLocation, 15.0);
+          currentCenter.value = newLocation;
+          selectedMarkers.value.add(
             Marker(
               rotate: true,
               point: newLocation,
@@ -166,41 +97,39 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
           );
-        });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Không tìm thấy vị trí')),
+          );
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Không tìm thấy vị trí')),
+          const SnackBar(content: Text('Lỗi tìm kiếm vị trí')),
         );
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lỗi tìm kiếm vị trí')),
-      );
     }
-  }
 
-  Future<void> getSuggestions(String query) async {
-    double delta = 0.1; // Size of the bounding box
-    double southWestLat = _currentCenter.latitude - delta;
-    double southWestLon = _currentCenter.longitude - delta;
-    double northEastLat = _currentCenter.latitude + delta;
-    double northEastLon = _currentCenter.longitude + delta;
+    Future<void> getSuggestions(String query) async {
+      double delta = 0.1; // Size of the bounding box
+      double southWestLat = currentCenter.value.latitude - delta;
+      double southWestLon = currentCenter.value.longitude - delta;
+      double northEastLat = currentCenter.value.latitude + delta;
+      double northEastLon = currentCenter.value.longitude + delta;
 
-    final url = Uri.parse(
-        'https://nominatim.openstreetmap.org/search?q=$query&format=json&limit=5&bounded=1&viewbox=$southWestLon,$northEastLat,$northEastLon,$southWestLat');
+      final url = Uri.parse(
+          'https://nominatim.openstreetmap.org/search?q=$query&format=json&limit=5&bounded=1&viewbox=$southWestLon,$northEastLat,$northEastLon,$southWestLat');
 
-    final response = await http.get(url);
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body) as List;
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as List;
 
-      setState(() {
-        _suggestions = data.map((item) {
+        suggestions.value = data.map((item) {
           double suggestionLat = double.parse(item['lat']);
           double suggestionLon = double.parse(item['lon']);
           double distance = Geolocator.distanceBetween(
-            _currentCenter.latitude,
-            _currentCenter.longitude,
+            currentCenter.value.latitude,
+            currentCenter.value.longitude,
             suggestionLat,
             suggestionLon,
           );
@@ -212,48 +141,44 @@ class _MapScreenState extends State<MapScreen> {
             "distance": distance, // Add the calculated distance
           };
         }).toList();
-      });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lỗi gợi ý vị trí')),
-      );
-    }
-  }
-
-  void _onSearchChanged(String value) {
-    if (value.isNotEmpty) {
-      getSuggestions(value); // Fetch suggestions as the user types
-    } else {
-      setState(() {
-        _suggestions = []; // Clear suggestions if search field is empty
-      });
-    }
-  }
-
-  void _onSuggestionTapped(Map<String, dynamic> suggestion) {
-    _searchController.text = suggestion['display_name'];
-    searchLocation(suggestion['display_name']);
-    setState(() {
-      _suggestions = []; // Clear suggestions after selection
-    });
-  }
-
-  void _pickLocation() async {
-    firstPickDone = true;
-    if (firstPickDone) {
-      secondPick = "${_currentCenter.longitude}, ${_currentCenter.latitude}";
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Lỗi gợi ý vị trí')),
+        );
+      }
     }
 
-    dropLocation = await getPlaceName(_currentCenter.latitude.toString(),
-        _currentCenter.longitude.toString());
+    void _onSearchChanged(String value) {
+      if (value.isNotEmpty) {
+        getSuggestions(value); // Fetch suggestions as the user types
+      } else {
+        suggestions.value = []; // Clear suggestions if search field is empty
+      }
+    }
 
-    setState(() {
-      if (selectedMarkers.length < 2) {
+    void _onSuggestionTapped(Map<String, dynamic> suggestion) {
+      _searchController.text = suggestion['display_name'];
+      searchLocation(suggestion['display_name']);
+      suggestions.value = []; // Clear suggestions after selection
+    }
+
+    void _pickLocation() async {
+      firstPickDone.value = true;
+      if (firstPickDone.value) {
+        secondPick.value =
+            "${currentCenter.value.longitude}, ${currentCenter.value.latitude}";
+      }
+
+      dropLocation.value = await getPlaceName(
+          currentCenter.value.latitude.toString(),
+          currentCenter.value.longitude.toString());
+
+      if (selectedMarkers.value.length < 2) {
         // Add new marker
-        selectedMarkers.add(
+        selectedMarkers.value.add(
           Marker(
             rotate: true,
-            point: _currentCenter,
+            point: currentCenter.value,
             width: 40,
             height: 40,
             child: const Icon(
@@ -265,41 +190,43 @@ class _MapScreenState extends State<MapScreen> {
         );
 
         // After picking the second location, call the API
-        getCoordinates(firstPick, secondPick);
+        getCoordinates(
+            context: context,
+            firstPick: firstPick.value,
+            secondPick: secondPick.value,
+            pickLocation: pickLocation,
+            isLoading: isLoading,
+            listOfPoint: listOfPoint,
+            distance: distance,
+            duration: duration,
+            points: points,
+            vehicles: vehicles);
       } else {
         // If 2 markers already exist, clear them and allow new picks
-        selectedMarkers.removeAt(1);
-        points = [];
-        firstPickDone = false;
+        selectedMarkers.value.removeAt(1);
+        points.value = [];
+        firstPickDone.value = false;
       }
-    });
-  }
+    }
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chọn vị trí trên bản đồ'),
       ),
       body: GestureDetector(
           onTap: () {
-            setState(() {
-              selectedVehicle =
-                  ''; // Reset selected vehicle when user taps outside
-            });
+            selectedVehicle.value = '';
           },
           child: Stack(
             children: [
               FlutterMap(
-                mapController: _mapController,
+                mapController: mapController,
                 options: MapOptions(
-                  initialCenter: _currentCenter,
+                  initialCenter: currentCenter.value,
                   initialZoom: 15.0,
                   onPositionChanged: (camera, hasGesture) {
-                    setState(() {
-                      selectedVehicle = '';
-                      _currentCenter = camera.center;
-                    });
+                    selectedVehicle.value = '';
+                    currentCenter.value = camera.center;
                   },
                 ),
                 children: [
@@ -309,12 +236,12 @@ class _MapScreenState extends State<MapScreen> {
                     userAgentPackageName: 'dev.fleaflet.flutter_map.example',
                   ),
                   MarkerLayer(
-                    markers: selectedMarkers,
+                    markers: selectedMarkers.value,
                   ),
                   PolylineLayer(
                     polylines: [
                       Polyline(
-                        points: points,
+                        points: points.value,
                         color: Colors.blue,
                         strokeWidth: 5.0,
                       ),
@@ -322,7 +249,7 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                 ],
               ),
-              firstPickDone
+              firstPickDone.value
                   ? Container()
                   : const Align(
                       alignment: Alignment.center,
@@ -371,7 +298,7 @@ class _MapScreenState extends State<MapScreen> {
                     ],
                   )),
               // Suggestions List
-              if (_suggestions.isNotEmpty)
+              if (suggestions.value.isNotEmpty)
                 Container(
                   margin: const EdgeInsets.fromLTRB(20, 80, 20, 0),
                   decoration: BoxDecoration(
@@ -387,9 +314,9 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                   child: ListView.builder(
                     shrinkWrap: true, // Make the list view scrollable
-                    itemCount: _suggestions.length,
+                    itemCount: suggestions.value.length,
                     itemBuilder: (context, index) {
-                      final suggestion = _suggestions[index];
+                      final suggestion = suggestions.value[index];
                       return ListTile(
                         title: Text(suggestion['display_name']),
                         subtitle: Text(
@@ -401,7 +328,7 @@ class _MapScreenState extends State<MapScreen> {
                     },
                   ),
                 ),
-              firstPickDone
+              firstPickDone.value
                   ? Positioned(
                       left: 0,
                       right: 0,
@@ -426,25 +353,23 @@ class _MapScreenState extends State<MapScreen> {
                                     color: Colors.black, fontSize: 16),
                               ),
                               const SizedBox(height: 10),
-                              isLoading
+                              isLoading.value
                                   ? Center(
                                       child: LoadingAnimationWidget.waveDots(
                                           color: Colors.black, size: 30))
                                   : Expanded(
                                       child: ListView.builder(
                                         scrollDirection: Axis.horizontal,
-                                        itemCount: vehicles.length,
+                                        itemCount: vehicles.value.length,
                                         itemBuilder: (context, index) {
-                                          final vehicle = vehicles[index];
+                                          final vehicle = vehicles.value[index];
                                           bool isSelected = vehicle['type'] ==
                                               selectedVehicle;
 
                                           return GestureDetector(
                                             onTap: () {
-                                              setState(() {
-                                                selectedVehicle =
-                                                    vehicle['type']!;
-                                              });
+                                              selectedVehicle.value =
+                                                  vehicle['type']!;
                                             },
                                             child: Card(
                                               shape: RoundedRectangleBorder(
@@ -477,11 +402,12 @@ class _MapScreenState extends State<MapScreen> {
                                                               FontWeight.bold),
                                                     ),
                                                     const SizedBox(height: 5),
-                                                    Text(
-                                                        vehicle['distance']!.convertToKilometers()),
+                                                    Text(vehicle['distance']!
+                                                        .convertToKilometers()),
                                                     const SizedBox(height: 5),
                                                     Text(
-                                                        vehicle['price']!.formatPriceFromString(),
+                                                        vehicle['price']!
+                                                            .formatPriceFromString(),
                                                         style: const TextStyle(
                                                             fontSize: 14,
                                                             color:
@@ -506,14 +432,11 @@ class _MapScreenState extends State<MapScreen> {
       floatingActionButtonLocation: CustomFabLocation(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {
-            _mapController.move(
-                LatLng(widget.initialLatitude, widget.initialLongitude), 15.0);
-          });
+          mapController.move(LatLng(initialLatitude, initialLongitude), 15.0);
         },
         child: const Icon(Icons.my_location),
       ),
-      bottomNavigationBar: selectedVehicle.isNotEmpty
+      bottomNavigationBar: selectedVehicle.value.isNotEmpty
           ? Padding(
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
@@ -571,7 +494,8 @@ class _MapScreenState extends State<MapScreen> {
                                             if (selectedTime != null) {
                                               // Combine Date and Time
                                               setState(() {
-                                                bookingDateTime = DateTime(
+                                                bookingDateTime.value =
+                                                    DateTime(
                                                   selectedDate.year,
                                                   selectedDate.month,
                                                   selectedDate.day,
@@ -586,7 +510,7 @@ class _MapScreenState extends State<MapScreen> {
                                         child: bookingDateTime == null
                                             ? const Text('Select Date and Time')
                                             : Text(
-                                                '${bookingDateTime!.day}/${bookingDateTime!.month}/${bookingDateTime!.year} ${bookingDateTime!.hour}:${bookingDateTime!.minute}',
+                                                '${bookingDateTime.value!.day}/${bookingDateTime.value!.month}/${bookingDateTime.value!.year} ${bookingDateTime.value!.hour}:${bookingDateTime.value!.minute}',
                                               ),
                                       ),
                                     ],
@@ -605,20 +529,24 @@ class _MapScreenState extends State<MapScreen> {
                                   !isPreBooking
                                       ? BookingController(context: context)
                                           .createBooking(
-                                              distance: distance.toInt(),
-                                              pickupLocation: pickLocation,
-                                              dropoffLocation: dropLocation,
-                                              userId: user?.userId ?? 0,
-                                              currentLocation: firstPick)
+                                              distance: distance.value.toInt(),
+                                              pickupLocation:
+                                                  pickLocation.value,
+                                              dropoffLocation:
+                                                  dropLocation.value,
+                                              userId: user.value?.userId ?? 0,
+                                              currentLocation: firstPick.value)
                                       : BookingController(context: context)
                                           .createBookingAdvance(
-                                              pickupLocation: pickLocation,
-                                              dropoffLocation: dropLocation,
-                                              distance: distance.toInt(),
-                                              userId: user?.userId ?? 0,
-                                              currentLocation: firstPick,
+                                              pickupLocation:
+                                                  pickLocation.value,
+                                              dropoffLocation:
+                                                  dropLocation.value,
+                                              distance: distance.value.toInt(),
+                                              userId: user.value?.userId ?? 0,
+                                              currentLocation: firstPick.value,
                                               pickupTime:
-                                                  "${bookingDateTime?.toIso8601String()}Z");
+                                                  "${bookingDateTime.value?.toIso8601String()}Z");
                                   // Navigator.pop(context); // Close the modal
                                   // Proceed with vehicle confirmation logic
                                 },
@@ -675,7 +603,7 @@ class _MapScreenState extends State<MapScreen> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 15), // Ensure vertical padding
                       ),
-                      child: selectedMarkers.length == 2
+                      child: selectedMarkers.value.length == 2
                           ? const Text(
                               'Xóa',
                               style:
@@ -692,46 +620,5 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
     );
-  }
-}
-
-class ButtonBottom extends StatelessWidget {
-  const ButtonBottom({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: 10,
-      left: 10,
-      right: 10,
-      child: Column(children: [
-        // Search input and suggestions code here...
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 10,
-                spreadRadius: 2,
-              ),
-            ],
-          ),
-        ),
-      ]),
-    );
-  }
-}
-
-class CustomFabLocation extends FloatingActionButtonLocation {
-  @override
-  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
-    double x = scaffoldGeometry.scaffoldSize.width * 0.9 - 28;
-    double y = scaffoldGeometry.scaffoldSize.height * 0.70 - 28;
-    return Offset(x, y);
   }
 }

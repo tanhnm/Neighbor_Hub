@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/features/splash/splash_screen.dart';
+import 'package:flutter_application_1/providers/current_position_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -34,6 +35,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final goRouter = ref.watch(goRouterProvider);
+    ref.watch(hiveInitializationProvider);
     return ToastificationWrapper(
         child: MaterialApp.router(
       routerConfig: goRouter,

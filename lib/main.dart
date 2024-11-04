@@ -9,7 +9,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart'; // For getting the app directory
 import 'common/router.dart';
 import 'features/auth/profile_me_screen.dart';
-import 'domains/user_model.dart';
+import 'domains/freezed/user_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,20 +17,18 @@ void main() async {
   final appDocumentDirectory = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDirectory.path);
   await Hive.initFlutter();
-  Hive.registerAdapter(UserAdapter());
+  Hive.registerAdapter(UserModelAdapter());
   await Hive.openBox('authBox');
   await Hive.openBox('appBox');
   await Hive.openBox('locationBox');
-  await Hive.openBox<User>('users');
+  await Hive.openBox<UserModel>('users');
 
   // Load the user from Hive before running the app
 
-
   runApp(
-     ProviderScope(
-      overrides: [
-      ],
-      child: const MyApp(),
+    const ProviderScope(
+      overrides: [],
+      child: MyApp(),
     ),
   );
 }

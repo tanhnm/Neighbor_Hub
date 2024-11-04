@@ -37,7 +37,7 @@ class _MessageScreenDriverState extends State<MessageScreenDriver> {
     final messageText = _messageController.text.trim();
     if (messageText.isNotEmpty) {
       await _messagesRef.add({
-        'booking': '${widget.booking.booking.bookingId}',
+        'booking': '${widget.booking.bookingDetail.bookingId}',
         'text': messageText,
         'userId': widget.user['userId'].toString(),
         'senderId': currentUserId.toString(),
@@ -105,7 +105,7 @@ class _MessageScreenDriverState extends State<MessageScreenDriver> {
             child: StreamBuilder<QuerySnapshot>(
               stream: _messagesRef
                   .where('booking',
-                      isEqualTo: widget.booking.booking.bookingId.toString())
+                      isEqualTo: widget.booking.bookingDetail.bookingId.toString())
                   .where('driverId', isEqualTo: widget.driver.toString())
                   .orderBy('timestamp', descending: true)
                   .snapshots(),

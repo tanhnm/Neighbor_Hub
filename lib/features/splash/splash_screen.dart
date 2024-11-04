@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // Adjust this import based on your project structure
-import 'package:flutter_application_1/domains/user_model.dart';
+import 'package:flutter_application_1/domains/freezed/user_model.dart';
 import 'package:flutter_application_1/features/splash/introduction_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';

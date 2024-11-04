@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/common/router.dart';
 import 'package:flutter_application_1/common/routes.dart';
 import 'package:flutter_application_1/view/rounded_img.dart';
-import 'package:flutter_application_1/domains/user_model.dart';
+import 'package:flutter_application_1/domains/freezed/user_model.dart';
 import 'package:flutter_application_1/features/booking_car/destination_pick.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -18,9 +18,9 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  User? user;
+  UserModel? user;
   Box? userBox;
-  Future<User>? userIdFuture;
+  Future<UserModel>? userIdFuture;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> _initializeHiveBox() async {
     try {
-      userBox = Hive.box<User>('users');
+      userBox = Hive.box<UserModel>('users');
       setState(() {
         userIdFuture = _loadUser();
         userIdFuture!.then((value) => user = value);
@@ -44,7 +44,7 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Future<User> _loadUser() async {
+  Future<UserModel> _loadUser() async {
     try {
       user = userBox?.get('user');
       if (user == null) {

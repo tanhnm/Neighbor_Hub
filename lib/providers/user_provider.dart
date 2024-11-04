@@ -2,11 +2,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
-import '../domains/user_model.dart';
+import '../domains/freezed/user_model.dart';
 
-final userProvider = FutureProvider<User?>((ref) async {
+final userProvider = FutureProvider<UserModel?>((ref) async {
   try {
-    final userBox = await Hive.openBox<User>('users');
+    final userBox = await Hive.openBox<UserModel>('users');
     final user = userBox.get('user');
     if (user == null) {
       throw Exception('No user found in the Hive box...');
@@ -31,7 +31,7 @@ final userIdFutureProvider = FutureProvider<int?>((ref) async {
 
 
 Future<bool> isUserLoggedIn() async {
-  final userBox = await Hive.openBox<User>('users');
+  final userBox = await Hive.openBox<UserModel>('users');
   final user = userBox.get('user');
   return user != null;  // Return true if user is found, otherwise false
 }

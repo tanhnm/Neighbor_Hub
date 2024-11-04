@@ -158,7 +158,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
           await BookingController(context: context).addDriverAmount(
               driverId: widget.booking.driverId,
               amount: enteredPrice,
-              bookingId: widget.booking.booking.bookingId);
+              bookingId: widget.booking.bookingDetail.bookingId);
       if (driverAmount.isNotEmpty) {
         toastification.show(
           context: context,

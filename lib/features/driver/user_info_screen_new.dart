@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/domains/user_model.dart';
+import 'package:flutter_application_1/domains/freezed/user_model.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -18,7 +18,7 @@ class UserInfoScreenNew extends HookConsumerWidget {
   const UserInfoScreenNew(this.user, this.booking, {super.key});
 
 
-  final User user;
+  final UserModel user;
   final BookingModel booking;
 
   @override

@@ -115,7 +115,7 @@ class _UserListScreenState extends State<UserListScreen> {
                   // Remove duplicate bookings based on bookingId
                   final seenBookingIds = <int>{};
                   final bookings = snapshot.data!.where((booking) {
-                    final bookingId = booking.booking.bookingId;
+                    final bookingId = booking.bookingDetail.bookingId;
                     if (seenBookingIds.contains(bookingId)) {
                       return false; // Duplicate found
                     } else {
@@ -136,14 +136,14 @@ class _UserListScreenState extends State<UserListScreen> {
                                 MaterialPageRoute(
                                   builder: (context) => MessageScreenDriver(
                                     user: {
-                                      'userId': booking.booking.user.userId,
-                                      'username': booking.booking.user.username,
-                                      'phone': booking.booking.user.phone,
-                                      'email': booking.booking.user.email,
+                                      'userId': booking.bookingDetail.user.userId,
+                                      'username': booking.bookingDetail.user.username,
+                                      'phone': booking.bookingDetail.user.phone,
+                                      'email': booking.bookingDetail.user.email,
                                       'location':
-                                          booking.booking.pickupLocation,
+                                          booking.bookingDetail.pickupLocation,
                                       'destination':
-                                          booking.booking.dropoffLocation,
+                                          booking.bookingDetail.dropoffLocation,
                                     },
                                     booking: booking,
                                     driver: user!,
@@ -164,7 +164,7 @@ class _UserListScreenState extends State<UserListScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Booking ID: ${booking.booking.bookingId}',
+                                      'Booking ID: ${booking.bookingDetail.bookingId}',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black,
@@ -172,7 +172,7 @@ class _UserListScreenState extends State<UserListScreen> {
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
-                                        'Điểm đón: ${booking.booking.pickupLocation}',
+                                        'Điểm đón: ${booking.bookingDetail.pickupLocation}',
                                         style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
@@ -182,7 +182,7 @@ class _UserListScreenState extends State<UserListScreen> {
                                         maxLines: 1),
                                     const SizedBox(height: 8),
                                     Text(
-                                      'Điểm đến ${booking.booking.dropoffLocation}',
+                                      'Điểm đến ${booking.bookingDetail.dropoffLocation}',
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
@@ -193,7 +193,7 @@ class _UserListScreenState extends State<UserListScreen> {
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
-                                      'Ngày: ${booking.booking.pickupTime.convertToVietnameseTime()}',
+                                      'Ngày: ${booking.bookingDetail.pickupTime.convertToVietnameseTime()}',
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
@@ -215,13 +215,13 @@ class _UserListScreenState extends State<UserListScreen> {
                                     ),
                                     const SizedBox(height: 8),
                                     UserCard(
-                                      name: booking.booking.user.username,
-                                      phone: booking.booking.user.phone,
+                                      name: booking.bookingDetail.user.username,
+                                      phone: booking.bookingDetail.user.phone,
                                       kilometers:
-                                          '${booking.booking.distance} km',
+                                          '${booking.bookingDetail.distance} km',
                                       price: "${booking.amount} VNĐ",
                                       image: 'https://via.placeholder.com/50',
-                                      userId: booking.booking.user.userId,
+                                      userId: booking.bookingDetail.user.userId,
                                     ),
                                   ],
                                 ),

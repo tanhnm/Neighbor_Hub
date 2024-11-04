@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/common/router.dart';
 import 'package:flutter_application_1/common/routes.dart';
 import 'package:flutter_application_1/domains/freezed/driver_model.dart';
-import 'package:flutter_application_1/domains/user_model.dart';
+import 'package:flutter_application_1/domains/freezed/user_model.dart';
 import 'package:flutter_application_1/features/auth/profile_screen_new.dart';
 import 'package:flutter_application_1/features/booking_car/driver_list_screen.dart';
 import 'package:flutter_application_1/features/temp_screen/navbar_screen.dart';
@@ -24,7 +24,7 @@ class ActivityScreen extends StatefulWidget {
 
 class _ActivityScreenState extends State<ActivityScreen> {
   List<dynamic> bookings = [];
-  User? user;
+  UserModel? user;
   bool isLoading = true;
 
   @override
@@ -34,7 +34,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
   }
 
   Future<void> _loadUser() async {
-    var userBox = Hive.box<User>('users');
+    var userBox = Hive.box<UserModel>('users');
     user = userBox.get('user');
   }
 

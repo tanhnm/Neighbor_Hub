@@ -1,6 +1,6 @@
 import 'dart:convert'; // For jsonEncode
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/domains/user_model.dart';
+import 'package:flutter_application_1/domains/freezed/user_model.dart';
 import 'package:flutter_application_1/features/auth/login_password_screen.dart';
 import 'package:flutter_application_1/features/temp_screen/navbar_screen.dart';
 import 'package:flutter_application_1/features/temp_screen/register_screen.dart';
@@ -164,8 +164,8 @@ class RemoteAuth {
 
         var box = Hive.box('authBox');
         // Open a Hive box
-        var userBox = Hive.box<User>('users');
-        User user = User.fromJson(response.data['user']);
+        var userBox = Hive.box<UserModel>('users');
+        UserModel user = UserModel.fromJson(response.data['user']);
 
         await box.put('is_logged_in', true); // Mark the user as logged in
 
@@ -174,7 +174,7 @@ class RemoteAuth {
         // Store the user
         await userBox.put('user', user);
         // Retrieve the user
-        User? retrievedUser = userBox.get('user');
+        UserModel? retrievedUser = userBox.get('user');
         // Navigate to the bottom nav screen
         Navigator.push(
           context,

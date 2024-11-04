@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/view/avatar_card.dart';
 import 'package:flutter_application_1/domains/setting.dart';
-import 'package:flutter_application_1/domains/user_model.dart';
+import 'package:flutter_application_1/domains/freezed/user_model.dart';
 import 'package:hive/hive.dart';
 import 'package:toastification/toastification.dart';
 
@@ -16,9 +16,9 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  User? user;
+  UserModel? user;
   Box? userBox;
-  Future<User>? userIdFuture;
+  Future<UserModel>? userIdFuture;
 
   @override
   Widget build(BuildContext context) {

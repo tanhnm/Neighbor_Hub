@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/common/routes.dart';
-import 'package:flutter_application_1/domains/user_model.dart';
+import 'package:flutter_application_1/domains/freezed/user_model.dart';
 import 'package:hive/hive.dart';
 
 import '../features/temp_screen/login_screen.dart'; // Ensure Hive is imported
@@ -41,7 +41,7 @@ final List<Setting> settings = [
     action: (BuildContext context) async {
       var box = Hive.box('appBox');
       var locationBox = Hive.box('locationBox');
-      var userBox = Hive.box<User>('users'); // Otherwise, open the box
+      var userBox = Hive.box<UserModel>('users'); // Otherwise, open the box
       var authBox = Hive.box('authBox');
       await authBox.clear(); // Clears all data in the authBox
       await userBox.clear();

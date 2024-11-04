@@ -11,7 +11,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../domains/freezed/booking_model.dart';
-import '../../domains/user_model.dart';
+import '../../domains/freezed/user_model.dart';
 import '../../providers/user_provider.dart';
 
 class MessageScreenNew extends HookConsumerWidget {
@@ -34,7 +34,7 @@ class MessageScreenNew extends HookConsumerWidget {
     // Fetch user info from Hive using useEffect (which replaces initState)
     useEffect(() {
       Future<void> getUserInfo() async {
-        var userBox = Hive.box<User>('users');
+        var userBox = Hive.box<UserModel>('users');
         if (userBox.get('user')?.userId == null) {
           throw Exception('User not found');
         }

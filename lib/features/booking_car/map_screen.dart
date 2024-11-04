@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/domains/trip.dart';
-import 'package:flutter_application_1/domains/user_model.dart';
+import 'package:flutter_application_1/domains/freezed/user_model.dart';
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
 import 'package:flutter_application_1/services/fare_service/fare_controller.dart';
 import 'package:flutter_application_1/data/api/api.dart';
@@ -52,7 +52,7 @@ class _MapScreenState extends State<MapScreen> {
   List<Map<String, String>> vehicles = [];
   String dropLocation = '';
   String pickLocation = '';
-  User? user;
+  UserModel? user;
 
   String selectedVehicle = '';
   @override
@@ -78,7 +78,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _loadUser() async {
-    var userBox = Hive.box<User>('users');
+    var userBox = Hive.box<UserModel>('users');
     user = userBox.get('user');
   }
 

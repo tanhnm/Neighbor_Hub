@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_application_1/domains/user_model.dart';
+import 'package:flutter_application_1/domains/freezed/user_model.dart';
 import 'package:hive/hive.dart';
 import 'package:toastification/toastification.dart';
 
@@ -34,7 +34,7 @@ class _MessageScreenState extends State<MessageScreen> {
   int currentUserId = 0; // Example user ID, use FirebaseAuth for real user ID
 
   Future<void> getUserInfo() async {
-    var userBox = Hive.box<User>('users');
+    var userBox = Hive.box<UserModel>('users');
     if (userBox.get('user')?.userId == null) {
       throw Exception('User not found');
     }

@@ -15,7 +15,7 @@ import 'package:toastification/toastification.dart';
 
 import '../../data/api/api.dart';
 import '../../domains/trip.dart';
-import '../../domains/user_model.dart';
+import '../../domains/freezed/user_model.dart';
 import '../../services/coordinate_service/coordinate_service.dart';
 import '../../services/fare_service/booking_controller.dart';
 import '../../services/fare_service/fare_controller.dart';

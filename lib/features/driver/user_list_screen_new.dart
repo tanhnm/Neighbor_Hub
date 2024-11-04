@@ -118,7 +118,7 @@ class UserListScreenNew extends HookConsumerWidget {
                 // Remove duplicate bookings based on bookingId
                 final seenBookingIds = <int>{};
                 final bookings = snapshot.data!.where((booking) {
-                  final bookingId = booking.booking.bookingId;
+                  final bookingId = booking.bookingDetail.bookingId;
                   if (seenBookingIds.contains(bookingId)) {
                     return false; // Duplicate found
                   } else {
@@ -139,12 +139,12 @@ class UserListScreenNew extends HookConsumerWidget {
                             MaterialPageRoute(
                               builder: (context) => MessageScreenDriverNew(
                                 // user: {
-                                //   'userId': booking.booking.user.userId,
-                                //   'username': booking.booking.user.username,
-                                //   'phone': booking.booking.user.phone,
-                                //   'email': booking.booking.user.email,
-                                //   'location': booking.booking.pickupLocation,
-                                //   'destination': booking.booking.dropoffLocation,
+                                //   'userId': booking.bookingDetail.user.userId,
+                                //   'username': booking.bookingDetail.user.username,
+                                //   'phone': booking.bookingDetail.user.phone,
+                                //   'email': booking.bookingDetail.user.email,
+                                //   'location': booking.bookingDetail.pickupLocation,
+                                //   'destination': booking.bookingDetail.dropoffLocation,
                                 // },
                                 user,
                                  booking,
@@ -167,7 +167,7 @@ class UserListScreenNew extends HookConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Booking ID: ${booking.booking.bookingId}',
+                                  'Booking ID: ${booking.bookingDetail.bookingId}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
@@ -175,7 +175,7 @@ class UserListScreenNew extends HookConsumerWidget {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Điểm đón: ${booking.booking.pickupLocation}',
+                                  'Điểm đón: ${booking.bookingDetail.pickupLocation}',
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -186,7 +186,7 @@ class UserListScreenNew extends HookConsumerWidget {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Điểm đến: ${booking.booking.dropoffLocation}',
+                                  'Điểm đến: ${booking.bookingDetail.dropoffLocation}',
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -197,7 +197,7 @@ class UserListScreenNew extends HookConsumerWidget {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Ngày: ${booking.booking.pickupTime.convertToVietnameseTime()}',
+                                  'Ngày: ${booking.bookingDetail.pickupTime.convertToVietnameseTime()}',
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -219,12 +219,12 @@ class UserListScreenNew extends HookConsumerWidget {
                                 ),
                                 const SizedBox(height: 8),
                                 UserCard(
-                                  name: booking.booking.user.username,
-                                  phone: booking.booking.user.phone,
-                                  kilometers: '${booking.booking.distance} km',
+                                  name: booking.bookingDetail.user.username,
+                                  phone: booking.bookingDetail.user.phone,
+                                  kilometers: '${booking.bookingDetail.distance} km',
                                   price: "${booking.amount} VNĐ",
                                   image: 'https://via.placeholder.com/50',
-                                  userId: booking.booking.user.userId,
+                                  userId: booking.bookingDetail.user.userId,
                                 ),
                               ],
                             ),

@@ -5,12 +5,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../domains/freezed/booking_model.dart';
-import '../../domains/user_model.dart';
+import '../../domains/freezed/user_model.dart';
 
 class MessageScreenDriverNew extends HookConsumerWidget {
   const MessageScreenDriverNew(this.user, this.booking, this.driver, {super.key});
 
-  final User user;
+  final UserModel user;
   final BookingModel booking;
   final int driver;
 
@@ -30,7 +30,7 @@ class MessageScreenDriverNew extends HookConsumerWidget {
       final messageText = messageController.text.trim();
       if (messageText.isNotEmpty) {
         await _messagesRef.add({
-          'booking': '${booking.booking.bookingId}',
+          'booking': '${booking.bookingDetail.bookingId}',
           'text': messageText,
           'userId': user.userId.toString(),
           'senderId': currentUserId.toString(),
@@ -80,7 +80,7 @@ class MessageScreenDriverNew extends HookConsumerWidget {
             child: StreamBuilder<QuerySnapshot>(
               stream: _messagesRef
                   .where('booking',
-                  isEqualTo: booking.booking.bookingId.toString())
+                  isEqualTo: booking.bookingDetail.bookingId.toString())
                   .where('driverId', isEqualTo: driver.toString())
                   .orderBy('timestamp', descending: true)
                   .snapshots(),

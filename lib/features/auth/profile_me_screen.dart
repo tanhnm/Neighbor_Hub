@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/domains/user_model.dart';
+import 'package:flutter_application_1/domains/freezed/user_model.dart';
 import 'package:hive/hive.dart';
 import 'package:toastification/toastification.dart';
 
@@ -11,9 +11,9 @@ class ProfileMeScreen extends StatefulWidget {
 }
 
 class _ProfileMeScreenState extends State<ProfileMeScreen> {
-  Box<User>? userBox;
-  User? user;
-  Future<User>? userIdFuture;
+  Box<UserModel>? userBox;
+  UserModel? user;
+  Future<UserModel>? userIdFuture;
 
   @override
   void initState() {
@@ -23,7 +23,7 @@ class _ProfileMeScreenState extends State<ProfileMeScreen> {
 
   Future<void> _initializeHiveBox() async {
     try {
-      userBox = Hive.box<User>('users');
+      userBox = Hive.box<UserModel>('users');
       setState(() {
         userIdFuture = _loadUser();
         userIdFuture!.then((value) => user = value);
@@ -37,7 +37,7 @@ class _ProfileMeScreenState extends State<ProfileMeScreen> {
     }
   }
 
-  Future<User> _loadUser() async {
+  Future<UserModel> _loadUser() async {
     try {
       user = userBox?.get('user');
       if (user == null) {
@@ -53,10 +53,10 @@ class _ProfileMeScreenState extends State<ProfileMeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Profile'),
+        title: const Text('UserModel Profile'),
         centerTitle: true,
       ),
-      body: FutureBuilder<User>(
+      body: FutureBuilder<UserModel>(
         future: userIdFuture, // Using the Future from _initializeHiveBox
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -64,7 +64,7 @@ class _ProfileMeScreenState extends State<ProfileMeScreen> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData) {
-            return const Center(child: Text('User not found.'));
+            return const Center(child: Text('UserModel not found.'));
           }
 
           final user = snapshot.data!;
@@ -74,7 +74,7 @@ class _ProfileMeScreenState extends State<ProfileMeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // User Image Section
+                // UserModel Image Section
                 const CircleAvatar(
                   backgroundImage: NetworkImage(
                     'https://media.muanhatructuyen.vn/post/226/50/3/hinh-nen-mau-hong-4k.jpg', // Replace with your image URL
@@ -82,7 +82,7 @@ class _ProfileMeScreenState extends State<ProfileMeScreen> {
                   radius: 50,
                 ),
                 const SizedBox(height: 16),
-                // User Info Section
+                // UserModel Info Section
                 Text(
                   user.username,
                   style: const TextStyle(
@@ -99,14 +99,14 @@ class _ProfileMeScreenState extends State<ProfileMeScreen> {
                   style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 20),
-                // User Role Section
+                // UserModel Role Section
                 Text(
                   'Role: ${user.role}',
                   style: const TextStyle(
                       fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
-                // User Status Section
+                // UserModel Status Section
                 Text(
                   'Status: ${user.status ? "Active" : "Inactive"}',
                   style: const TextStyle(

@@ -41,6 +41,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   String destinationUser = "";
   String amount = '';
   bool isDeal = false;
+
   @override
   void initState() {
     super.initState();

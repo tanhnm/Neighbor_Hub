@@ -5,7 +5,7 @@ import '../../providers/drivers_controller.dart';
 import 'message_screen.dart';
 
 class DriverListScreenNew extends ConsumerWidget {
-  const DriverListScreenNew({Key? key, required this.booking}) : super(key: key);
+  const DriverListScreenNew({super.key, required this.booking});
   final Map<String, dynamic> booking;
 
   @override

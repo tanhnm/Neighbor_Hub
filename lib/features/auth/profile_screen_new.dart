@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/domains/freezed/driver_model.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -7,7 +8,7 @@ import '../../providers/driver_notifier.dart';
 import '../payment/qrcode_payment_screen.dart';
 
 class ProfileScreenNew extends HookConsumerWidget {
-  final Map<String, dynamic> driver;
+  final DriverModel driver;
   final Map<String, dynamic> booking;
   final int registrationFormId;
 
@@ -52,7 +53,7 @@ class ProfileScreenNew extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Thông Tin ${driver['username']}'),
+        title: Text('Thông Tin ${driver.username}'),
         centerTitle: true,
       ),
       body: Padding(
@@ -70,17 +71,17 @@ class ProfileScreenNew extends HookConsumerWidget {
             const SizedBox(height: 16),
             // Driver Info Section
             Text(
-              driver['username'],
+              driver.username,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              driver['phone'],
+              driver.phone,
               style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
             const SizedBox(height: 4),
             Text(
-              driver['email'],
+              driver.email,
               style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
             const SizedBox(height: 20),
@@ -96,7 +97,7 @@ class ProfileScreenNew extends HookConsumerWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      driver['averageRating'].toString(),
+                      driver.averageRating.toString(),
                       style: const TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold),
                     ),
@@ -110,7 +111,7 @@ class ProfileScreenNew extends HookConsumerWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${convertNum(driver['revenue'])} VND',
+                      '${convertNum(driver.revenue)} VND',
                       style: const TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold),
                     ),

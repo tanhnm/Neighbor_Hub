@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/common/router.dart';
 import 'package:flutter_application_1/common/routes.dart';
+import 'package:flutter_application_1/domains/freezed/driver_model.dart';
 import 'package:flutter_application_1/domains/user_model.dart';
 import 'package:flutter_application_1/features/auth/profile_screen_new.dart';
 import 'package:flutter_application_1/features/booking_car/driver_list_screen.dart';
@@ -84,8 +85,8 @@ class _ActivityScreenState extends State<ActivityScreen> {
                 var pickupTime =
                     booking['pickupTime'].toString().convertToVietnameseTime();
                 var isPastPickupTime =
-                    DateTime.parse(booking['pickupTime'].toString())
-                        .isBefore(DateTime.now().subtract(const Duration(days: 3)));
+                    DateTime.parse(booking['pickupTime'].toString()).isBefore(
+                        DateTime.now().subtract(const Duration(days: 3)));
                 var status = booking['status'];
                 var amount = booking['amount'];
                 var driver =
@@ -155,30 +156,31 @@ class _ActivityScreenState extends State<ActivityScreen> {
                               ? null
                               : () {
                                   if (driver == 'N/A') {
-                                    context.pushNamed(Routes.driverList, extra: booking);
+                                    context.pushNamed(Routes.driverList,
+                                        extra: booking);
                                   } else {
                                     // Handle view booking details logic here
+                                    DriverModel driverModel =
+                                        DriverModel.fromJson({
+                                      "driverId": driverId,
+                                      "username": booking['registration']
+                                          ['driver']['username'],
+                                      "phone": booking['registration']['driver']
+                                          ['phone'],
+                                      "email": booking['registration']['driver']
+                                          ['email'],
+                                      "averageRating": booking['registration']
+                                              ['driver']['averageRating'] ??
+                                          0,
+                                      "revenue": booking['registration']
+                                              ['driver']['revenue'] ??
+                                          0,
+                                    });
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => ProfileScreenNew(
-                                          driver: {
-                                            "driverId": driverId,
-                                            "username": booking['registration']
-                                                ['driver']['username'],
-                                            "phone": booking['registration']
-                                                ['driver']['phone'],
-                                            "email": booking['registration']
-                                                ['driver']['email'],
-                                            "averageRating":
-                                                booking['registration']
-                                                            ['driver']
-                                                        ['averageRating'] ??
-                                                    0,
-                                            "revenue": booking['registration']
-                                                    ['driver']['revenue'] ??
-                                                0,
-                                          },
+                                          driver: driverModel,
                                           registrationFormId:
                                               booking['registration']
                                                   ['registrationId'],

@@ -97,27 +97,6 @@ Map<String, dynamic> _$$RegistrationImplToJson(_$RegistrationImpl instance) =>
       'status': instance.status,
     };
 
-_$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
-      userId: (json['userId'] as num).toInt(),
-      username: json['username'] as String,
-      phone: json['phone'] as String,
-      email: json['email'] as String,
-      password: json['password'] as String,
-      role: json['role'] as String,
-      status: json['status'] as bool,
-    );
-
-Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
-    <String, dynamic>{
-      'userId': instance.userId,
-      'username': instance.username,
-      'phone': instance.phone,
-      'email': instance.email,
-      'password': instance.password,
-      'role': instance.role,
-      'status': instance.status,
-    };
-
 _$VoucherImpl _$$VoucherImplFromJson(Map<String, dynamic> json) =>
     _$VoucherImpl(
       voucherId: (json['voucherId'] as num).toInt(),

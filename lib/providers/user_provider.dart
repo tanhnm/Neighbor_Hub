@@ -9,8 +9,7 @@ final userProvider = FutureProvider<User?>((ref) async {
     final userBox = await Hive.openBox<User>('users');
     final user = userBox.get('user');
     if (user == null) {
-      return User(userId: 1, username: '1', phone: '11', email: '11', role: '11', status: false);
-      // throw Exception('No user found in the Hive box...');
+      throw Exception('No user found in the Hive box...');
     }
     return user;
   } catch (e) {

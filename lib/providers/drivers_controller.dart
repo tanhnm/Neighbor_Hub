@@ -51,8 +51,8 @@ class DriverNotifier extends AsyncNotifier<DriverState> {
         _showLocationPrompt();
       }
     } catch (e) {
-      // Handle any errors
-      state = AsyncError(e.toString());
+      state = AsyncValue.error(e.toString(), StackTrace.current);
+
     }
   }
 

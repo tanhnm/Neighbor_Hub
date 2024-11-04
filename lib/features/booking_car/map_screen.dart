@@ -30,7 +30,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  Timer? _nearbyPlacesTimer; // Timer variable
+
   List<LatLng> points = [];
   List listOfPoint = [];
   String firstPick = '';

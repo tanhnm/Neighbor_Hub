@@ -6,6 +6,8 @@ import 'package:flutter_application_1/domains/freezed/driver_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'dart:convert';
 
+import '../user_model.dart';
+
 part 'booking_model.freezed.dart';
 part 'booking_model.g.dart';
 
@@ -71,20 +73,6 @@ class Registration with _$Registration {
 
 
 
-@freezed
-class User with _$User {
-  const factory User({
-    required int userId,
-    required String username,
-    required String phone,
-    required String email,
-    required String password,
-    required String role,
-    required bool status,
-  }) = _User;
-
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-}
 
 @freezed
 class Voucher with _$Voucher {

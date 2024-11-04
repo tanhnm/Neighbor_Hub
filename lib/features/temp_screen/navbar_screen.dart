@@ -9,6 +9,8 @@ import '../driver/registration_form_screen.dart';
 import '../home/main_page.dart';
 import 'setting_screen.dart';
 
+
+//todo: old. no use
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
 

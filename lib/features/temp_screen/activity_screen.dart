@@ -179,8 +179,22 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ProfileScreenNew(
-                                          driver: driverModel,
+                                        builder: (context) => ProfileScreen(
+                                          driver: {
+                                            "driverId": driverId,
+                                            "username": booking['registration']
+                                            ['driver']['username'],
+                                            "phone": booking['registration']['driver']
+                                            ['phone'],
+                                            "email": booking['registration']['driver']
+                                            ['email'],
+                                            "averageRating": booking['registration']
+                                            ['driver']['averageRating'] ??
+                                                0,
+                                            "revenue": booking['registration']
+                                            ['driver']['revenue'] ??
+                                                0,
+                                          },
                                           registrationFormId:
                                               booking['registration']
                                                   ['registrationId'],

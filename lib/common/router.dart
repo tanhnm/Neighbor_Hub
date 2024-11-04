@@ -10,8 +10,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
+import '../domains/freezed/booking_detail_model.dart';
 import '../features/booking_car/destination_pick_new.dart';
 import '../features/booking_car/driver_list_screen.dart';
+import '../features/booking_car/driver_list_screen_new.dart';
 import '../features/home/main_page.dart';
 import '../features/splash/splash_screen.dart';
 import '../features/temp_screen/login_screen.dart';
@@ -77,9 +79,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                         path: Routes.driverList,
                         name: Routes.driverList,
                         builder: (context, state) {
-                          final Map<String, dynamic> booking =
-                              state.extra as Map<String, dynamic>;
-                          return DriverListScreen(booking: booking);
+                          // final Map<String, dynamic> booking =
+                          //     state.extra as Map<String, dynamic>;
+                          // return DriverListScreen(booking: booking);
+                          final BookingDetailModel bookingDetail =
+                          state.extra as BookingDetailModel;
+                          return DriverListScreenNew(bookingDetail: bookingDetail);
                         }),
                   ]),
             ]),

@@ -102,31 +102,14 @@ class ActivityScreenNew extends HookConsumerWidget {
                                     onPressed: isPastPickupTime
                                         ? null
                                         : () {
-                                            if (bookingDetail.registration
-                                                    ?.driver.username ==
-                                                'N/A') {
+                                            if (bookingDetail.registration == null) {
                                               context.pushNamed(
                                                   Routes.driverList,
                                                   extra: bookingDetail);
                                             } else {
                                               // Handle view booking details logic here
 
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ProfileScreenNew(
-                                                    driver: bookingDetail
-                                                        .registration!.driver,
-                                                    registrationFormId:
-                                                        bookingDetail
-                                                            .registration
-                                                            !.registrationId,
-                                                    booking:
-                                                        bookingDetail.toJson(),
-                                                  ),
-                                                ),
-                                              );
+                                              // context.pushNamed(Routes.profileDriver, extra: bookingDetail);
                                             }
                                           },
                                     child: isPastPickupTime
@@ -137,9 +120,7 @@ class ActivityScreenNew extends HookConsumerWidget {
                                                 Text(
                                                     'Đã quá thời gian để tìm tài xế!'),
                                               ])
-                                        : bookingDetail.registration?.driver
-                                                    .username ==
-                                                'N/A'
+                                        : bookingDetail.registration == null
                                             ? Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,

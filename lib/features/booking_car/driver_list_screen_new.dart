@@ -1,57 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
+import 'package:flutter_application_1/domains/freezed/registration_form_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
-import '../../providers/drivers_controller.dart';
+import '../../controller/drivers_controller.dart';
 import 'message_screen.dart';
 
 class DriverListScreenNew extends ConsumerWidget {
-  const DriverListScreenNew({super.key, required this.booking});
-  final Map<String, dynamic> booking;
+  const DriverListScreenNew({super.key, required this.bookingDetail});
+  final BookingDetailModel bookingDetail;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Watch the driverProvider
-    final driverState = ref.watch(driverProvider);
+    final driverState = ref.watch(driversControllerProvider(bookingDetail.bookingId));
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Danh Sách Các Tài Xế'),
       ),
       body: driverState.when(
-        data: (state) {
-          if (state.errorMessage != null) {
-            return Center(child: Text('Error: ${state.errorMessage}'));
-          }
+        data: (registrations) {
 
-          if (state.drivers.isEmpty) {
-            return const Center(child: Text('No drivers found'));
-          }
 
-          // Display the list of drivers
           return ListView.builder(
-            itemCount: state.drivers.length,
+            itemCount: registrations.length,
             itemBuilder: (context, index) {
-              final driver = state.drivers[index];
-              final registrationId = state.registrationDrivers[index];
+              RegistrationFormModel registration = registrations[index];
+
               return Card(
                 child: ListTile(
                   leading: const CircleAvatar(
                     backgroundImage: NetworkImage(
                         'https://media.muanhatructuyen.vn/post/226/50/3/hinh-nen-mau-hong-4k.jpg'),
                   ),
-                  title: Text(driver['username']),
-                  subtitle: Text(driver['phone']),
+                  title: Text(registration.driver.username),
+                  subtitle: Text(registration.driver.phone),
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MessageScreen(
-                          driver: driver,
-                          booking: booking,
-                          registrationId: registrationId,
-                        ),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => MessageScreen(
+                    //       driver: driver,
+                    //       booking: booking,
+                    //       registrationId: registrationId,
+                    //     ),
+                    //   ),
+                    // );
                   },
                 ),
               );
@@ -64,7 +59,7 @@ class DriverListScreenNew extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Trigger fetching of drivers when the button is pressed
-          ref.read(driverProvider.notifier).fetchDrivers(booking);
+          ref.read(driversControllerProvider(bookingDetail.bookingId).notifier).fetchDrivers(bookingDetail.bookingId);
         },
         child: const Icon(Icons.search),
       ),

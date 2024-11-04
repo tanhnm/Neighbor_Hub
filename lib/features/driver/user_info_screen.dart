@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/domains/freezed/booking_model.dart';
 import 'package:flutter_application_1/services/driver_service/driver_service.dart';
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -12,7 +13,7 @@ import 'package:toastification/toastification.dart';
 
 class UserInfoScreen extends StatefulWidget {
   final Map<String, dynamic> user;
-  final Booking booking;
+  final BookingModel booking;
 
   const UserInfoScreen({super.key, required this.user, required this.booking});
 

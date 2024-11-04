@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/domains/booking.dart';
+import 'package:flutter_application_1/domains/freezed/booking_model.dart';
 import 'package:flutter_application_1/features/temp_screen/activity_screen.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
@@ -39,7 +40,7 @@ class BookingController {
     }
   }
 
-  Future<List<Booking>> getBookingAdvanceList() async {
+  Future<List<BookingModel>> getBookingAdvanceList() async {
     try {
       // Get the token
       // String? token = await _getToken();
@@ -57,14 +58,15 @@ class BookingController {
       // Check if the request was successful
       if (response.statusCode == 200) {
         // Parse the JSON response
-        List<dynamic> responseData = json.decode(response.body);
+        // List<dynamic> responseData = json.decode(response.body);
+        //
+        // // Convert the list of JSON objects to a list of Booking objects
+        // List<Booking> bookings = responseData.map((json) {
+        //   return Booking.fromJson(json);
+        // }).toList();
+        return bookingModelFromJson(response.body);
 
-        // Convert the list of JSON objects to a list of Booking objects
-        List<Booking> bookings = responseData.map((json) {
-          return Booking.fromJson(json);
-        }).toList();
-
-        return bookings;
+        // return bookings;
       } else {
         toastification.show(
           context: context,

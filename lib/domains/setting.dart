@@ -47,10 +47,12 @@ final List<Setting> settings = [
       await userBox.clear();
       await locationBox.clear();
       await box.clear();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
+      if(context.mounted){
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      }
     },
   ),
 ];

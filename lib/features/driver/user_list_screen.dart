@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:toastification/toastification.dart';
 
+import '../../domains/freezed/booking_model.dart';
 import 'message_screen_driver.dart';
 
 class UserListScreen extends StatefulWidget {
@@ -98,7 +99,7 @@ class _UserListScreenState extends State<UserListScreen> {
                   ? const Text("Hãy Bật Chế Độ Đang Rảnh Để Xem")
                   : LoadingAnimationWidget.waveDots(
                       color: Colors.black, size: 40))
-          : FutureBuilder<List<Booking>>(
+          : FutureBuilder<List<BookingModel>>(
               future: userIdFuture
                   ?.then((userId) => driverService.getAllBookings(user!)),
               builder: (context, snapshot) {

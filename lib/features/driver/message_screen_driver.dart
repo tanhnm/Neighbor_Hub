@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_1/domains/freezed/booking_model.dart';
 import 'package:flutter_application_1/services/driver_service/driver_service.dart';
 
 import 'user_info_screen.dart';
@@ -7,7 +8,7 @@ import 'user_info_screen.dart';
 class MessageScreenDriver extends StatefulWidget {
   final Map<String, dynamic>
       user; // Contains user details (userId, username, phone)
-  final Booking booking;
+  final BookingModel booking;
   final int driver;
   const MessageScreenDriver(
       {super.key,

@@ -155,7 +155,6 @@ class _ActivityScreenState extends State<ActivityScreen> {
                               ? null
                               : () {
                                   if (driver == 'N/A') {
-
                                     context.pushNamed(Routes.driverList, extra: booking);
                                   } else {
                                     // Handle view booking details logic here

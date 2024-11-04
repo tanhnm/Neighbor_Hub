@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/features/booking_car/map_screen_new.dart';
+import 'package:flutter_application_1/features/driver/map_driver_screen_new.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -62,14 +63,14 @@ class DestinationPickNew extends HookConsumerWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => isDriver
-                                    ? MapDriverScreen(
+                                    ? MapDriverScreenNew(
                                         driverId: user.value!.userId,
                                         registrationID: registrationFormId!,
                                         lat: currentPosition.latitude,
                                         lon: currentPosition.longitude,
                                         registrationStatus: registrationStatus!,
                                       )
-                                    : MapScreen(
+                                    : MapScreenNew(
                                         initialLatitude:
                                             currentPosition.latitude,
                                         initialLongitude:
@@ -159,8 +160,8 @@ class DestinationPickNew extends HookConsumerWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => MapScreenNew(
-                                currentPosition.latitude,
-                                currentPosition.longitude,
+                                initialLatitude: currentPosition.latitude,
+                               initialLongitude:  currentPosition.longitude,
                               ),
                             ),
                           );

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
 import 'package:flutter_application_1/features/driver/user_info_screen_new.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -8,10 +9,9 @@ import '../../domains/freezed/booking_model.dart';
 import '../../domains/freezed/user_model.dart';
 
 class MessageScreenDriverNew extends HookConsumerWidget {
-  const MessageScreenDriverNew(this.user, this.booking, this.driver, {super.key});
+  const MessageScreenDriverNew({super.key, required this.bookingDetail,required this.driver, });
 
-  final UserModel user;
-  final BookingModel booking;
+  final BookingDetailModel bookingDetail;
   final int driver;
 
   @override
@@ -30,9 +30,9 @@ class MessageScreenDriverNew extends HookConsumerWidget {
       final messageText = messageController.text.trim();
       if (messageText.isNotEmpty) {
         await _messagesRef.add({
-          'booking': '${booking.bookingDetail.bookingId}',
+          'booking': '${bookingDetail.bookingId}',
           'text': messageText,
-          'userId': user.userId.toString(),
+          'userId': bookingDetail.user.userId.toString(),
           'senderId': currentUserId.toString(),
           'driverId': currentUserId.toString(),
           'timestamp': FieldValue.serverTimestamp(),
@@ -43,7 +43,7 @@ class MessageScreenDriverNew extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat with ${user.username}'),
+        title: Text('Chat with ${bookingDetail.user.username}'),
       ),
       body: Column(
         children: [
@@ -54,7 +54,7 @@ class MessageScreenDriverNew extends HookConsumerWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => UserInfoScreenNew(
-                   user, booking
+                   bookingDetail.user,
                   ),
                 ),
               );
@@ -69,7 +69,7 @@ class MessageScreenDriverNew extends HookConsumerWidget {
                     radius: 30,
                   ),
                   const SizedBox(width: 10),
-                  Text(user.username,
+                  Text(bookingDetail.user.username,
                       style: const TextStyle(fontSize: 20)),
                 ],
               ),
@@ -80,7 +80,7 @@ class MessageScreenDriverNew extends HookConsumerWidget {
             child: StreamBuilder<QuerySnapshot>(
               stream: _messagesRef
                   .where('booking',
-                  isEqualTo: booking.bookingDetail.bookingId.toString())
+                  isEqualTo: bookingDetail.bookingId.toString())
                   .where('driverId', isEqualTo: driver.toString())
                   .orderBy('timestamp', descending: true)
                   .snapshots(),

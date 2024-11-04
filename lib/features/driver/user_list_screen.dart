@@ -193,7 +193,7 @@ class _UserListScreenState extends State<UserListScreen> {
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
-                                      'Ngày: ${booking.bookingDetail.pickupTime.convertToVietnameseTime()}',
+                                      'Ngày: ${booking.bookingDetail.pickupTime?.convertToVietnameseTime()}',
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,

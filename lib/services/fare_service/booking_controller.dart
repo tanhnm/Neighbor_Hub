@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/domains/booking.dart';
 import 'package:flutter_application_1/domains/freezed/booking_model.dart';
 import 'package:flutter_application_1/features/temp_screen/activity_screen.dart';
 import 'package:hive/hive.dart';

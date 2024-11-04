@@ -11,18 +11,21 @@ _$BookingDetailModelImpl _$$BookingDetailModelImplFromJson(
     _$BookingDetailModelImpl(
       bookingId: (json['bookingId'] as num).toInt(),
       user: UserModel.fromJson(json['user'] as Map<String, dynamic>),
-      registration: RegistrationFormModel.fromJson(
-          json['registration'] as Map<String, dynamic>),
+      registration: json['registration'] == null
+          ? null
+          : RegistrationFormModel.fromJson(
+              json['registration'] as Map<String, dynamic>),
       amount: (json['amount'] as num).toInt(),
       pickupLocation: json['pickupLocation'] as String,
       dropoffLocation: json['dropoffLocation'] as String,
       pickupTime: json['pickupTime'] as String,
-      dropoffTime: json['dropoffTime'] as String,
+      dropoffTime: json['dropoffTime'] as String?,
       distance: (json['distance'] as num).toInt(),
       status: json['status'] as String,
-      vouchers: (json['vouchers'] as List<dynamic>)
-          .map((e) => VoucherModel.fromJson(e as Map<String, dynamic>))
+      vouchers: (json['vouchers'] as List<dynamic>?)
+          ?.map((e) => VoucherModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      qrPayment: json['qrPayment'] as String?,
     );
 
 Map<String, dynamic> _$$BookingDetailModelImplToJson(
@@ -39,4 +42,5 @@ Map<String, dynamic> _$$BookingDetailModelImplToJson(
       'distance': instance.distance,
       'status': instance.status,
       'vouchers': instance.vouchers,
+      'qrPayment': instance.qrPayment,
     };

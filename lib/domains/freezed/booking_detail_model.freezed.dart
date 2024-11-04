@@ -22,15 +22,16 @@ BookingDetailModel _$BookingDetailModelFromJson(Map<String, dynamic> json) {
 mixin _$BookingDetailModel {
   int get bookingId => throw _privateConstructorUsedError;
   UserModel get user => throw _privateConstructorUsedError;
-  RegistrationFormModel get registration => throw _privateConstructorUsedError;
+  RegistrationFormModel? get registration => throw _privateConstructorUsedError;
   int get amount => throw _privateConstructorUsedError;
   String get pickupLocation => throw _privateConstructorUsedError;
   String get dropoffLocation => throw _privateConstructorUsedError;
   String get pickupTime => throw _privateConstructorUsedError;
-  String get dropoffTime => throw _privateConstructorUsedError;
+  String? get dropoffTime => throw _privateConstructorUsedError;
   int get distance => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
-  List<VoucherModel> get vouchers => throw _privateConstructorUsedError;
+  List<VoucherModel>? get vouchers => throw _privateConstructorUsedError;
+  String? get qrPayment => throw _privateConstructorUsedError;
 
   /// Serializes this BookingDetailModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -51,18 +52,19 @@ abstract class $BookingDetailModelCopyWith<$Res> {
   $Res call(
       {int bookingId,
       UserModel user,
-      RegistrationFormModel registration,
+      RegistrationFormModel? registration,
       int amount,
       String pickupLocation,
       String dropoffLocation,
       String pickupTime,
-      String dropoffTime,
+      String? dropoffTime,
       int distance,
       String status,
-      List<VoucherModel> vouchers});
+      List<VoucherModel>? vouchers,
+      String? qrPayment});
 
   $UserModelCopyWith<$Res> get user;
-  $RegistrationFormModelCopyWith<$Res> get registration;
+  $RegistrationFormModelCopyWith<$Res>? get registration;
 }
 
 /// @nodoc
@@ -82,15 +84,16 @@ class _$BookingDetailModelCopyWithImpl<$Res, $Val extends BookingDetailModel>
   $Res call({
     Object? bookingId = null,
     Object? user = null,
-    Object? registration = null,
+    Object? registration = freezed,
     Object? amount = null,
     Object? pickupLocation = null,
     Object? dropoffLocation = null,
     Object? pickupTime = null,
-    Object? dropoffTime = null,
+    Object? dropoffTime = freezed,
     Object? distance = null,
     Object? status = null,
-    Object? vouchers = null,
+    Object? vouchers = freezed,
+    Object? qrPayment = freezed,
   }) {
     return _then(_value.copyWith(
       bookingId: null == bookingId
@@ -101,10 +104,10 @@ class _$BookingDetailModelCopyWithImpl<$Res, $Val extends BookingDetailModel>
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
               as UserModel,
-      registration: null == registration
+      registration: freezed == registration
           ? _value.registration
           : registration // ignore: cast_nullable_to_non_nullable
-              as RegistrationFormModel,
+              as RegistrationFormModel?,
       amount: null == amount
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
@@ -121,10 +124,10 @@ class _$BookingDetailModelCopyWithImpl<$Res, $Val extends BookingDetailModel>
           ? _value.pickupTime
           : pickupTime // ignore: cast_nullable_to_non_nullable
               as String,
-      dropoffTime: null == dropoffTime
+      dropoffTime: freezed == dropoffTime
           ? _value.dropoffTime
           : dropoffTime // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       distance: null == distance
           ? _value.distance
           : distance // ignore: cast_nullable_to_non_nullable
@@ -133,10 +136,14 @@ class _$BookingDetailModelCopyWithImpl<$Res, $Val extends BookingDetailModel>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as String,
-      vouchers: null == vouchers
+      vouchers: freezed == vouchers
           ? _value.vouchers
           : vouchers // ignore: cast_nullable_to_non_nullable
-              as List<VoucherModel>,
+              as List<VoucherModel>?,
+      qrPayment: freezed == qrPayment
+          ? _value.qrPayment
+          : qrPayment // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 
@@ -154,8 +161,12 @@ class _$BookingDetailModelCopyWithImpl<$Res, $Val extends BookingDetailModel>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $RegistrationFormModelCopyWith<$Res> get registration {
-    return $RegistrationFormModelCopyWith<$Res>(_value.registration, (value) {
+  $RegistrationFormModelCopyWith<$Res>? get registration {
+    if (_value.registration == null) {
+      return null;
+    }
+
+    return $RegistrationFormModelCopyWith<$Res>(_value.registration!, (value) {
       return _then(_value.copyWith(registration: value) as $Val);
     });
   }
@@ -172,20 +183,21 @@ abstract class _$$BookingDetailModelImplCopyWith<$Res>
   $Res call(
       {int bookingId,
       UserModel user,
-      RegistrationFormModel registration,
+      RegistrationFormModel? registration,
       int amount,
       String pickupLocation,
       String dropoffLocation,
       String pickupTime,
-      String dropoffTime,
+      String? dropoffTime,
       int distance,
       String status,
-      List<VoucherModel> vouchers});
+      List<VoucherModel>? vouchers,
+      String? qrPayment});
 
   @override
   $UserModelCopyWith<$Res> get user;
   @override
-  $RegistrationFormModelCopyWith<$Res> get registration;
+  $RegistrationFormModelCopyWith<$Res>? get registration;
 }
 
 /// @nodoc
@@ -203,15 +215,16 @@ class __$$BookingDetailModelImplCopyWithImpl<$Res>
   $Res call({
     Object? bookingId = null,
     Object? user = null,
-    Object? registration = null,
+    Object? registration = freezed,
     Object? amount = null,
     Object? pickupLocation = null,
     Object? dropoffLocation = null,
     Object? pickupTime = null,
-    Object? dropoffTime = null,
+    Object? dropoffTime = freezed,
     Object? distance = null,
     Object? status = null,
-    Object? vouchers = null,
+    Object? vouchers = freezed,
+    Object? qrPayment = freezed,
   }) {
     return _then(_$BookingDetailModelImpl(
       bookingId: null == bookingId
@@ -222,10 +235,10 @@ class __$$BookingDetailModelImplCopyWithImpl<$Res>
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
               as UserModel,
-      registration: null == registration
+      registration: freezed == registration
           ? _value.registration
           : registration // ignore: cast_nullable_to_non_nullable
-              as RegistrationFormModel,
+              as RegistrationFormModel?,
       amount: null == amount
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
@@ -242,10 +255,10 @@ class __$$BookingDetailModelImplCopyWithImpl<$Res>
           ? _value.pickupTime
           : pickupTime // ignore: cast_nullable_to_non_nullable
               as String,
-      dropoffTime: null == dropoffTime
+      dropoffTime: freezed == dropoffTime
           ? _value.dropoffTime
           : dropoffTime // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       distance: null == distance
           ? _value.distance
           : distance // ignore: cast_nullable_to_non_nullable
@@ -254,10 +267,14 @@ class __$$BookingDetailModelImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as String,
-      vouchers: null == vouchers
+      vouchers: freezed == vouchers
           ? _value._vouchers
           : vouchers // ignore: cast_nullable_to_non_nullable
-              as List<VoucherModel>,
+              as List<VoucherModel>?,
+      qrPayment: freezed == qrPayment
+          ? _value.qrPayment
+          : qrPayment // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -268,15 +285,16 @@ class _$BookingDetailModelImpl implements _BookingDetailModel {
   const _$BookingDetailModelImpl(
       {required this.bookingId,
       required this.user,
-      required this.registration,
+      this.registration,
       required this.amount,
       required this.pickupLocation,
       required this.dropoffLocation,
       required this.pickupTime,
-      required this.dropoffTime,
+      this.dropoffTime,
       required this.distance,
       required this.status,
-      required final List<VoucherModel> vouchers})
+      final List<VoucherModel>? vouchers,
+      this.qrPayment})
       : _vouchers = vouchers;
 
   factory _$BookingDetailModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -287,7 +305,7 @@ class _$BookingDetailModelImpl implements _BookingDetailModel {
   @override
   final UserModel user;
   @override
-  final RegistrationFormModel registration;
+  final RegistrationFormModel? registration;
   @override
   final int amount;
   @override
@@ -297,22 +315,27 @@ class _$BookingDetailModelImpl implements _BookingDetailModel {
   @override
   final String pickupTime;
   @override
-  final String dropoffTime;
+  final String? dropoffTime;
   @override
   final int distance;
   @override
   final String status;
-  final List<VoucherModel> _vouchers;
+  final List<VoucherModel>? _vouchers;
   @override
-  List<VoucherModel> get vouchers {
+  List<VoucherModel>? get vouchers {
+    final value = _vouchers;
+    if (value == null) return null;
     if (_vouchers is EqualUnmodifiableListView) return _vouchers;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_vouchers);
+    return EqualUnmodifiableListView(value);
   }
 
   @override
+  final String? qrPayment;
+
+  @override
   String toString() {
-    return 'BookingDetailModel(bookingId: $bookingId, user: $user, registration: $registration, amount: $amount, pickupLocation: $pickupLocation, dropoffLocation: $dropoffLocation, pickupTime: $pickupTime, dropoffTime: $dropoffTime, distance: $distance, status: $status, vouchers: $vouchers)';
+    return 'BookingDetailModel(bookingId: $bookingId, user: $user, registration: $registration, amount: $amount, pickupLocation: $pickupLocation, dropoffLocation: $dropoffLocation, pickupTime: $pickupTime, dropoffTime: $dropoffTime, distance: $distance, status: $status, vouchers: $vouchers, qrPayment: $qrPayment)';
   }
 
   @override
@@ -337,7 +360,9 @@ class _$BookingDetailModelImpl implements _BookingDetailModel {
             (identical(other.distance, distance) ||
                 other.distance == distance) &&
             (identical(other.status, status) || other.status == status) &&
-            const DeepCollectionEquality().equals(other._vouchers, _vouchers));
+            const DeepCollectionEquality().equals(other._vouchers, _vouchers) &&
+            (identical(other.qrPayment, qrPayment) ||
+                other.qrPayment == qrPayment));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -354,7 +379,8 @@ class _$BookingDetailModelImpl implements _BookingDetailModel {
       dropoffTime,
       distance,
       status,
-      const DeepCollectionEquality().hash(_vouchers));
+      const DeepCollectionEquality().hash(_vouchers),
+      qrPayment);
 
   /// Create a copy of BookingDetailModel
   /// with the given fields replaced by the non-null parameter values.
@@ -377,15 +403,16 @@ abstract class _BookingDetailModel implements BookingDetailModel {
   const factory _BookingDetailModel(
       {required final int bookingId,
       required final UserModel user,
-      required final RegistrationFormModel registration,
+      final RegistrationFormModel? registration,
       required final int amount,
       required final String pickupLocation,
       required final String dropoffLocation,
       required final String pickupTime,
-      required final String dropoffTime,
+      final String? dropoffTime,
       required final int distance,
       required final String status,
-      required final List<VoucherModel> vouchers}) = _$BookingDetailModelImpl;
+      final List<VoucherModel>? vouchers,
+      final String? qrPayment}) = _$BookingDetailModelImpl;
 
   factory _BookingDetailModel.fromJson(Map<String, dynamic> json) =
       _$BookingDetailModelImpl.fromJson;
@@ -395,7 +422,7 @@ abstract class _BookingDetailModel implements BookingDetailModel {
   @override
   UserModel get user;
   @override
-  RegistrationFormModel get registration;
+  RegistrationFormModel? get registration;
   @override
   int get amount;
   @override
@@ -405,13 +432,15 @@ abstract class _BookingDetailModel implements BookingDetailModel {
   @override
   String get pickupTime;
   @override
-  String get dropoffTime;
+  String? get dropoffTime;
   @override
   int get distance;
   @override
   String get status;
   @override
-  List<VoucherModel> get vouchers;
+  List<VoucherModel>? get vouchers;
+  @override
+  String? get qrPayment;
 
   /// Create a copy of BookingDetailModel
   /// with the given fields replaced by the non-null parameter values.

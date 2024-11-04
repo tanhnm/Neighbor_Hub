@@ -23,7 +23,7 @@ import '../../view/button_bottom.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class MapScreenNew extends HookConsumerWidget {
-  const MapScreenNew(this.initialLatitude, this.initialLongitude, {super.key});
+  const MapScreenNew( {super.key, required this.initialLatitude, required this.initialLongitude,});
 
   final double initialLatitude;
   final double initialLongitude;

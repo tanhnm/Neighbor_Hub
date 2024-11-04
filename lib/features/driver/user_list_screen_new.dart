@@ -5,6 +5,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter/material.dart';
+
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../domains/freezed/booking_model.dart';
@@ -18,7 +20,6 @@ class UserListScreenNew extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final driverService = DriverService();
 
     // State variables using hooks
@@ -30,13 +31,13 @@ class UserListScreenNew extends HookConsumerWidget {
     final registrationStatus = useState<int?>(null);
     final vehicleType = useState<String?>(null);
 
-
     final userAsyncValue = ref.watch(userProvider);
 
     useEffect(() {
       Future<void> _loadRegistrationData(int userId) async {
         try {
-          final forms = await RegistrationService().getAllRegistrationForms(userId);
+          final forms =
+              await RegistrationService().getAllRegistrationForms(userId);
           if (forms.isNotEmpty) {
             registrationFormId.value = forms[0]['registrationId'] as int;
             registrationStatus.value = forms[0]['status'] as int;
@@ -71,10 +72,6 @@ class UserListScreenNew extends HookConsumerWidget {
       return null; // No clean-up needed
     }, [userAsyncValue]); // Re-run when userAsyncValue changes
 
-
-
-
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('User List'),
@@ -84,7 +81,7 @@ class UserListScreenNew extends HookConsumerWidget {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => const BottomNavBar()),
-                  (Route<dynamic> route) => false,
+              (Route<dynamic> route) => false,
             );
           },
         ),
@@ -107,7 +104,8 @@ class UserListScreenNew extends HookConsumerWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
                   child: LoadingAnimationWidget.waveDots(
-                    color: Colors.black, size: 40,
+                    color: Colors.black,
+                    size: 40,
                   ),
                 );
               } else if (snapshot.hasError) {
@@ -146,9 +144,9 @@ class UserListScreenNew extends HookConsumerWidget {
                                 //   'location': booking.bookingDetail.pickupLocation,
                                 //   'destination': booking.bookingDetail.dropoffLocation,
                                 // },
-                                user,
-                                 booking,
-                                 user.userId,
+                                // user: user,
+                                bookingDetail: booking.bookingDetail,
+                                driver: user.userId,
                               ),
                             ),
                           );
@@ -156,7 +154,8 @@ class UserListScreenNew extends HookConsumerWidget {
                         child: Card(
                           elevation: 2,
                           margin: const EdgeInsets.symmetric(
-                            vertical: 6, horizontal: 4,
+                            vertical: 6,
+                            horizontal: 4,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -197,7 +196,7 @@ class UserListScreenNew extends HookConsumerWidget {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Ngày: ${booking.bookingDetail.pickupTime.convertToVietnameseTime()}',
+                                  'Ngày: ${booking.bookingDetail.pickupTime?.convertToVietnameseTime()}',
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -221,7 +220,8 @@ class UserListScreenNew extends HookConsumerWidget {
                                 UserCard(
                                   name: booking.bookingDetail.user.username,
                                   phone: booking.bookingDetail.user.phone,
-                                  kilometers: '${booking.bookingDetail.distance} km',
+                                  kilometers:
+                                      '${booking.bookingDetail.distance} km',
                                   price: "${booking.amount} VNĐ",
                                   image: 'https://via.placeholder.com/50',
                                   userId: booking.bookingDetail.user.userId,
@@ -240,7 +240,8 @@ class UserListScreenNew extends HookConsumerWidget {
         },
         loading: () => Center(
           child: LoadingAnimationWidget.waveDots(
-            color: Colors.black, size: 40,
+            color: Colors.black,
+            size: 40,
           ),
         ),
         error: (error, stackTrace) => Center(
@@ -250,6 +251,7 @@ class UserListScreenNew extends HookConsumerWidget {
     );
   }
 }
+
 class UserCard extends StatelessWidget {
   final String name;
   final String phone;

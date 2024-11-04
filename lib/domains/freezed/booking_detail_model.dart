@@ -15,15 +15,16 @@ class BookingDetailModel with _$BookingDetailModel {
   const factory BookingDetailModel({
     required int bookingId,
     required UserModel user,
-    required RegistrationFormModel registration,
+    RegistrationFormModel? registration,
     required int amount,
     required String pickupLocation,
     required String dropoffLocation,
     required String pickupTime,
-    required String dropoffTime,
+    String? dropoffTime,
     required int distance,
     required String status,
-    required List<VoucherModel> vouchers,
+    List<VoucherModel>? vouchers,
+    String? qrPayment
   }) = _BookingDetailModel;
 
   factory BookingDetailModel.fromJson(Map<String, dynamic> json) => _$BookingDetailModelFromJson(json);

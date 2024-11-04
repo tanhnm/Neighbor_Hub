@@ -3,6 +3,7 @@ import 'package:flutter_application_1/features/auth/profile_me_screen.dart';
 import 'package:flutter_application_1/features/booking_car/destination_pick.dart';
 import 'package:flutter_application_1/features/home/main_page_new.dart';
 import 'package:flutter_application_1/features/temp_screen/activity_screen.dart';
+import 'package:flutter_application_1/features/temp_screen/activity_screen_new.dart';
 import 'package:flutter_application_1/features/temp_screen/setting_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -70,7 +71,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                   path: Routes.activity,
                   name: Routes.activity,
-                  builder: (context, state) => const ActivityScreen(),
+                  builder: (context, state) => const ActivityScreenNew(),
                   routes: [
                     GoRoute(
                         path: Routes.driverList,

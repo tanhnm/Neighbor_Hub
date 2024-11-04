@@ -8,9 +8,9 @@ import 'package:latlong2/latlong.dart';
 import '../../services/driver_service/driver_service.dart';
 
 class MapDriverScreenNew extends HookConsumerWidget {
-  const MapDriverScreenNew(this.driverId, this.registrationID,
-      this.registrationStatus, this.lat, this.lon,
-      {super.key});
+  const MapDriverScreenNew(
+      {super.key, required this.driverId, required this.registrationID,
+        required this.registrationStatus, required this.lat, required this.lon,});
 
   final int driverId;
   final int registrationID;

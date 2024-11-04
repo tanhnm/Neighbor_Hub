@@ -15,11 +15,11 @@ import 'package:http/http.dart' as http;
 import '../../services/fare_service/booking_controller.dart';
 
 class UserInfoScreenNew extends HookConsumerWidget {
-  const UserInfoScreenNew(this.user, this.booking, {super.key});
+  const UserInfoScreenNew(this.user, {super.key});
 
 
   final UserModel user;
-  final BookingModel booking;
+
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

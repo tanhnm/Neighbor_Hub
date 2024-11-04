@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/features/splash/splash_screen.dart';
+import 'package:flutter_application_1/providers/app_providers.dart';
 import 'package:flutter_application_1/providers/current_position_provider.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,11 +25,13 @@ void main() async {
   await Hive.openBox<UserModel>('users');
 
   // Load the user from Hive before running the app
-
+  String token = await getTokenFromHive();
   runApp(
-    const ProviderScope(
-      overrides: [],
-      child: MyApp(),
+    ProviderScope(
+      overrides: [
+        tokenProvider.overrideWithValue(token),
+      ],
+      child: const MyApp(),
     ),
   );
 }

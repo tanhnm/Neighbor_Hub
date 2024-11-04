@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_application_1/common/restaurants.dart';
 import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
 import 'package:flutter_application_1/domains/freezed/registration_form_model.dart';
+import 'package:flutter_application_1/providers/app_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -44,25 +45,12 @@ class AppRepository {
         'bookingId': bookingId.toString(),
       },
     ).toString();
-    String? token = await _getToken();
-    if (token == null) {
-      return [];
-    }
-    // Add headers including the Authorization header with the Bearer token
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    };
-    final response = await client.get(url, cancelToken: cancelToken, options: Options(headers: headers));
+    
+    final response = await client.get(url, cancelToken: cancelToken);
     final List list = response.data;
     return list.map((e) => RegistrationFormModel.fromJson(e)).toList();
   }
 
-  Future<String?> _getToken() async {
-    var box = Hive.box('authBox');
-    String? token = box.get('token', defaultValue: null);
-    return token;
-  }
 }
 
 @Riverpod(keepAlive: true)

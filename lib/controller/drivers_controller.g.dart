@@ -6,7 +6,7 @@ part of 'drivers_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$driversControllerHash() => r'99c4d76b92b8bac9db4d1867f02b01c8645ac1b5';
+String _$driversControllerHash() => r'7151c2e8c076aa8c97e17980287db9fb80710ffc';
 
 /// Copied from Dart SDK
 class _SystemHash {

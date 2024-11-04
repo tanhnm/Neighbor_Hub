@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_application_1/domains/freezed/registration_form_model.dart';
+import 'package:flutter_application_1/providers/app_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
+import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../data/api/app_repository.dart';
@@ -17,7 +19,8 @@ class DriversController extends _$DriversController {
 
   @override
   FutureOr<List<RegistrationFormModel>> build(int bookingId) async {
-
+    String token = ref.read(tokenProvider);
+    if(token == '') return [];
     return fetchDrivers(bookingId);
   }
 
@@ -27,6 +30,13 @@ class DriversController extends _$DriversController {
 
       final appRepository = ref.watch(appRepositoryProvider);
 
+
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${ref.read(tokenProvider)}',
+      };
+
+      appRepository.client.options.headers = headers;
       var box = Hive.box('locationBox');
       String userLocation = box.get('currentLocation') ?? '';
 

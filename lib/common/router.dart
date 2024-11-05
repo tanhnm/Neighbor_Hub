@@ -245,31 +245,30 @@ class ScaffoldWithNavBar extends HookConsumerWidget {
               duration: Duration(milliseconds: 800),
               tabs: [
                 GButton(
-                  icon: FontAwesomeIcons.wandMagicSparkles,
-                  text: 'Home',
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                GButton(
-                  icon: FontAwesomeIcons.gun,
-                  text: 'Activity',
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                GButton(
                   icon: FontAwesomeIcons.house,
+
                   borderRadius: BorderRadius.circular(12),
-                  text: 'Settings',
+                ),
+                GButton(
+                  icon: FontAwesomeIcons.chartLine,
+
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                GButton(
+                  icon: FontAwesomeIcons.gears,
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 if (isDriver.value)
                   GButton(
                     icon: FontAwesomeIcons.user,
                     borderRadius: BorderRadius.circular(12),
-                    text: 'User List',
+
                   ),
                 if (isDriver.value)
                   GButton(
                     icon: FontAwesomeIcons.paperclip,
                     borderRadius: BorderRadius.circular(12),
-                    text: 'Reg',
+
                   ),
               ],
               selectedIndex: navigationShell.currentIndex,

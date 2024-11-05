@@ -31,7 +31,6 @@ class UserListScreenNew extends HookConsumerWidget {
       ),
       body: Consumer(
         builder: (context, ref, child) {
-          final userAsync = ref.watch(userModelProvider);
           final driverAsyncValue = ref.watch(getAllRegistrationFormsByIdProvider);
           final bookingByDriverProvider = ref.watch(getAllBookingsByDriverIdProvider);
           return driverAsyncValue.when(
@@ -194,7 +193,7 @@ class UserCard extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(image),
+                  // backgroundImage: NetworkImage(image),
                   radius: 25,
                 ),
                 const SizedBox(width: 10),

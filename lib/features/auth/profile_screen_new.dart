@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
 import 'package:flutter_application_1/domains/freezed/driver_model.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
@@ -8,15 +9,11 @@ import '../../providers/driver_notifier.dart';
 import '../payment/qrcode_payment_screen.dart';
 
 class ProfileScreenNew extends HookConsumerWidget {
-  final DriverModel driver;
-  final Map<String, dynamic> booking;
-  final int registrationFormId;
+  final BookingDetailModel bookingDetail;
 
   const ProfileScreenNew({
     super.key,
-    required this.driver,
-    required this.booking,
-    required this.registrationFormId,
+    required this.bookingDetail,
   });
 
   @override
@@ -28,7 +25,7 @@ class ProfileScreenNew extends HookConsumerWidget {
     final price = ref.watch(priceProvider);
 
     // Watch the FutureProvider for booking info
-    final bookingInfoAsyncValue = ref.watch(bookingInfoProvider(booking));
+    final bookingInfoAsyncValue = ref.watch(bookingInfoProvider(bookingDetail.toJson()));
 
     // Simulate driver decision when the widget is built
     ref.read(driverDecisionProvider.notifier).simulateDriverDecision();
@@ -53,7 +50,7 @@ class ProfileScreenNew extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Thông Tin ${driver.username}'),
+        title: Text('Thông Tin ${bookingDetail.registration!.driver!.username}'),
         centerTitle: true,
       ),
       body: Padding(
@@ -71,17 +68,17 @@ class ProfileScreenNew extends HookConsumerWidget {
             const SizedBox(height: 16),
             // Driver Info Section
             Text(
-              driver.username,
+              bookingDetail.registration!.driver!.username,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              driver.phone,
+              bookingDetail.registration!.driver!.phone,
               style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
             const SizedBox(height: 4),
             Text(
-              driver.email,
+              bookingDetail.registration!.driver!.email,
               style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
             const SizedBox(height: 20),
@@ -97,7 +94,7 @@ class ProfileScreenNew extends HookConsumerWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      driver.averageRating.toString(),
+                      bookingDetail.registration!.driver!.averageRating.toString(),
                       style: const TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold),
                     ),
@@ -111,7 +108,7 @@ class ProfileScreenNew extends HookConsumerWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${convertNum(driver.revenue)} VND',
+                      '${convertNum(bookingDetail.registration!.driver!.revenue)} VND',
                       style: const TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold),
                     ),
@@ -212,8 +209,8 @@ class ProfileScreenNew extends HookConsumerWidget {
                   // Handle action for accepted deal
                   Future<Map<String, dynamic>> addDriver() async {
                     return BookingController(context: context).addDriver(
-                        registrationId: registrationFormId,
-                        bookingId: booking['bookingId']);
+                        registrationId: bookingDetail.registration!.registrationId,
+                        bookingId: bookingDetail.bookingId);
                   }
 
                   Map<String, dynamic> data = await addDriver();
@@ -221,7 +218,7 @@ class ProfileScreenNew extends HookConsumerWidget {
                   // Handle action for accepted deal
                   Future<String> simulateDriverDecision() async {
                     return BookingController(context: context)
-                        .createQrCodePayment(booking['bookingId']);
+                        .createQrCodePayment(bookingDetail.bookingId);
                   }
 
                   imgUrlPayment = await simulateDriverDecision();

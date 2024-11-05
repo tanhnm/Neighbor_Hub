@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/domains/freezed/booking_model.dart';
 import 'package:flutter_application_1/features/auth/profile_me_screen.dart';
+import 'package:flutter_application_1/features/booking_car/message_screen_new.dart';
 import 'package:flutter_application_1/features/driver/map_driver_screen_new.dart';
 import 'package:flutter_application_1/features/driver/message_screen_driver_new.dart';
 import 'package:flutter_application_1/features/driver/registration_form_screen.dart';
@@ -16,6 +17,7 @@ import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../domains/freezed/booking_detail_model.dart';
+import '../features/auth/profile_screen_new.dart';
 import '../features/booking_car/destination_pick_new.dart';
 import '../features/booking_car/driver_list_screen_new.dart';
 import '../features/booking_car/map_screen_new.dart';
@@ -125,18 +127,28 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                               bookingDetail: bookingDetail);
                         },
                         routes: [
-                          //todo: message
-                          // GoRoute(
-                          //   path: Routes.message,
-                          //   name: Routes.message,
-                          //   builder: (context, state) {
-                          //     final BookingDetailModel bookingDetail =
-                          //         state.extra as BookingDetailModel;
-                          //     return DriverListScreenNew(
-                          //         bookingDetail: bookingDetail);
-                          //   },
-                          // ),
+
+                          GoRoute(
+                            path: Routes.message,
+                            name: Routes.message,
+                            builder: (context, state) {
+                              final BookingDetailModel bookingDetail =
+                                  state.extra as BookingDetailModel;
+                              return MessageScreenNew(
+                                  bookingDetail: bookingDetail);
+                            },
+                          ),
                         ]),
+                    GoRoute(
+                      path: Routes.profileDriver,
+                      name: Routes.profileDriver,
+                      builder: (context, state) {
+                        final BookingDetailModel bookingDetail =
+                            state.extra as BookingDetailModel;
+                        return ProfileScreenNew(
+                            bookingDetail: bookingDetail);
+                      },
+                    ),
                   ]),
             ]),
 
@@ -202,15 +214,16 @@ class ScaffoldWithNavBar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDriver = useState<bool>(false);
+    final isDriver = useState(false);
+
+    // Load the driver status once when the widget is first built
     useEffect(() {
-      Future<void> checkDriver() async {
-        var box = await Hive.openBox('authBox');
-        isDriver.value = box.get('is_driver', defaultValue: false);
+      Future<void> loadDriverStatus() async {
+        final driverStatus = await ref.read(driverProvider.future);
+        isDriver.value = driverStatus != null;
       }
 
-      // Call the async function
-      checkDriver();
+      loadDriverStatus();
 
       return null; // No cleanup needed
     }, []);
@@ -246,12 +259,10 @@ class ScaffoldWithNavBar extends HookConsumerWidget {
               tabs: [
                 GButton(
                   icon: FontAwesomeIcons.house,
-
                   borderRadius: BorderRadius.circular(12),
                 ),
                 GButton(
                   icon: FontAwesomeIcons.chartLine,
-
                   borderRadius: BorderRadius.circular(12),
                 ),
                 GButton(
@@ -262,13 +273,11 @@ class ScaffoldWithNavBar extends HookConsumerWidget {
                   GButton(
                     icon: FontAwesomeIcons.user,
                     borderRadius: BorderRadius.circular(12),
-
                   ),
                 if (isDriver.value)
                   GButton(
                     icon: FontAwesomeIcons.paperclip,
                     borderRadius: BorderRadius.circular(12),
-
                   ),
               ],
               selectedIndex: navigationShell.currentIndex,

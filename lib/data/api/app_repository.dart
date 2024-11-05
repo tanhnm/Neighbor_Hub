@@ -49,6 +49,7 @@ class AppRepository {
 
     final response = await client.get(url, cancelToken: cancelToken);
     final List list = response.data;
+    print(list);
     return list.map((e) => RegistrationFormModel.fromJson(e)).toList();
   }
 

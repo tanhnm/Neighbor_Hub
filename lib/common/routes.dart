@@ -10,6 +10,7 @@ abstract class Routes {
 
   static const activity = '/activity';
   static const driverList = 'driverList';
+  static const profileDriver = 'profileDriver';
   static const message = 'message';
 
   static const settings = '/settings';

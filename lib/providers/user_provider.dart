@@ -33,6 +33,7 @@ Future<bool> isUserLoggedIn() async {
 final driverProvider = FutureProvider<int?>((ref) async {
   final authBox = await Hive.openBox('authBox');
   final driverId = authBox.get('driverId', defaultValue: null);
+  print(driverId);
   return driverId;
 });
 

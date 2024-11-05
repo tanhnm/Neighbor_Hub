@@ -4,23 +4,24 @@ import 'package:flutter_application_1/domains/freezed/driver_model.dart';
 import 'package:flutter_application_1/features/auth/profile_screen_new.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:latlong2/latlong.dart';
 
+import '../../common/routes.dart';
+import '../../domains/freezed/booking_detail_model.dart';
 import '../../domains/freezed/booking_model.dart';
 import '../../domains/freezed/user_model.dart';
 import '../../providers/user_provider.dart';
 
 class MessageScreenNew extends HookConsumerWidget {
-  const MessageScreenNew(this.driver, this.booking, this.registrationId,
-      {super.key});
+  const MessageScreenNew(
+      {super.key, required this.bookingDetail, });
 
-  final DriverModel driver;
-  final Map<String, dynamic> booking;
-  final int registrationId;
+  final BookingDetailModel bookingDetail;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,11 +54,11 @@ class MessageScreenNew extends HookConsumerWidget {
 
       try {
         await messagesRef.add({
-          'booking': '${booking['bookingId']}',
+          'booking': '${bookingDetail.bookingId}',
           'text': message,
           'senderId': currentUserId.value.toString(),
           'userId': currentUserId.value.toString(),
-          'driverId': driver.driverId.toString(),
+          'driverId': bookingDetail.registration!.driver!.driverId.toString(),
           'timestamp': FieldValue.serverTimestamp(),
         });
         controller.clear();
@@ -74,7 +75,7 @@ class MessageScreenNew extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nhắn Tin với ${driver.username}'),
+        title: Text('Nhắn Tin với ${bookingDetail.registration!.driver!.username}'),
       ),
       body: Column(
         children: [
@@ -82,16 +83,7 @@ class MessageScreenNew extends HookConsumerWidget {
           GestureDetector(
             onTap: () {
               // Navigate to profile screen
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfileScreenNew(
-                    driver: driver,
-                    booking: booking,
-                    registrationFormId: registrationId,
-                  ),
-                ),
-              );
+              context.pushNamed(Routes.profileDriver, extra: bookingDetail);
             },
             child: Container(
               padding: const EdgeInsets.all(16.0),
@@ -103,7 +95,7 @@ class MessageScreenNew extends HookConsumerWidget {
                     radius: 30,
                   ),
                   const SizedBox(width: 10),
-                  Text(driver.username, style: const TextStyle(fontSize: 20)),
+                  Text(bookingDetail.registration!.driver!.username, style: const TextStyle(fontSize: 20)),
                 ],
               ),
             ),
@@ -112,8 +104,8 @@ class MessageScreenNew extends HookConsumerWidget {
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: messagesRef
-                  .where('booking', isEqualTo: booking['bookingId'].toString())
-                  .where('driverId', isEqualTo: driver.driverId.toString())
+                  .where('booking', isEqualTo: bookingDetail.bookingId.toString())
+                  .where('driverId', isEqualTo: bookingDetail.registration!.driver!.driverId.toString())
                   .orderBy('timestamp', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {

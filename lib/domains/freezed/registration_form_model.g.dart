@@ -10,8 +10,8 @@ _$RegistrationFormModelImpl _$$RegistrationFormModelImplFromJson(
         Map<String, dynamic> json) =>
     _$RegistrationFormModelImpl(
       registrationId: (json['registrationId'] as num).toInt(),
-      licensePlate: json['licensePlate'] as String,
-      vehicleType: json['vehicleType'] as String,
+      licensePlate: json['licensePlate'] as String?,
+      vehicleType: json['vehicleType'] as String?,
       driversLicenseNumber: json['driversLicenseNumber'] as String?,
       driversLicenseImgFront: json['driversLicenseImgFront'] as String?,
       driversLicenseImgBack: json['driversLicenseImgBack'] as String?,
@@ -27,7 +27,7 @@ _$RegistrationFormModelImpl _$$RegistrationFormModelImplFromJson(
           ? null
           : DriverModel.fromJson(json['driver'] as Map<String, dynamic>),
       totalStar: (json['totalStar'] as num?)?.toInt(),
-      status: (json['status'] as num).toInt(),
+      status: (json['status'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$RegistrationFormModelImplToJson(

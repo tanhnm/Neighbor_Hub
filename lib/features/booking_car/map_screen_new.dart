@@ -41,7 +41,7 @@ class MapScreenNew extends HookConsumerWidget {
     final distance = useState<double>(0.0);
     final duration = useState<double>(0.0);
     final isLoading = useState<bool>(false);
-    final bookingDateTime = useState<DateTime?>(null);
+    final bookingDateTime = useState<DateTime?>(DateTime.now());
 
     final mapController = useMemoized(() => MapController());
 
@@ -556,7 +556,7 @@ class MapScreenNew extends HookConsumerWidget {
                                               currentLocation: firstPick.value,
                                               pickupTime:
                                                   "${bookingDateTime.value?.toIso8601String()}Z");
-                                  // Navigator.pop(context); // Close the modal
+                                  Navigator.pop(context);
                                   // Proceed with vehicle confirmation logic
                                 },
                                 child: const Text('Xác Nhận'),

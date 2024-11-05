@@ -44,7 +44,7 @@ class DriversController extends _$DriversController {
 
         final cancelToken = CancelToken();
         List<RegistrationFormModel> listReg = await appRepository.getDrivers(userLocation, bookingId, cancelToken: cancelToken);
-
+        print(listReg);
         return listReg;
       } else {
         await _getCurrentLocationAndUpdate();

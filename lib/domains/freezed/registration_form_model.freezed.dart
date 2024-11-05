@@ -22,8 +22,8 @@ RegistrationFormModel _$RegistrationFormModelFromJson(
 /// @nodoc
 mixin _$RegistrationFormModel {
   int get registrationId => throw _privateConstructorUsedError;
-  String get licensePlate => throw _privateConstructorUsedError;
-  String get vehicleType => throw _privateConstructorUsedError;
+  String? get licensePlate => throw _privateConstructorUsedError;
+  String? get vehicleType => throw _privateConstructorUsedError;
   String? get driversLicenseNumber => throw _privateConstructorUsedError;
   String? get driversLicenseImgFront => throw _privateConstructorUsedError;
   String? get driversLicenseImgBack => throw _privateConstructorUsedError;
@@ -37,7 +37,7 @@ mixin _$RegistrationFormModel {
   int? get lon => throw _privateConstructorUsedError;
   DriverModel? get driver => throw _privateConstructorUsedError;
   int? get totalStar => throw _privateConstructorUsedError;
-  int get status => throw _privateConstructorUsedError;
+  int? get status => throw _privateConstructorUsedError;
 
   /// Serializes this RegistrationFormModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -57,8 +57,8 @@ abstract class $RegistrationFormModelCopyWith<$Res> {
   @useResult
   $Res call(
       {int registrationId,
-      String licensePlate,
-      String vehicleType,
+      String? licensePlate,
+      String? vehicleType,
       String? driversLicenseNumber,
       String? driversLicenseImgFront,
       String? driversLicenseImgBack,
@@ -72,7 +72,7 @@ abstract class $RegistrationFormModelCopyWith<$Res> {
       int? lon,
       DriverModel? driver,
       int? totalStar,
-      int status});
+      int? status});
 
   $DriverModelCopyWith<$Res>? get driver;
 }
@@ -94,8 +94,8 @@ class _$RegistrationFormModelCopyWithImpl<$Res,
   @override
   $Res call({
     Object? registrationId = null,
-    Object? licensePlate = null,
-    Object? vehicleType = null,
+    Object? licensePlate = freezed,
+    Object? vehicleType = freezed,
     Object? driversLicenseNumber = freezed,
     Object? driversLicenseImgFront = freezed,
     Object? driversLicenseImgBack = freezed,
@@ -109,21 +109,21 @@ class _$RegistrationFormModelCopyWithImpl<$Res,
     Object? lon = freezed,
     Object? driver = freezed,
     Object? totalStar = freezed,
-    Object? status = null,
+    Object? status = freezed,
   }) {
     return _then(_value.copyWith(
       registrationId: null == registrationId
           ? _value.registrationId
           : registrationId // ignore: cast_nullable_to_non_nullable
               as int,
-      licensePlate: null == licensePlate
+      licensePlate: freezed == licensePlate
           ? _value.licensePlate
           : licensePlate // ignore: cast_nullable_to_non_nullable
-              as String,
-      vehicleType: null == vehicleType
+              as String?,
+      vehicleType: freezed == vehicleType
           ? _value.vehicleType
           : vehicleType // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       driversLicenseNumber: freezed == driversLicenseNumber
           ? _value.driversLicenseNumber
           : driversLicenseNumber // ignore: cast_nullable_to_non_nullable
@@ -176,10 +176,10 @@ class _$RegistrationFormModelCopyWithImpl<$Res,
           ? _value.totalStar
           : totalStar // ignore: cast_nullable_to_non_nullable
               as int?,
-      status: null == status
+      status: freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
     ) as $Val);
   }
 
@@ -209,8 +209,8 @@ abstract class _$$RegistrationFormModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {int registrationId,
-      String licensePlate,
-      String vehicleType,
+      String? licensePlate,
+      String? vehicleType,
       String? driversLicenseNumber,
       String? driversLicenseImgFront,
       String? driversLicenseImgBack,
@@ -224,7 +224,7 @@ abstract class _$$RegistrationFormModelImplCopyWith<$Res>
       int? lon,
       DriverModel? driver,
       int? totalStar,
-      int status});
+      int? status});
 
   @override
   $DriverModelCopyWith<$Res>? get driver;
@@ -245,8 +245,8 @@ class __$$RegistrationFormModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? registrationId = null,
-    Object? licensePlate = null,
-    Object? vehicleType = null,
+    Object? licensePlate = freezed,
+    Object? vehicleType = freezed,
     Object? driversLicenseNumber = freezed,
     Object? driversLicenseImgFront = freezed,
     Object? driversLicenseImgBack = freezed,
@@ -260,21 +260,21 @@ class __$$RegistrationFormModelImplCopyWithImpl<$Res>
     Object? lon = freezed,
     Object? driver = freezed,
     Object? totalStar = freezed,
-    Object? status = null,
+    Object? status = freezed,
   }) {
     return _then(_$RegistrationFormModelImpl(
       registrationId: null == registrationId
           ? _value.registrationId
           : registrationId // ignore: cast_nullable_to_non_nullable
               as int,
-      licensePlate: null == licensePlate
+      licensePlate: freezed == licensePlate
           ? _value.licensePlate
           : licensePlate // ignore: cast_nullable_to_non_nullable
-              as String,
-      vehicleType: null == vehicleType
+              as String?,
+      vehicleType: freezed == vehicleType
           ? _value.vehicleType
           : vehicleType // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       driversLicenseNumber: freezed == driversLicenseNumber
           ? _value.driversLicenseNumber
           : driversLicenseNumber // ignore: cast_nullable_to_non_nullable
@@ -327,10 +327,10 @@ class __$$RegistrationFormModelImplCopyWithImpl<$Res>
           ? _value.totalStar
           : totalStar // ignore: cast_nullable_to_non_nullable
               as int?,
-      status: null == status
+      status: freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
     ));
   }
 }
@@ -340,8 +340,8 @@ class __$$RegistrationFormModelImplCopyWithImpl<$Res>
 class _$RegistrationFormModelImpl implements _RegistrationFormModel {
   const _$RegistrationFormModelImpl(
       {required this.registrationId,
-      required this.licensePlate,
-      required this.vehicleType,
+      this.licensePlate,
+      this.vehicleType,
       this.driversLicenseNumber,
       this.driversLicenseImgFront,
       this.driversLicenseImgBack,
@@ -355,7 +355,7 @@ class _$RegistrationFormModelImpl implements _RegistrationFormModel {
       this.lon,
       this.driver,
       this.totalStar,
-      required this.status});
+      this.status});
 
   factory _$RegistrationFormModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$RegistrationFormModelImplFromJson(json);
@@ -363,9 +363,9 @@ class _$RegistrationFormModelImpl implements _RegistrationFormModel {
   @override
   final int registrationId;
   @override
-  final String licensePlate;
+  final String? licensePlate;
   @override
-  final String vehicleType;
+  final String? vehicleType;
   @override
   final String? driversLicenseNumber;
   @override
@@ -393,7 +393,7 @@ class _$RegistrationFormModelImpl implements _RegistrationFormModel {
   @override
   final int? totalStar;
   @override
-  final int status;
+  final int? status;
 
   @override
   String toString() {
@@ -479,8 +479,8 @@ class _$RegistrationFormModelImpl implements _RegistrationFormModel {
 abstract class _RegistrationFormModel implements RegistrationFormModel {
   const factory _RegistrationFormModel(
       {required final int registrationId,
-      required final String licensePlate,
-      required final String vehicleType,
+      final String? licensePlate,
+      final String? vehicleType,
       final String? driversLicenseNumber,
       final String? driversLicenseImgFront,
       final String? driversLicenseImgBack,
@@ -494,7 +494,7 @@ abstract class _RegistrationFormModel implements RegistrationFormModel {
       final int? lon,
       final DriverModel? driver,
       final int? totalStar,
-      required final int status}) = _$RegistrationFormModelImpl;
+      final int? status}) = _$RegistrationFormModelImpl;
 
   factory _RegistrationFormModel.fromJson(Map<String, dynamic> json) =
       _$RegistrationFormModelImpl.fromJson;
@@ -502,9 +502,9 @@ abstract class _RegistrationFormModel implements RegistrationFormModel {
   @override
   int get registrationId;
   @override
-  String get licensePlate;
+  String? get licensePlate;
   @override
-  String get vehicleType;
+  String? get vehicleType;
   @override
   String? get driversLicenseNumber;
   @override
@@ -532,7 +532,7 @@ abstract class _RegistrationFormModel implements RegistrationFormModel {
   @override
   int? get totalStar;
   @override
-  int get status;
+  int? get status;
 
   /// Create a copy of RegistrationFormModel
   /// with the given fields replaced by the non-null parameter values.

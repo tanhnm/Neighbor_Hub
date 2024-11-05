@@ -108,8 +108,8 @@ class ActivityScreenNew extends HookConsumerWidget {
                                                   extra: bookingDetail);
                                             } else {
                                               // Handle view booking details logic here
-
-                                              // context.pushNamed(Routes.profileDriver, extra: bookingDetail);
+                                                //todo:
+                                              context.pushNamed(Routes.profileDriver, extra: bookingDetail);
                                             }
                                           },
                                     child: isPastPickupTime

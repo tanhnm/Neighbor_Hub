@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/common/router.dart';
+import 'package:flutter_application_1/common/routes.dart';
 import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
 import 'package:flutter_application_1/domains/freezed/registration_form_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../common/restaurants.dart';
 import '../../controller/drivers_controller.dart';
 
 class DriverListScreenNew extends ConsumerWidget {
@@ -20,12 +24,13 @@ class DriverListScreenNew extends ConsumerWidget {
       body: driverState.when(
         data: (registrations) {
 
-          if(registrations.isEmpty) return Center(child: Text('Empty'));
+          if(registrations.isEmpty) return const Center(child: Text('Hiện tại không có tài xế khả dụng', style: kTextInfo,));
 
           return ListView.builder(
             itemCount: registrations.length,
             itemBuilder: (context, index) {
               RegistrationFormModel registration = registrations[index];
+
               return Card(
                 child: ListTile(
                   leading: const CircleAvatar(
@@ -35,16 +40,8 @@ class DriverListScreenNew extends ConsumerWidget {
                   title: Text(registration.driver!.username),
                   subtitle: Text(registration.driver!.phone),
                   onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => MessageScreen(
-                    //       driver: driver,
-                    //       booking: booking,
-                    //       registrationId: registrationId,
-                    //     ),
-                    //   ),
-                    // );
+                    BookingDetailModel newBookingDetail = bookingDetail.copyWith(registration: registration);
+                    context.pushNamed(Routes.message, extra: newBookingDetail);
                   },
                 ),
               );

@@ -38,8 +38,8 @@ class UserListScreenNew extends HookConsumerWidget {
                 color: Colors.blue, size: 40),
             error: (err, stack) => Text('Error::: $err'),
             data: (data) {
-              int regStatus = data[0].status;
-              String vehicleType = data[0].vehicleType;
+              int regStatus = data[0].status!;
+              String vehicleType = data[0].vehicleType!;
               return regStatus == 0
                   ? Center(
                   child: regStatus == 0

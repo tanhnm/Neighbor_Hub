@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 List<Map> restaurants = [
   {
     'id': '0',
@@ -48,3 +50,8 @@ const String kBaseUrl =
     'gh-neighborhub-569199407036.asia-southeast1.run.app';
 const String kBaseHttpUrl =
     'https://gh-neighborhub-569199407036.asia-southeast1.run.app';
+
+const kTextInfo = TextStyle(
+  fontSize: 20,
+  fontWeight: FontWeight.bold,
+);

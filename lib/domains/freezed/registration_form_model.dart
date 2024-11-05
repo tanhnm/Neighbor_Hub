@@ -11,8 +11,8 @@ part 'registration_form_model.freezed.dart';
 class RegistrationFormModel with _$RegistrationFormModel {
   const factory RegistrationFormModel({
     required int registrationId,
-    required String licensePlate,
-    required String vehicleType,
+     String? licensePlate,
+     String? vehicleType,
      String? driversLicenseNumber,
      String? driversLicenseImgFront,
      String? driversLicenseImgBack,
@@ -26,7 +26,7 @@ class RegistrationFormModel with _$RegistrationFormModel {
      int? lon,
      DriverModel? driver,
      int? totalStar,
-    required int status,
+     int? status,
   }) = _RegistrationFormModel;
 
   factory RegistrationFormModel.fromJson(Map<String, dynamic> json) =>

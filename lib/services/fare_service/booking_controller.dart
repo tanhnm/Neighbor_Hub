@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/domains/freezed/booking_model.dart';
-import 'package:flutter_application_1/features/temp_screen/activity_screen.dart';
+import 'package:flutter_application_1/common/router.dart';
+import 'package:flutter_application_1/domains/setting.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:toastification/toastification.dart';
+import 'package:go_router/go_router.dart';
+import '../../common/routes.dart';
+import '../../domains/freezed/booking_model.dart';
 
 class BookingController {
   final Dio _dio = Dio();
@@ -330,10 +333,7 @@ class BookingController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         var box = Hive.box('locationBox');
         await box.put('currentLocation', currentLocation);
-        Navigator.push(
-          context!,
-          MaterialPageRoute(builder: (context) => const ActivityScreen()),
-        );
+        context?.pushNamed(Routes.activity);
       } else {}
     } catch (e) {
       toastification.show(
@@ -389,10 +389,7 @@ class BookingController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         var box = Hive.box('locationBox');
         await box.put('currentLocation', currentLocation);
-        Navigator.push(
-          context!,
-          MaterialPageRoute(builder: (context) => const ActivityScreen()),
-        );
+        context?.pushNamed(Routes.activity);
       }
     } catch (e) {
       toastification.show(

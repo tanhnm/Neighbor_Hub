@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../temp_screen/navbar_screen.dart';
 
 class SplashScreen extends HookConsumerWidget {
   const SplashScreen({super.key});

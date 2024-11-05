@@ -4,8 +4,9 @@ abstract class Routes {
   static const login = '/login';
 
 
-
   static const destinationPick = 'destinationPick';
+  static const mapDriver = 'mapDriver';
+  static const map = 'map';
 
   static const activity = '/activity';
   static const driverList = 'driverList';

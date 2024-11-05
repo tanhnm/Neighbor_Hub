@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
 import 'package:flutter_application_1/domains/freezed/registration_form_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
 import '../../controller/drivers_controller.dart';
-import 'message_screen.dart';
 
 class DriverListScreenNew extends ConsumerWidget {
   const DriverListScreenNew({super.key, required this.bookingDetail});

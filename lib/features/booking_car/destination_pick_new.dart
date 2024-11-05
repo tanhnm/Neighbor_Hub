@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/common/router.dart';
+import 'package:flutter_application_1/common/routes.dart';
 import 'package:flutter_application_1/features/booking_car/map_screen_new.dart';
 import 'package:flutter_application_1/features/driver/map_driver_screen_new.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../providers/current_position_provider.dart';
 import '../../providers/user_provider.dart';
-import '../driver/map_driver_screen.dart';
-import 'map_screen.dart';
 
 class DestinationPickNew extends HookConsumerWidget {
   const DestinationPickNew({super.key});
@@ -59,25 +60,38 @@ class DestinationPickNew extends HookConsumerWidget {
                       onTap: () {
                         locationAsyncValue.when(
                           data: (currentPosition) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => isDriver
-                                    ? MapDriverScreenNew(
-                                        driverId: user.value!.userId,
-                                        registrationID: registrationFormId!,
-                                        lat: currentPosition.latitude,
-                                        lon: currentPosition.longitude,
-                                        registrationStatus: registrationStatus!,
-                                      )
-                                    : MapScreenNew(
-                                        initialLatitude:
-                                            currentPosition.latitude,
-                                        initialLongitude:
-                                            currentPosition.longitude,
-                                      ),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => isDriver
+                            //         ? MapDriverScreenNew(
+                            //             driverId: user.value!.userId,
+                            //             registrationID: registrationFormId!,
+                            //             lat: currentPosition.latitude,
+                            //             lon: currentPosition.longitude,
+                            //             registrationStatus: registrationStatus!,
+                            //           )
+                            //         : MapScreenNew(
+                            //             initialLatitude:
+                            //                 currentPosition.latitude,
+                            //             initialLongitude:
+                            //                 currentPosition.longitude,
+                            //           ),
+                            //   ),
+                            // );
+                            isDriver
+                                ? context.pushNamed(Routes.mapDriver, extra: {
+                                    'driverId': user.value!.userId,
+                                    'registrationID': registrationFormId!,
+                                    'lat': currentPosition.latitude,
+                                    'lon': currentPosition.longitude,
+                                    'registrationStatus': registrationStatus!,
+                                  })
+                                : context.pushNamed(Routes.map, extra: {
+                                    'initialLatitude': currentPosition.latitude,
+                                    'initialLongitude':
+                                        currentPosition.longitude,
+                                  });
                           },
                           loading: () {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -138,33 +152,20 @@ class DestinationPickNew extends HookConsumerWidget {
                     onPressed: () {
                       locationAsyncValue.when(
                         data: (currentPosition) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => isDriver
-                                  ? MapDriverScreen(
-                                      driverId: user.value!.userId,
-                                      registrationID: registrationFormId!,
-                                      lat: currentPosition.latitude,
-                                      lon: currentPosition.longitude,
-                                      registrationStatus: registrationStatus!,
-                                    )
-                                  : MapScreen(
-                                      initialLatitude: currentPosition.latitude,
-                                      initialLongitude:
-                                          currentPosition.longitude,
-                                    ),
-                            ),
-                          );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MapScreenNew(
-                                initialLatitude: currentPosition.latitude,
-                               initialLongitude:  currentPosition.longitude,
-                              ),
-                            ),
-                          );
+                          //todo: add
+                          isDriver
+                              ? context.pushNamed(Routes.mapDriver, extra: {
+                            'driverId': user.value!.userId,
+                            'registrationID': registrationFormId!,
+                            'lat': currentPosition.latitude,
+                            'lon': currentPosition.longitude,
+                            'registrationStatus': registrationStatus!,
+                          })
+                              : context.pushNamed(Routes.map, extra: {
+                            'initialLatitude': currentPosition.latitude,
+                            'initialLongitude':
+                            currentPosition.longitude,
+                          });
                         },
                         loading: () {
                           ScaffoldMessenger.of(context).showSnackBar(

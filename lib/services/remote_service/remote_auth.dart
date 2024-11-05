@@ -1,15 +1,18 @@
 import 'dart:convert'; // For jsonEncode
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/common/router.dart';
 import 'package:flutter_application_1/domains/freezed/user_model.dart';
 import 'package:flutter_application_1/features/auth/login_password_screen.dart';
-import 'package:flutter_application_1/features/temp_screen/navbar_screen.dart';
+import 'package:flutter_application_1/features/temp_screen/confirm_otp_screen_new.dart';
 import 'package:flutter_application_1/features/temp_screen/register_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:toastification/toastification.dart';
 import 'package:dio/dio.dart';
 
-import '../../features/temp_screen/confirm_otp_screen.dart';
+import '../../common/routes.dart';
+
 
 class RemoteAuth {
   final BuildContext context;
@@ -74,7 +77,7 @@ class RemoteAuth {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ConfirmOtpScreen(phoneNumber: phone)),
+              builder: (context) => ConfirmOtpScreenNew(phoneNumber: phone)),
         );
       } else {
         toastification.show(
@@ -176,10 +179,7 @@ class RemoteAuth {
         // Retrieve the user
         UserModel? retrievedUser = userBox.get('user');
         // Navigate to the bottom nav screen
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const BottomNavBar()),
-        );
+        context.pushNamed(Routes.home);
       } else {
         toastification.show(
           context: context,

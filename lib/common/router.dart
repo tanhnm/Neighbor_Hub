@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/domains/freezed/booking_model.dart';
 import 'package:flutter_application_1/features/auth/profile_me_screen.dart';
-import 'package:flutter_application_1/features/booking_car/destination_pick.dart';
+import 'package:flutter_application_1/features/driver/map_driver_screen_new.dart';
 import 'package:flutter_application_1/features/driver/message_screen_driver_new.dart';
 import 'package:flutter_application_1/features/driver/registration_form_screen.dart';
 import 'package:flutter_application_1/features/driver/user_list_screen_new.dart';
 import 'package:flutter_application_1/features/home/main_page_new.dart';
-import 'package:flutter_application_1/features/temp_screen/activity_screen.dart';
 import 'package:flutter_application_1/features/temp_screen/activity_screen_new.dart';
 import 'package:flutter_application_1/features/temp_screen/setting_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,9 +17,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../domains/freezed/booking_detail_model.dart';
 import '../features/booking_car/destination_pick_new.dart';
-import '../features/booking_car/driver_list_screen.dart';
 import '../features/booking_car/driver_list_screen_new.dart';
-import '../features/home/main_page.dart';
+import '../features/booking_car/map_screen_new.dart';
 import '../features/splash/splash_screen.dart';
 import '../features/temp_screen/login_screen.dart';
 import '../providers/user_provider.dart';
@@ -28,9 +26,9 @@ import 'routes.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
-    GlobalKey<NavigatorState>(debugLabel: 'root');
+GlobalKey<NavigatorState>(debugLabel: 'root');
 final GlobalKey<NavigatorState> _sectionANavigatorKey =
-    GlobalKey<NavigatorState>(debugLabel: 'sectionANav');
+GlobalKey<NavigatorState>(debugLabel: 'sectionANav');
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -68,10 +66,45 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   builder: (context, state) => const MainPageNew(),
                   routes: [
                     GoRoute(
-                      path: Routes.destinationPick,
-                      name: Routes.destinationPick,
-                      builder: (context, state) => const DestinationPickNew(),
-                    ),
+                        path: Routes.destinationPick,
+                        name: Routes.destinationPick,
+                        builder: (context, state) => const DestinationPickNew(),
+                        routes: [
+                          GoRoute(
+                              path: Routes.mapDriver,
+                              name: Routes.mapDriver,
+                              builder: (context, state) {
+                                final extraData = state.extra as Map<String, dynamic>;
+                                final driverId = extraData['driverId'] as int;
+                                final registrationID = extraData['registrationID'] as int;
+                                final registrationStatus = extraData['registrationStatus'] as int;
+                                final lat = extraData['lat'] as double;
+                                final lon = extraData['lon'] as double;
+                                return MapDriverScreenNew(driverId: driverId,
+                                    registrationID: registrationID,
+                                    registrationStatus: registrationStatus,
+                                    lat: lat,
+                                    lon: lon);
+
+
+                              }
+                          ),
+                          GoRoute(
+                            path: Routes.map,
+                            name: Routes.map,
+                            builder: (context, state) {
+                              final extraData = state.extra as Map<String, dynamic>;
+                              final initialLatitude = extraData['initialLatitude'] as double;
+                              final initialLongitude = extraData['initialLongitude'] as double;
+                              return MapScreenNew(
+                                initialLatitude: initialLatitude,
+                                initialLongitude: initialLongitude
+                              );
+
+
+                            }
+                          ),
+                        ]),
                   ]),
             ]),
 
@@ -87,7 +120,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                         name: Routes.driverList,
                         builder: (context, state) {
                           final BookingDetailModel bookingDetail =
-                              state.extra as BookingDetailModel;
+                          state.extra as BookingDetailModel;
                           return DriverListScreenNew(
                               bookingDetail: bookingDetail);
                         }),
@@ -120,8 +153,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                         builder: (context, state) {
                           final BookingModel booking =
                           state.extra as BookingModel;
-                          return MessageScreenDriverNew(
-                              booking: booking);
+                          return MessageScreenDriverNew(booking: booking);
                         }),
                   ]),
             ]),
@@ -173,7 +205,9 @@ class ScaffoldWithNavBar extends HookConsumerWidget {
     }, []);
 
     Future(() {
-      ref.read(navigationShellProvider.notifier).state = navigationShell;
+      ref
+          .read(navigationShellProvider.notifier)
+          .state = navigationShell;
     });
     return Scaffold(
       body: navigationShell,
@@ -216,16 +250,18 @@ class ScaffoldWithNavBar extends HookConsumerWidget {
                   borderRadius: BorderRadius.circular(12),
                   text: 'Settings',
                 ),
-                if(isDriver.value) GButton(
-                  icon: FontAwesomeIcons.user,
-                  borderRadius: BorderRadius.circular(12),
-                  text: 'User List',
-                ),
-                if(isDriver.value) GButton(
-                  icon: FontAwesomeIcons.paperclip,
-                  borderRadius: BorderRadius.circular(12),
-                  text: 'Reg',
-                ),
+                if (isDriver.value)
+                  GButton(
+                    icon: FontAwesomeIcons.user,
+                    borderRadius: BorderRadius.circular(12),
+                    text: 'User List',
+                  ),
+                if (isDriver.value)
+                  GButton(
+                    icon: FontAwesomeIcons.paperclip,
+                    borderRadius: BorderRadius.circular(12),
+                    text: 'Reg',
+                  ),
               ],
               selectedIndex: navigationShell.currentIndex,
               onTabChange: (index) => _onTap(context, index),
@@ -245,4 +281,4 @@ class ScaffoldWithNavBar extends HookConsumerWidget {
 }
 
 final navigationShellProvider =
-    StateProvider<StatefulNavigationShell?>((ref) => null);
+StateProvider<StatefulNavigationShell?>((ref) => null);

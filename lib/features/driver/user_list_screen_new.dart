@@ -17,7 +17,6 @@ import '../../providers/user_provider.dart';
 import '../../services/driver_service/driver_service.dart';
 import '../../services/driver_service/driver_service_new.dart';
 import '../../services/driver_service/registration_service.dart';
-import '../temp_screen/navbar_screen.dart';
 
 class UserListScreenNew extends HookConsumerWidget {
   const UserListScreenNew({super.key});

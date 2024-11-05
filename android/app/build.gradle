@@ -48,15 +48,15 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.neighborhub.neighborhub"
+        applicationId = "com.renolation.ride"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdk = 23
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 33
         versionCode = 5
         versionName = "5.0"
         multiDexEnabled true 
-        resValue "string", "applicationName", "com.neighborhub.neighborhub" // Set the application name here
+        resValue "string", "applicationName", "com.renolation.ride" // Set the application name here
     }
 
     signingConfigs {

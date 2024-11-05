@@ -26,9 +26,9 @@ import 'routes.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
-GlobalKey<NavigatorState>(debugLabel: 'root');
+    GlobalKey<NavigatorState>(debugLabel: 'root');
 final GlobalKey<NavigatorState> _sectionANavigatorKey =
-GlobalKey<NavigatorState>(debugLabel: 'sectionANav');
+    GlobalKey<NavigatorState>(debugLabel: 'sectionANav');
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -74,36 +74,36 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                               path: Routes.mapDriver,
                               name: Routes.mapDriver,
                               builder: (context, state) {
-                                final extraData = state.extra as Map<String, dynamic>;
+                                final extraData =
+                                    state.extra as Map<String, dynamic>;
                                 final driverId = extraData['driverId'] as int;
-                                final registrationID = extraData['registrationID'] as int;
-                                final registrationStatus = extraData['registrationStatus'] as int;
+                                final registrationID =
+                                    extraData['registrationID'] as int;
+                                final registrationStatus =
+                                    extraData['registrationStatus'] as int;
                                 final lat = extraData['lat'] as double;
                                 final lon = extraData['lon'] as double;
-                                return MapDriverScreenNew(driverId: driverId,
+                                return MapDriverScreenNew(
+                                    driverId: driverId,
                                     registrationID: registrationID,
                                     registrationStatus: registrationStatus,
                                     lat: lat,
                                     lon: lon);
-
-
-                              }
-                          ),
+                              }),
                           GoRoute(
-                            path: Routes.map,
-                            name: Routes.map,
-                            builder: (context, state) {
-                              final extraData = state.extra as Map<String, dynamic>;
-                              final initialLatitude = extraData['initialLatitude'] as double;
-                              final initialLongitude = extraData['initialLongitude'] as double;
-                              return MapScreenNew(
-                                initialLatitude: initialLatitude,
-                                initialLongitude: initialLongitude
-                              );
-
-
-                            }
-                          ),
+                              path: Routes.map,
+                              name: Routes.map,
+                              builder: (context, state) {
+                                final extraData =
+                                    state.extra as Map<String, dynamic>;
+                                final initialLatitude =
+                                    extraData['initialLatitude'] as double;
+                                final initialLongitude =
+                                    extraData['initialLongitude'] as double;
+                                return MapScreenNew(
+                                    initialLatitude: initialLatitude,
+                                    initialLongitude: initialLongitude);
+                              }),
                         ]),
                   ]),
             ]),
@@ -120,10 +120,23 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                         name: Routes.driverList,
                         builder: (context, state) {
                           final BookingDetailModel bookingDetail =
-                          state.extra as BookingDetailModel;
+                              state.extra as BookingDetailModel;
                           return DriverListScreenNew(
                               bookingDetail: bookingDetail);
-                        }),
+                        },
+                        routes: [
+                          //todo: message
+                          // GoRoute(
+                          //   path: Routes.message,
+                          //   name: Routes.message,
+                          //   builder: (context, state) {
+                          //     final BookingDetailModel bookingDetail =
+                          //         state.extra as BookingDetailModel;
+                          //     return DriverListScreenNew(
+                          //         bookingDetail: bookingDetail);
+                          //   },
+                          // ),
+                        ]),
                   ]),
             ]),
 
@@ -152,7 +165,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                         name: Routes.messageDriver,
                         builder: (context, state) {
                           final BookingModel booking =
-                          state.extra as BookingModel;
+                              state.extra as BookingModel;
                           return MessageScreenDriverNew(booking: booking);
                         }),
                   ]),
@@ -205,9 +218,7 @@ class ScaffoldWithNavBar extends HookConsumerWidget {
     }, []);
 
     Future(() {
-      ref
-          .read(navigationShellProvider.notifier)
-          .state = navigationShell;
+      ref.read(navigationShellProvider.notifier).state = navigationShell;
     });
     return Scaffold(
       body: navigationShell,
@@ -281,4 +292,4 @@ class ScaffoldWithNavBar extends HookConsumerWidget {
 }
 
 final navigationShellProvider =
-StateProvider<StatefulNavigationShell?>((ref) => null);
+    StateProvider<StatefulNavigationShell?>((ref) => null);

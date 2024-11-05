@@ -20,12 +20,12 @@ class DriverListScreenNew extends ConsumerWidget {
       body: driverState.when(
         data: (registrations) {
 
+          if(registrations.isEmpty) return Center(child: Text('Empty'));
 
           return ListView.builder(
             itemCount: registrations.length,
             itemBuilder: (context, index) {
               RegistrationFormModel registration = registrations[index];
-
               return Card(
                 child: ListTile(
                   leading: const CircleAvatar(

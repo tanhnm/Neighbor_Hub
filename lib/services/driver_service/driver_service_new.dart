@@ -95,13 +95,30 @@ class DriverService {
 }
 
 final getAllRegistrationFormsByIdProvider =
-    FutureProvider<List<RegistrationFormModel>>((ref) async {
+FutureProvider<List<RegistrationFormModel>>((ref) async {
   final driverService = ref.read(driverServiceProvider);
   return await driverService.getAllRegistrationFormsById();
 });
 
 final getAllBookingsByDriverIdProvider =
-    FutureProvider<List<BookingModel>>((ref) async {
+FutureProvider<List<BookingModel>>((ref) async {
   final driverService = ref.read(driverServiceProvider);
   return await driverService.getAllBookingsByDriverId();
 });
+
+
+// @Riverpod(keepAlive: true)
+// class RegFormController extends _$RegFormController {
+//   Future<List<RegistrationFormModel>> fetchFormById() async {
+//     final appRepository = ref.watch(appRepositoryProvider);
+//     final token = ref.read(tokenProvider);
+//
+//     final cancelToken = CancelToken();
+//     return appRepository.getAllRegistrationFormsById(4, token);
+//   }
+//
+//   @override
+//   FutureOr<List<RegistrationFormModel>> build() async {
+//     return fetchFormById();
+//   }
+// }

@@ -29,3 +29,10 @@ Future<bool> isUserLoggedIn() async {
   final user = userBox.get('user');
   return user != null;  // Return true if user is found, otherwise false
 }
+
+final driverProvider = FutureProvider<int?>((ref) async {
+  final authBox = await Hive.openBox('authBox');
+  final driverId = authBox.get('driverId', defaultValue: null);
+  return driverId;
+});
+

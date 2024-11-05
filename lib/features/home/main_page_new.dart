@@ -16,6 +16,7 @@ class MainPageNew extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     double screenWidth = MediaQuery.of(context).size.width;
+    ref.read(driverProvider.future);
     final user = ref.watch(userProvider);
     return Scaffold(
       appBar: AppBar(
@@ -138,6 +139,9 @@ class MainPageNew extends HookConsumerWidget {
                       children: [
                         _buildInfoCard("images/wallet.png", screenWidth,
                             "Thanh Toán", "Thêm thẻ"),
+                        // TextButton(onPressed: () async {
+                        //   print(await ref.read(driverProvider.future));
+                        // }, child: Text('aaa')),
                         _buildInfoCard(
                             "images/coin.png", screenWidth, "Tích điểm", "50"),
                       ],

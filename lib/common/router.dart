@@ -203,9 +203,7 @@ class ScaffoldWithNavBar extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDriver = useState<bool>(false);
-// useEffect to run only once on initialization
     useEffect(() {
-      // Define an async function to fetch driver status
       Future<void> checkDriver() async {
         var box = await Hive.openBox('authBox');
         isDriver.value = box.get('is_driver', defaultValue: false);

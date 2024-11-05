@@ -21,6 +21,7 @@ BookingModel _$BookingModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$BookingModel {
   int get bookingDriverId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'booking')
   BookingDetailModel get bookingDetail => throw _privateConstructorUsedError;
   int get driverId => throw _privateConstructorUsedError;
   int get amount => throw _privateConstructorUsedError;
@@ -43,7 +44,7 @@ abstract class $BookingModelCopyWith<$Res> {
   @useResult
   $Res call(
       {int bookingDriverId,
-      BookingDetailModel bookingDetail,
+      @JsonKey(name: 'booking') BookingDetailModel bookingDetail,
       int driverId,
       int amount});
 
@@ -111,7 +112,7 @@ abstract class _$$BookingModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {int bookingDriverId,
-      BookingDetailModel bookingDetail,
+      @JsonKey(name: 'booking') BookingDetailModel bookingDetail,
       int driverId,
       int amount});
 
@@ -163,7 +164,7 @@ class __$$BookingModelImplCopyWithImpl<$Res>
 class _$BookingModelImpl implements _BookingModel {
   const _$BookingModelImpl(
       {required this.bookingDriverId,
-      required this.bookingDetail,
+      @JsonKey(name: 'booking') required this.bookingDetail,
       required this.driverId,
       required this.amount});
 
@@ -173,6 +174,7 @@ class _$BookingModelImpl implements _BookingModel {
   @override
   final int bookingDriverId;
   @override
+  @JsonKey(name: 'booking')
   final BookingDetailModel bookingDetail;
   @override
   final int driverId;
@@ -222,7 +224,7 @@ class _$BookingModelImpl implements _BookingModel {
 abstract class _BookingModel implements BookingModel {
   const factory _BookingModel(
       {required final int bookingDriverId,
-      required final BookingDetailModel bookingDetail,
+      @JsonKey(name: 'booking') required final BookingDetailModel bookingDetail,
       required final int driverId,
       required final int amount}) = _$BookingModelImpl;
 
@@ -232,6 +234,7 @@ abstract class _BookingModel implements BookingModel {
   @override
   int get bookingDriverId;
   @override
+  @JsonKey(name: 'booking')
   BookingDetailModel get bookingDetail;
   @override
   int get driverId;

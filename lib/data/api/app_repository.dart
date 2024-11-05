@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_application_1/common/restaurants.dart';
 import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
+import 'package:flutter_application_1/domains/freezed/booking_model.dart';
 import 'package:flutter_application_1/domains/freezed/registration_form_model.dart';
 import 'package:flutter_application_1/providers/app_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,10 +58,8 @@ class AppRepository {
     final url = Uri(
       scheme: 'https',
       host: kBaseUrl,
-      path: '/api/v1/registrationForm/getAllRegistrationForm',
-      queryParameters: {
-        'driverId': driverId.toString(),
-      },
+      path: '/api/v1/registrationForm/getAllRegistrationForm/$driverId',
+
     ).toString();
 
     Options options = Options(headers: {
@@ -71,8 +70,32 @@ class AppRepository {
     final response =
         await client.get(url, cancelToken: cancelToken, options: options);
     final List list = response.data;
+    print(list);
     return list.map((e) => RegistrationFormModel.fromJson(e)).toList();
   }
+
+  Future<List<BookingModel>> getAllBookingsByDriverId(
+      int driverId, String token,
+      {CancelToken? cancelToken}) async {
+    final url = Uri(
+      scheme: 'https',
+      host: kBaseUrl,
+      path: 'driver/getAllBooking/$driverId',
+
+    ).toString();
+
+    Options options = Options(headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    final response =
+    await client.get(url, cancelToken: cancelToken, options: options);
+    final List list = response.data;
+    return list.map((e) => BookingModel.fromJson(e)).toList();
+  }
+
+
 }
 
 @Riverpod(keepAlive: true)

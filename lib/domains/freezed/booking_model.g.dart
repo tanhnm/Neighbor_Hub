@@ -9,8 +9,8 @@ part of 'booking_model.dart';
 _$BookingModelImpl _$$BookingModelImplFromJson(Map<String, dynamic> json) =>
     _$BookingModelImpl(
       bookingDriverId: (json['bookingDriverId'] as num).toInt(),
-      bookingDetail: BookingDetailModel.fromJson(
-          json['bookingDetail'] as Map<String, dynamic>),
+      bookingDetail:
+          BookingDetailModel.fromJson(json['booking'] as Map<String, dynamic>),
       driverId: (json['driverId'] as num).toInt(),
       amount: (json['amount'] as num).toInt(),
     );
@@ -18,7 +18,7 @@ _$BookingModelImpl _$$BookingModelImplFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$BookingModelImplToJson(_$BookingModelImpl instance) =>
     <String, dynamic>{
       'bookingDriverId': instance.bookingDriverId,
-      'bookingDetail': instance.bookingDetail,
+      'booking': instance.bookingDetail,
       'driverId': instance.driverId,
       'amount': instance.amount,
     };

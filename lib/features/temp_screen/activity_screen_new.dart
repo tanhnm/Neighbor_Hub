@@ -89,7 +89,7 @@ class ActivityScreenNew extends HookConsumerWidget {
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    "Người chở: ${bookingDetail.registration?.driver.username ?? 'N/A'}",
+                                    "Người chở: ${bookingDetail.registration?.driver!.username ?? 'N/A'}",
                                     style: const TextStyle(fontSize: 16),
                                   ),
                                   const SizedBox(height: 8),
@@ -174,7 +174,7 @@ class BookingDetailsScreenNew extends StatelessWidget {
             Text("Pickup Location: ${bookingDetail.pickupLocation}"),
             Text("Dropoff Location: ${bookingDetail.dropoffLocation}"),
             Text("Status: ${bookingDetail.status}"),
-            Text("Driver: ${bookingDetail.registration!.driver.username}"),
+            Text("Driver: ${bookingDetail.registration!.driver!.username}"),
             Text("Amount: ${convertNum(bookingDetail.amount)}"),
           ],
         ),

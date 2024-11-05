@@ -25,6 +25,7 @@ class DriverService {
         // Parse the response to create a Driver instance
         DriverModel driver = DriverModel.fromJson(response.data);
         print("driver: ${driver.toString()}");
+        print(response.data['driverId']);
         var box = Hive.box('authBox');
         box.put('driverId', response.data['driverId']);
         box.put('is_driver', true);

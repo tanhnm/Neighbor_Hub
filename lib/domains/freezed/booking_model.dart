@@ -21,7 +21,7 @@ String bookingModelToJson(List<BookingModel> data) => json.encode(List<dynamic>.
 class BookingModel with _$BookingModel {
   const factory BookingModel({
     required int bookingDriverId,
-    required BookingDetailModel bookingDetail,
+    @JsonKey(name: 'booking') required BookingDetailModel bookingDetail,
     required int driverId,
     required int amount,
   }) = _BookingModel;

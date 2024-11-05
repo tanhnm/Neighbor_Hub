@@ -32,8 +32,8 @@ class DriverListScreenNew extends ConsumerWidget {
                     backgroundImage: NetworkImage(
                         'https://media.muanhatructuyen.vn/post/226/50/3/hinh-nen-mau-hong-4k.jpg'),
                   ),
-                  title: Text(registration.driver.username),
-                  subtitle: Text(registration.driver.phone),
+                  title: Text(registration.driver!.username),
+                  subtitle: Text(registration.driver!.phone),
                   onTap: () {
                     // Navigator.push(
                     //   context,

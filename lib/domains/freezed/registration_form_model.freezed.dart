@@ -24,19 +24,19 @@ mixin _$RegistrationFormModel {
   int get registrationId => throw _privateConstructorUsedError;
   String get licensePlate => throw _privateConstructorUsedError;
   String get vehicleType => throw _privateConstructorUsedError;
-  String get driversLicenseNumber => throw _privateConstructorUsedError;
-  String get driversLicenseImgFront => throw _privateConstructorUsedError;
-  String get driversLicenseImgBack => throw _privateConstructorUsedError;
-  String get lltpImg => throw _privateConstructorUsedError;
-  String get vehicleRegistrationImg => throw _privateConstructorUsedError;
-  String get healthCheckDay => throw _privateConstructorUsedError;
-  String get vehicleInsuranceImgFront => throw _privateConstructorUsedError;
-  String get vehicleInsuranceImgBack => throw _privateConstructorUsedError;
-  String get tin => throw _privateConstructorUsedError;
-  int get lat => throw _privateConstructorUsedError;
-  int get lon => throw _privateConstructorUsedError;
-  DriverModel get driver => throw _privateConstructorUsedError;
-  int get totalStar => throw _privateConstructorUsedError;
+  String? get driversLicenseNumber => throw _privateConstructorUsedError;
+  String? get driversLicenseImgFront => throw _privateConstructorUsedError;
+  String? get driversLicenseImgBack => throw _privateConstructorUsedError;
+  String? get lltpImg => throw _privateConstructorUsedError;
+  String? get vehicleRegistrationImg => throw _privateConstructorUsedError;
+  String? get healthCheckDay => throw _privateConstructorUsedError;
+  String? get vehicleInsuranceImgFront => throw _privateConstructorUsedError;
+  String? get vehicleInsuranceImgBack => throw _privateConstructorUsedError;
+  String? get tin => throw _privateConstructorUsedError;
+  int? get lat => throw _privateConstructorUsedError;
+  int? get lon => throw _privateConstructorUsedError;
+  DriverModel? get driver => throw _privateConstructorUsedError;
+  int? get totalStar => throw _privateConstructorUsedError;
   int get status => throw _privateConstructorUsedError;
 
   /// Serializes this RegistrationFormModel to a JSON map.
@@ -59,22 +59,22 @@ abstract class $RegistrationFormModelCopyWith<$Res> {
       {int registrationId,
       String licensePlate,
       String vehicleType,
-      String driversLicenseNumber,
-      String driversLicenseImgFront,
-      String driversLicenseImgBack,
-      String lltpImg,
-      String vehicleRegistrationImg,
-      String healthCheckDay,
-      String vehicleInsuranceImgFront,
-      String vehicleInsuranceImgBack,
-      String tin,
-      int lat,
-      int lon,
-      DriverModel driver,
-      int totalStar,
+      String? driversLicenseNumber,
+      String? driversLicenseImgFront,
+      String? driversLicenseImgBack,
+      String? lltpImg,
+      String? vehicleRegistrationImg,
+      String? healthCheckDay,
+      String? vehicleInsuranceImgFront,
+      String? vehicleInsuranceImgBack,
+      String? tin,
+      int? lat,
+      int? lon,
+      DriverModel? driver,
+      int? totalStar,
       int status});
 
-  $DriverModelCopyWith<$Res> get driver;
+  $DriverModelCopyWith<$Res>? get driver;
 }
 
 /// @nodoc
@@ -96,19 +96,19 @@ class _$RegistrationFormModelCopyWithImpl<$Res,
     Object? registrationId = null,
     Object? licensePlate = null,
     Object? vehicleType = null,
-    Object? driversLicenseNumber = null,
-    Object? driversLicenseImgFront = null,
-    Object? driversLicenseImgBack = null,
-    Object? lltpImg = null,
-    Object? vehicleRegistrationImg = null,
-    Object? healthCheckDay = null,
-    Object? vehicleInsuranceImgFront = null,
-    Object? vehicleInsuranceImgBack = null,
-    Object? tin = null,
-    Object? lat = null,
-    Object? lon = null,
-    Object? driver = null,
-    Object? totalStar = null,
+    Object? driversLicenseNumber = freezed,
+    Object? driversLicenseImgFront = freezed,
+    Object? driversLicenseImgBack = freezed,
+    Object? lltpImg = freezed,
+    Object? vehicleRegistrationImg = freezed,
+    Object? healthCheckDay = freezed,
+    Object? vehicleInsuranceImgFront = freezed,
+    Object? vehicleInsuranceImgBack = freezed,
+    Object? tin = freezed,
+    Object? lat = freezed,
+    Object? lon = freezed,
+    Object? driver = freezed,
+    Object? totalStar = freezed,
     Object? status = null,
   }) {
     return _then(_value.copyWith(
@@ -124,58 +124,58 @@ class _$RegistrationFormModelCopyWithImpl<$Res,
           ? _value.vehicleType
           : vehicleType // ignore: cast_nullable_to_non_nullable
               as String,
-      driversLicenseNumber: null == driversLicenseNumber
+      driversLicenseNumber: freezed == driversLicenseNumber
           ? _value.driversLicenseNumber
           : driversLicenseNumber // ignore: cast_nullable_to_non_nullable
-              as String,
-      driversLicenseImgFront: null == driversLicenseImgFront
+              as String?,
+      driversLicenseImgFront: freezed == driversLicenseImgFront
           ? _value.driversLicenseImgFront
           : driversLicenseImgFront // ignore: cast_nullable_to_non_nullable
-              as String,
-      driversLicenseImgBack: null == driversLicenseImgBack
+              as String?,
+      driversLicenseImgBack: freezed == driversLicenseImgBack
           ? _value.driversLicenseImgBack
           : driversLicenseImgBack // ignore: cast_nullable_to_non_nullable
-              as String,
-      lltpImg: null == lltpImg
+              as String?,
+      lltpImg: freezed == lltpImg
           ? _value.lltpImg
           : lltpImg // ignore: cast_nullable_to_non_nullable
-              as String,
-      vehicleRegistrationImg: null == vehicleRegistrationImg
+              as String?,
+      vehicleRegistrationImg: freezed == vehicleRegistrationImg
           ? _value.vehicleRegistrationImg
           : vehicleRegistrationImg // ignore: cast_nullable_to_non_nullable
-              as String,
-      healthCheckDay: null == healthCheckDay
+              as String?,
+      healthCheckDay: freezed == healthCheckDay
           ? _value.healthCheckDay
           : healthCheckDay // ignore: cast_nullable_to_non_nullable
-              as String,
-      vehicleInsuranceImgFront: null == vehicleInsuranceImgFront
+              as String?,
+      vehicleInsuranceImgFront: freezed == vehicleInsuranceImgFront
           ? _value.vehicleInsuranceImgFront
           : vehicleInsuranceImgFront // ignore: cast_nullable_to_non_nullable
-              as String,
-      vehicleInsuranceImgBack: null == vehicleInsuranceImgBack
+              as String?,
+      vehicleInsuranceImgBack: freezed == vehicleInsuranceImgBack
           ? _value.vehicleInsuranceImgBack
           : vehicleInsuranceImgBack // ignore: cast_nullable_to_non_nullable
-              as String,
-      tin: null == tin
+              as String?,
+      tin: freezed == tin
           ? _value.tin
           : tin // ignore: cast_nullable_to_non_nullable
-              as String,
-      lat: null == lat
+              as String?,
+      lat: freezed == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
-              as int,
-      lon: null == lon
+              as int?,
+      lon: freezed == lon
           ? _value.lon
           : lon // ignore: cast_nullable_to_non_nullable
-              as int,
-      driver: null == driver
+              as int?,
+      driver: freezed == driver
           ? _value.driver
           : driver // ignore: cast_nullable_to_non_nullable
-              as DriverModel,
-      totalStar: null == totalStar
+              as DriverModel?,
+      totalStar: freezed == totalStar
           ? _value.totalStar
           : totalStar // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -187,8 +187,12 @@ class _$RegistrationFormModelCopyWithImpl<$Res,
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $DriverModelCopyWith<$Res> get driver {
-    return $DriverModelCopyWith<$Res>(_value.driver, (value) {
+  $DriverModelCopyWith<$Res>? get driver {
+    if (_value.driver == null) {
+      return null;
+    }
+
+    return $DriverModelCopyWith<$Res>(_value.driver!, (value) {
       return _then(_value.copyWith(driver: value) as $Val);
     });
   }
@@ -207,23 +211,23 @@ abstract class _$$RegistrationFormModelImplCopyWith<$Res>
       {int registrationId,
       String licensePlate,
       String vehicleType,
-      String driversLicenseNumber,
-      String driversLicenseImgFront,
-      String driversLicenseImgBack,
-      String lltpImg,
-      String vehicleRegistrationImg,
-      String healthCheckDay,
-      String vehicleInsuranceImgFront,
-      String vehicleInsuranceImgBack,
-      String tin,
-      int lat,
-      int lon,
-      DriverModel driver,
-      int totalStar,
+      String? driversLicenseNumber,
+      String? driversLicenseImgFront,
+      String? driversLicenseImgBack,
+      String? lltpImg,
+      String? vehicleRegistrationImg,
+      String? healthCheckDay,
+      String? vehicleInsuranceImgFront,
+      String? vehicleInsuranceImgBack,
+      String? tin,
+      int? lat,
+      int? lon,
+      DriverModel? driver,
+      int? totalStar,
       int status});
 
   @override
-  $DriverModelCopyWith<$Res> get driver;
+  $DriverModelCopyWith<$Res>? get driver;
 }
 
 /// @nodoc
@@ -243,19 +247,19 @@ class __$$RegistrationFormModelImplCopyWithImpl<$Res>
     Object? registrationId = null,
     Object? licensePlate = null,
     Object? vehicleType = null,
-    Object? driversLicenseNumber = null,
-    Object? driversLicenseImgFront = null,
-    Object? driversLicenseImgBack = null,
-    Object? lltpImg = null,
-    Object? vehicleRegistrationImg = null,
-    Object? healthCheckDay = null,
-    Object? vehicleInsuranceImgFront = null,
-    Object? vehicleInsuranceImgBack = null,
-    Object? tin = null,
-    Object? lat = null,
-    Object? lon = null,
-    Object? driver = null,
-    Object? totalStar = null,
+    Object? driversLicenseNumber = freezed,
+    Object? driversLicenseImgFront = freezed,
+    Object? driversLicenseImgBack = freezed,
+    Object? lltpImg = freezed,
+    Object? vehicleRegistrationImg = freezed,
+    Object? healthCheckDay = freezed,
+    Object? vehicleInsuranceImgFront = freezed,
+    Object? vehicleInsuranceImgBack = freezed,
+    Object? tin = freezed,
+    Object? lat = freezed,
+    Object? lon = freezed,
+    Object? driver = freezed,
+    Object? totalStar = freezed,
     Object? status = null,
   }) {
     return _then(_$RegistrationFormModelImpl(
@@ -271,58 +275,58 @@ class __$$RegistrationFormModelImplCopyWithImpl<$Res>
           ? _value.vehicleType
           : vehicleType // ignore: cast_nullable_to_non_nullable
               as String,
-      driversLicenseNumber: null == driversLicenseNumber
+      driversLicenseNumber: freezed == driversLicenseNumber
           ? _value.driversLicenseNumber
           : driversLicenseNumber // ignore: cast_nullable_to_non_nullable
-              as String,
-      driversLicenseImgFront: null == driversLicenseImgFront
+              as String?,
+      driversLicenseImgFront: freezed == driversLicenseImgFront
           ? _value.driversLicenseImgFront
           : driversLicenseImgFront // ignore: cast_nullable_to_non_nullable
-              as String,
-      driversLicenseImgBack: null == driversLicenseImgBack
+              as String?,
+      driversLicenseImgBack: freezed == driversLicenseImgBack
           ? _value.driversLicenseImgBack
           : driversLicenseImgBack // ignore: cast_nullable_to_non_nullable
-              as String,
-      lltpImg: null == lltpImg
+              as String?,
+      lltpImg: freezed == lltpImg
           ? _value.lltpImg
           : lltpImg // ignore: cast_nullable_to_non_nullable
-              as String,
-      vehicleRegistrationImg: null == vehicleRegistrationImg
+              as String?,
+      vehicleRegistrationImg: freezed == vehicleRegistrationImg
           ? _value.vehicleRegistrationImg
           : vehicleRegistrationImg // ignore: cast_nullable_to_non_nullable
-              as String,
-      healthCheckDay: null == healthCheckDay
+              as String?,
+      healthCheckDay: freezed == healthCheckDay
           ? _value.healthCheckDay
           : healthCheckDay // ignore: cast_nullable_to_non_nullable
-              as String,
-      vehicleInsuranceImgFront: null == vehicleInsuranceImgFront
+              as String?,
+      vehicleInsuranceImgFront: freezed == vehicleInsuranceImgFront
           ? _value.vehicleInsuranceImgFront
           : vehicleInsuranceImgFront // ignore: cast_nullable_to_non_nullable
-              as String,
-      vehicleInsuranceImgBack: null == vehicleInsuranceImgBack
+              as String?,
+      vehicleInsuranceImgBack: freezed == vehicleInsuranceImgBack
           ? _value.vehicleInsuranceImgBack
           : vehicleInsuranceImgBack // ignore: cast_nullable_to_non_nullable
-              as String,
-      tin: null == tin
+              as String?,
+      tin: freezed == tin
           ? _value.tin
           : tin // ignore: cast_nullable_to_non_nullable
-              as String,
-      lat: null == lat
+              as String?,
+      lat: freezed == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
-              as int,
-      lon: null == lon
+              as int?,
+      lon: freezed == lon
           ? _value.lon
           : lon // ignore: cast_nullable_to_non_nullable
-              as int,
-      driver: null == driver
+              as int?,
+      driver: freezed == driver
           ? _value.driver
           : driver // ignore: cast_nullable_to_non_nullable
-              as DriverModel,
-      totalStar: null == totalStar
+              as DriverModel?,
+      totalStar: freezed == totalStar
           ? _value.totalStar
           : totalStar // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -338,19 +342,19 @@ class _$RegistrationFormModelImpl implements _RegistrationFormModel {
       {required this.registrationId,
       required this.licensePlate,
       required this.vehicleType,
-      required this.driversLicenseNumber,
-      required this.driversLicenseImgFront,
-      required this.driversLicenseImgBack,
-      required this.lltpImg,
-      required this.vehicleRegistrationImg,
-      required this.healthCheckDay,
-      required this.vehicleInsuranceImgFront,
-      required this.vehicleInsuranceImgBack,
-      required this.tin,
-      required this.lat,
-      required this.lon,
-      required this.driver,
-      required this.totalStar,
+      this.driversLicenseNumber,
+      this.driversLicenseImgFront,
+      this.driversLicenseImgBack,
+      this.lltpImg,
+      this.vehicleRegistrationImg,
+      this.healthCheckDay,
+      this.vehicleInsuranceImgFront,
+      this.vehicleInsuranceImgBack,
+      this.tin,
+      this.lat,
+      this.lon,
+      this.driver,
+      this.totalStar,
       required this.status});
 
   factory _$RegistrationFormModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -363,31 +367,31 @@ class _$RegistrationFormModelImpl implements _RegistrationFormModel {
   @override
   final String vehicleType;
   @override
-  final String driversLicenseNumber;
+  final String? driversLicenseNumber;
   @override
-  final String driversLicenseImgFront;
+  final String? driversLicenseImgFront;
   @override
-  final String driversLicenseImgBack;
+  final String? driversLicenseImgBack;
   @override
-  final String lltpImg;
+  final String? lltpImg;
   @override
-  final String vehicleRegistrationImg;
+  final String? vehicleRegistrationImg;
   @override
-  final String healthCheckDay;
+  final String? healthCheckDay;
   @override
-  final String vehicleInsuranceImgFront;
+  final String? vehicleInsuranceImgFront;
   @override
-  final String vehicleInsuranceImgBack;
+  final String? vehicleInsuranceImgBack;
   @override
-  final String tin;
+  final String? tin;
   @override
-  final int lat;
+  final int? lat;
   @override
-  final int lon;
+  final int? lon;
   @override
-  final DriverModel driver;
+  final DriverModel? driver;
   @override
-  final int totalStar;
+  final int? totalStar;
   @override
   final int status;
 
@@ -477,19 +481,19 @@ abstract class _RegistrationFormModel implements RegistrationFormModel {
       {required final int registrationId,
       required final String licensePlate,
       required final String vehicleType,
-      required final String driversLicenseNumber,
-      required final String driversLicenseImgFront,
-      required final String driversLicenseImgBack,
-      required final String lltpImg,
-      required final String vehicleRegistrationImg,
-      required final String healthCheckDay,
-      required final String vehicleInsuranceImgFront,
-      required final String vehicleInsuranceImgBack,
-      required final String tin,
-      required final int lat,
-      required final int lon,
-      required final DriverModel driver,
-      required final int totalStar,
+      final String? driversLicenseNumber,
+      final String? driversLicenseImgFront,
+      final String? driversLicenseImgBack,
+      final String? lltpImg,
+      final String? vehicleRegistrationImg,
+      final String? healthCheckDay,
+      final String? vehicleInsuranceImgFront,
+      final String? vehicleInsuranceImgBack,
+      final String? tin,
+      final int? lat,
+      final int? lon,
+      final DriverModel? driver,
+      final int? totalStar,
       required final int status}) = _$RegistrationFormModelImpl;
 
   factory _RegistrationFormModel.fromJson(Map<String, dynamic> json) =
@@ -502,31 +506,31 @@ abstract class _RegistrationFormModel implements RegistrationFormModel {
   @override
   String get vehicleType;
   @override
-  String get driversLicenseNumber;
+  String? get driversLicenseNumber;
   @override
-  String get driversLicenseImgFront;
+  String? get driversLicenseImgFront;
   @override
-  String get driversLicenseImgBack;
+  String? get driversLicenseImgBack;
   @override
-  String get lltpImg;
+  String? get lltpImg;
   @override
-  String get vehicleRegistrationImg;
+  String? get vehicleRegistrationImg;
   @override
-  String get healthCheckDay;
+  String? get healthCheckDay;
   @override
-  String get vehicleInsuranceImgFront;
+  String? get vehicleInsuranceImgFront;
   @override
-  String get vehicleInsuranceImgBack;
+  String? get vehicleInsuranceImgBack;
   @override
-  String get tin;
+  String? get tin;
   @override
-  int get lat;
+  int? get lat;
   @override
-  int get lon;
+  int? get lon;
   @override
-  DriverModel get driver;
+  DriverModel? get driver;
   @override
-  int get totalStar;
+  int? get totalStar;
   @override
   int get status;
 

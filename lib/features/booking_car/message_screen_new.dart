@@ -48,7 +48,7 @@ class MessageScreenNew extends HookConsumerWidget {
 
 
     // Function to send a message
-    void _sendMessage() async {
+    void sendMessage() async {
       final message = controller.text.trim();
       if (message.isEmpty) return;
 
@@ -172,7 +172,7 @@ class MessageScreenNew extends HookConsumerWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.send),
-                  onPressed: _sendMessage,
+                  onPressed: sendMessage,
                 ),
               ],
             ),

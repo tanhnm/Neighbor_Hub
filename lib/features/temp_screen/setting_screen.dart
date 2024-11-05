@@ -1,33 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:flutter_application_1/view/avatar_card.dart';
 import 'package:flutter_application_1/domains/setting.dart';
 import 'package:flutter_application_1/domains/freezed/user_model.dart';
 import 'package:hive/hive.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../view/setting_tile.dart';
 
 
-class SettingScreen extends StatefulWidget {
+class SettingScreen extends HookConsumerWidget {
   const SettingScreen({super.key});
 
   @override
-  State<SettingScreen> createState() => _SettingScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
 
-class _SettingScreenState extends State<SettingScreen> {
-  UserModel? user;
-  Box? userBox;
-  Future<UserModel>? userIdFuture;
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          AvatarCard(name: user?.username ?? ""),
+          AvatarCard(name: ref.read(userProvider).value!.username ?? "aaa"),
           const SizedBox(height: 20),
           SingleChildScrollView(
             child: Padding(

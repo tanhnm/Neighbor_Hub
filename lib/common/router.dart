@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/domains/freezed/booking_model.dart';
 import 'package:flutter_application_1/features/auth/profile_me_screen.dart';
 import 'package:flutter_application_1/features/booking_car/destination_pick.dart';
+import 'package:flutter_application_1/features/driver/message_screen_driver_new.dart';
+import 'package:flutter_application_1/features/driver/registration_form_screen.dart';
+import 'package:flutter_application_1/features/driver/user_list_screen_new.dart';
 import 'package:flutter_application_1/features/home/main_page_new.dart';
 import 'package:flutter_application_1/features/temp_screen/activity_screen.dart';
 import 'package:flutter_application_1/features/temp_screen/activity_screen_new.dart';
@@ -9,6 +13,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:hive/hive.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../domains/freezed/booking_detail_model.dart';
 import '../features/booking_car/destination_pick_new.dart';
@@ -19,6 +25,7 @@ import '../features/splash/splash_screen.dart';
 import '../features/temp_screen/login_screen.dart';
 import '../providers/user_provider.dart';
 import 'routes.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -79,12 +86,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                         path: Routes.driverList,
                         name: Routes.driverList,
                         builder: (context, state) {
-                          // final Map<String, dynamic> booking =
-                          //     state.extra as Map<String, dynamic>;
-                          // return DriverListScreen(booking: booking);
                           final BookingDetailModel bookingDetail =
-                          state.extra as BookingDetailModel;
-                          return DriverListScreenNew(bookingDetail: bookingDetail);
+                              state.extra as BookingDetailModel;
+                          return DriverListScreenNew(
+                              bookingDetail: bookingDetail);
                         }),
                   ]),
             ]),
@@ -103,20 +108,46 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     ),
                   ]),
             ]),
+            StatefulShellBranch(routes: [
+              GoRoute(
+                  path: Routes.userList,
+                  name: Routes.userList,
+                  builder: (context, state) => const UserListScreenNew(),
+                  routes: [
+                    GoRoute(
+                        path: Routes.messageDriver,
+                        name: Routes.messageDriver,
+                        builder: (context, state) {
+                          final BookingModel booking =
+                          state.extra as BookingModel;
+                          return MessageScreenDriverNew(
+                              booking: booking);
+                        }),
+                  ]),
+            ]),
+            StatefulShellBranch(routes: [
+              GoRoute(
+                  path: Routes.regForm,
+                  name: Routes.regForm,
+                  builder: (context, state) => const RegistrationFormScreen(),
+                  routes: []),
+            ]),
           ]),
       GoRoute(
         path: Routes.splash,
+        name: Routes.splash,
         builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
         path: Routes.login,
+        name: Routes.login,
         builder: (context, state) => const LoginScreen(),
       ),
     ],
   );
 });
 
-class ScaffoldWithNavBar extends ConsumerWidget {
+class ScaffoldWithNavBar extends HookConsumerWidget {
   const ScaffoldWithNavBar({
     required this.navigationShell,
     Key? key,
@@ -126,6 +157,21 @@ class ScaffoldWithNavBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDriver = useState<bool>(false);
+// useEffect to run only once on initialization
+    useEffect(() {
+      // Define an async function to fetch driver status
+      Future<void> checkDriver() async {
+        var box = await Hive.openBox('authBox');
+        isDriver.value = box.get('is_driver', defaultValue: false);
+      }
+
+      // Call the async function
+      checkDriver();
+
+      return null; // No cleanup needed
+    }, []);
+
     Future(() {
       ref.read(navigationShellProvider.notifier).state = navigationShell;
     });
@@ -169,6 +215,16 @@ class ScaffoldWithNavBar extends ConsumerWidget {
                   icon: FontAwesomeIcons.house,
                   borderRadius: BorderRadius.circular(12),
                   text: 'Settings',
+                ),
+                if(isDriver.value) GButton(
+                  icon: FontAwesomeIcons.user,
+                  borderRadius: BorderRadius.circular(12),
+                  text: 'User List',
+                ),
+                if(isDriver.value) GButton(
+                  icon: FontAwesomeIcons.paperclip,
+                  borderRadius: BorderRadius.circular(12),
+                  text: 'Reg',
                 ),
               ],
               selectedIndex: navigationShell.currentIndex,

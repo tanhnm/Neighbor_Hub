@@ -16,22 +16,22 @@ class AppRepository {
 
   final Dio client;
 
-  Future<List<BookingDetailModel>> getBookingDetails( int userid, {CancelToken? cancelToken}) async {
+  Future<List<BookingDetailModel>> getBookingDetails(int userid,
+      {CancelToken? cancelToken}) async {
     final url = Uri(
       scheme: 'https',
       host: kBaseUrl,
       path: 'api/v1/booking/getBookingByUserId/$userid',
     ).toString();
 
-
     final response = await client.get(url, cancelToken: cancelToken);
     final List list = response.data;
     return list.map((e) => BookingDetailModel.fromJson(e)).toList();
   }
 
-
-  Future<List<RegistrationFormModel>> getDrivers(String currentLocation,int bookingId,{CancelToken? cancelToken} ) async {
-
+  Future<List<RegistrationFormModel>> getDrivers(
+      String currentLocation, int bookingId,
+      {CancelToken? cancelToken}) async {
     double lon = double.parse(currentLocation.split(',')[1]);
     double lat = double.parse(currentLocation.split(',')[0]);
 
@@ -51,9 +51,31 @@ class AppRepository {
     return list.map((e) => RegistrationFormModel.fromJson(e)).toList();
   }
 
+  Future<List<RegistrationFormModel>> getAllRegistrationFormsById(
+      int driverId, String token,
+      {CancelToken? cancelToken}) async {
+    final url = Uri(
+      scheme: 'https',
+      host: kBaseUrl,
+      path: '/api/v1/registrationForm/getAllRegistrationForm',
+      queryParameters: {
+        'driverId': driverId.toString(),
+      },
+    ).toString();
+
+    Options options = Options(headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    final response =
+        await client.get(url, cancelToken: cancelToken, options: options);
+    final List list = response.data;
+    return list.map((e) => RegistrationFormModel.fromJson(e)).toList();
+  }
 }
 
 @Riverpod(keepAlive: true)
 AppRepository appRepository(Ref ref) => AppRepository(
-  client: ref.watch(dioProvider),
-);
+      client: ref.watch(dioProvider),
+    );

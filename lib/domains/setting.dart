@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/common/router.dart';
 import 'package:flutter_application_1/common/routes.dart';
 import 'package:flutter_application_1/domains/freezed/user_model.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 
 import '../features/temp_screen/login_screen.dart'; // Ensure Hive is imported
@@ -48,10 +50,11 @@ final List<Setting> settings = [
       await locationBox.clear();
       await box.clear();
       if(context.mounted){
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const LoginScreen()),
+        // );
+        context.pushReplacementNamed(Routes.login);
       }
     },
   ),

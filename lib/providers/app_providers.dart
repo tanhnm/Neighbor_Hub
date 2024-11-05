@@ -12,9 +12,9 @@ final tokenProvider = Provider<String>((ref) {
   throw UnimplementedError();
 });
 
-Future<String> getTokenFromHive() async {
+Future<String?> getTokenFromHive() async {
   var box = Hive.box('authBox');
-  String token = box.get('token', defaultValue: null);
+  String? token = box.get('token', defaultValue: null);
   return token;
 }
 
@@ -22,6 +22,6 @@ Future<String> getTokenFromHive() async {
 Provider<AppApi> appApiProvider = Provider<AppApi>(
       (ref) => AppApi(
     ref.watch(dioProvider),
-    baseUrl: kBaseUrl,
+    baseUrl: kBaseHttpUrl,
   ),
 );

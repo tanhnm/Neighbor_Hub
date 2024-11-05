@@ -18,14 +18,8 @@ final userProvider = FutureProvider<UserModel?>((ref) async {
 });
 
 
-final userIdFutureProvider = FutureProvider<int?>((ref) async {
-  final userBox = Hive.box('authBox');
-
-  // Retrieve the user ID from Hive
-  final userId = userBox.get('user_id') as int?;
-
-  // Return the user ID (or null if not found)
-  return userId;
+final userModelProvider = Provider<AsyncValue<UserModel?>>((ref) {
+  return ref.watch(userProvider);
 });
 
 

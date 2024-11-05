@@ -46,3 +46,5 @@ List<Map> restaurants = [
 
 const String kBaseUrl =
     'gh-neighborhub-569199407036.asia-southeast1.run.app';
+const String kBaseHttpUrl =
+    'https://gh-neighborhub-569199407036.asia-southeast1.run.app';

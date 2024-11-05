@@ -25,11 +25,11 @@ void main() async {
   await Hive.openBox<UserModel>('users');
 
   // Load the user from Hive before running the app
-  String token = await getTokenFromHive();
+  String? token = await getTokenFromHive();
   runApp(
     ProviderScope(
       overrides: [
-        tokenProvider.overrideWithValue(token),
+       if(token != null) tokenProvider.overrideWithValue(token),
       ],
       child: const MyApp(),
     ),

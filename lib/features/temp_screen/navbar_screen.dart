@@ -40,7 +40,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   Future<void> _checkDriver() async {
     var box = Hive.box('authBox');
-    // Assuming you have this method to get the current driver
     print("Checking driver: ${box.get('is_driver')}");
     is_driver = box.get('is_driver', defaultValue: false);
     if (is_driver) {

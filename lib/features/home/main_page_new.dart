@@ -117,12 +117,15 @@ class MainPageNew extends HookConsumerWidget {
                             ],
                           ),
                         ),
-                        Column(
-                          children: [
-                            _buildCircleIcon('images/voucher.png'),
-                            const Text("Voucher",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                          ],
+                        GestureDetector(
+                          onTap: () => context.pushNamed(Routes.voucher),
+                          child: Column(
+                            children: [
+                              _buildCircleIcon('images/voucher.png'),
+                              const Text("Voucher",
+                                  style: TextStyle(fontWeight: FontWeight.bold)),
+                            ],
+                          ),
                         ),
                         Column(
                           children: [
@@ -137,13 +140,13 @@ class MainPageNew extends HookConsumerWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildInfoCard("images/wallet.png", screenWidth,
-                            "Thanh Toán", "Thêm thẻ"),
+                        // _buildInfoCard("images/wallet.png", screenWidth,
+                        //     "Thanh Toán", "Thêm thẻ"),
                         // TextButton(onPressed: () async {
                         //   print(await ref.read(driverProvider.future));
                         // }, child: Text('aaa')),
                         _buildInfoCard(
-                            "images/coin.png", screenWidth, "Tích điểm", "50"),
+                            "images/coin.png", screenWidth, "Tích điểm", "100000"),
                       ],
                     ),
                   ],

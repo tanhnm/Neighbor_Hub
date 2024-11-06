@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_application_1/common/restaurants.dart';
 import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
 import 'package:flutter_application_1/domains/freezed/booking_model.dart';
+import 'package:flutter_application_1/domains/freezed/booking_voucher_model.dart';
 import 'package:flutter_application_1/domains/freezed/registration_form_model.dart';
 import 'package:flutter_application_1/providers/app_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -94,6 +95,19 @@ class AppRepository {
     await client.get(url, cancelToken: cancelToken, options: options);
     final List list = response.data;
     return list.map((e) => BookingModel.fromJson(e)).toList();
+  }
+
+  Future<List<VoucherModel>> getAllVouchers(
+      {CancelToken? cancelToken}) async {
+    final url = Uri(
+      scheme: 'https',
+      host: kBaseUrl,
+      path: 'api/v1/voucher/viewAllVoucher',
+    ).toString();
+
+    final response = await client.get(url, cancelToken: cancelToken);
+    final List list = response.data;
+    return list.map((e) => VoucherModel.fromJson(e)).toList();
   }
 
 

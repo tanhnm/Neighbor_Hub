@@ -5,6 +5,7 @@ abstract class Routes {
 
 
   static const destinationPick = 'destinationPick';
+  static const voucher = 'voucher';
   static const mapDriver = 'mapDriver';
   static const map = 'map';
 

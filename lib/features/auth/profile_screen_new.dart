@@ -108,7 +108,7 @@ class ProfileScreenNew extends HookConsumerWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${convertNum(bookingDetail.registration!.driver!.revenue)} VND',
+                      '${convertNum(bookingDetail.registration!.driver!.revenue)} điểm',
                       style: const TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold),
                     ),
@@ -170,7 +170,7 @@ class ProfileScreenNew extends HookConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Người chở ra giá ${convertNum(amount['amount'])} VND',
+                      'Người chở ra giá ${convertNum(amount['amount'])} điểm',
                       style: const TextStyle(
                           color: Colors.red,
                           fontWeight: FontWeight.bold,

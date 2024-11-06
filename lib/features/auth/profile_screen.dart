@@ -139,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${convertNum(widget.driver['revenue'])} VND',
+                      '${convertNum(widget.driver['revenue'])} điểm',
                       style: const TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold),
                     ),
@@ -197,7 +197,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Người chở ra giá ${convertNum(driverAmount['amount'])} VND',
+                        'Người chở ra giá ${convertNum(driverAmount['amount'])} điểm',
                         style: const TextStyle(
                             color: Colors.red,
                             fontWeight: FontWeight.bold,

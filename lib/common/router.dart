@@ -9,6 +9,7 @@ import 'package:flutter_application_1/features/driver/user_list_screen_new.dart'
 import 'package:flutter_application_1/features/home/main_page_new.dart';
 import 'package:flutter_application_1/features/temp_screen/activity_screen_new.dart';
 import 'package:flutter_application_1/features/temp_screen/setting_screen.dart';
+import 'package:flutter_application_1/features/voucher/voucher_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -107,6 +108,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                                     initialLongitude: initialLongitude);
                               }),
                         ]),
+                    GoRoute(
+                      path: Routes.voucher,
+                      name: Routes.voucher,
+                      builder: (context, state) => const VoucherScreen(),
+                    ),
                   ]),
             ]),
 
@@ -127,7 +133,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                               bookingDetail: bookingDetail);
                         },
                         routes: [
-
                           GoRoute(
                             path: Routes.message,
                             name: Routes.message,
@@ -145,8 +150,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                       builder: (context, state) {
                         final BookingDetailModel bookingDetail =
                             state.extra as BookingDetailModel;
-                        return ProfileScreenNew(
-                            bookingDetail: bookingDetail);
+                        return ProfileScreenNew(bookingDetail: bookingDetail);
                       },
                     ),
                   ]),

@@ -28,10 +28,10 @@ class VoucherModel with _$VoucherModel {
     required String description,
     required int discount,
     required String expiryDate,
-    required bool status,
-    required List<String> bookings,
-    required List<BookingVoucherElementModel> userVouchers,
-    required List<BookingVoucherElementModel> bookingVouchers,
+     bool? status,
+     List<String>? bookings,
+     List<BookingVoucherElementModel>? userVouchers,
+     List<BookingVoucherElementModel>? bookingVouchers,
   }) = _VoucherModel;
 
   factory VoucherModel.fromJson(Map<String, dynamic> json) => _$VoucherModelFromJson(json);

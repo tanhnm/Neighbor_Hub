@@ -17,7 +17,7 @@ class ActivityScreenNew extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Activity"),
+          title: const Text("Hoạt động"),
         ),
         body: Consumer(builder: (context, ref, child) {
           final activities = ref.watch(activityControllerProvider);

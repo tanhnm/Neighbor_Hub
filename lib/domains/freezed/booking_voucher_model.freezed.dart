@@ -279,11 +279,11 @@ mixin _$VoucherModel {
   String get description => throw _privateConstructorUsedError;
   int get discount => throw _privateConstructorUsedError;
   String get expiryDate => throw _privateConstructorUsedError;
-  bool get status => throw _privateConstructorUsedError;
-  List<String> get bookings => throw _privateConstructorUsedError;
-  List<BookingVoucherElementModel> get userVouchers =>
+  bool? get status => throw _privateConstructorUsedError;
+  List<String>? get bookings => throw _privateConstructorUsedError;
+  List<BookingVoucherElementModel>? get userVouchers =>
       throw _privateConstructorUsedError;
-  List<BookingVoucherElementModel> get bookingVouchers =>
+  List<BookingVoucherElementModel>? get bookingVouchers =>
       throw _privateConstructorUsedError;
 
   /// Serializes this VoucherModel to a JSON map.
@@ -308,10 +308,10 @@ abstract class $VoucherModelCopyWith<$Res> {
       String description,
       int discount,
       String expiryDate,
-      bool status,
-      List<String> bookings,
-      List<BookingVoucherElementModel> userVouchers,
-      List<BookingVoucherElementModel> bookingVouchers});
+      bool? status,
+      List<String>? bookings,
+      List<BookingVoucherElementModel>? userVouchers,
+      List<BookingVoucherElementModel>? bookingVouchers});
 }
 
 /// @nodoc
@@ -334,10 +334,10 @@ class _$VoucherModelCopyWithImpl<$Res, $Val extends VoucherModel>
     Object? description = null,
     Object? discount = null,
     Object? expiryDate = null,
-    Object? status = null,
-    Object? bookings = null,
-    Object? userVouchers = null,
-    Object? bookingVouchers = null,
+    Object? status = freezed,
+    Object? bookings = freezed,
+    Object? userVouchers = freezed,
+    Object? bookingVouchers = freezed,
   }) {
     return _then(_value.copyWith(
       voucherId: null == voucherId
@@ -360,22 +360,22 @@ class _$VoucherModelCopyWithImpl<$Res, $Val extends VoucherModel>
           ? _value.expiryDate
           : expiryDate // ignore: cast_nullable_to_non_nullable
               as String,
-      status: null == status
+      status: freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
-              as bool,
-      bookings: null == bookings
+              as bool?,
+      bookings: freezed == bookings
           ? _value.bookings
           : bookings // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      userVouchers: null == userVouchers
+              as List<String>?,
+      userVouchers: freezed == userVouchers
           ? _value.userVouchers
           : userVouchers // ignore: cast_nullable_to_non_nullable
-              as List<BookingVoucherElementModel>,
-      bookingVouchers: null == bookingVouchers
+              as List<BookingVoucherElementModel>?,
+      bookingVouchers: freezed == bookingVouchers
           ? _value.bookingVouchers
           : bookingVouchers // ignore: cast_nullable_to_non_nullable
-              as List<BookingVoucherElementModel>,
+              as List<BookingVoucherElementModel>?,
     ) as $Val);
   }
 }
@@ -394,10 +394,10 @@ abstract class _$$VoucherModelImplCopyWith<$Res>
       String description,
       int discount,
       String expiryDate,
-      bool status,
-      List<String> bookings,
-      List<BookingVoucherElementModel> userVouchers,
-      List<BookingVoucherElementModel> bookingVouchers});
+      bool? status,
+      List<String>? bookings,
+      List<BookingVoucherElementModel>? userVouchers,
+      List<BookingVoucherElementModel>? bookingVouchers});
 }
 
 /// @nodoc
@@ -418,10 +418,10 @@ class __$$VoucherModelImplCopyWithImpl<$Res>
     Object? description = null,
     Object? discount = null,
     Object? expiryDate = null,
-    Object? status = null,
-    Object? bookings = null,
-    Object? userVouchers = null,
-    Object? bookingVouchers = null,
+    Object? status = freezed,
+    Object? bookings = freezed,
+    Object? userVouchers = freezed,
+    Object? bookingVouchers = freezed,
   }) {
     return _then(_$VoucherModelImpl(
       voucherId: null == voucherId
@@ -444,22 +444,22 @@ class __$$VoucherModelImplCopyWithImpl<$Res>
           ? _value.expiryDate
           : expiryDate // ignore: cast_nullable_to_non_nullable
               as String,
-      status: null == status
+      status: freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
-              as bool,
-      bookings: null == bookings
+              as bool?,
+      bookings: freezed == bookings
           ? _value._bookings
           : bookings // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      userVouchers: null == userVouchers
+              as List<String>?,
+      userVouchers: freezed == userVouchers
           ? _value._userVouchers
           : userVouchers // ignore: cast_nullable_to_non_nullable
-              as List<BookingVoucherElementModel>,
-      bookingVouchers: null == bookingVouchers
+              as List<BookingVoucherElementModel>?,
+      bookingVouchers: freezed == bookingVouchers
           ? _value._bookingVouchers
           : bookingVouchers // ignore: cast_nullable_to_non_nullable
-              as List<BookingVoucherElementModel>,
+              as List<BookingVoucherElementModel>?,
     ));
   }
 }
@@ -473,10 +473,10 @@ class _$VoucherModelImpl implements _VoucherModel {
       required this.description,
       required this.discount,
       required this.expiryDate,
-      required this.status,
-      required final List<String> bookings,
-      required final List<BookingVoucherElementModel> userVouchers,
-      required final List<BookingVoucherElementModel> bookingVouchers})
+      this.status,
+      final List<String>? bookings,
+      final List<BookingVoucherElementModel>? userVouchers,
+      final List<BookingVoucherElementModel>? bookingVouchers})
       : _bookings = bookings,
         _userVouchers = userVouchers,
         _bookingVouchers = bookingVouchers;
@@ -495,29 +495,35 @@ class _$VoucherModelImpl implements _VoucherModel {
   @override
   final String expiryDate;
   @override
-  final bool status;
-  final List<String> _bookings;
+  final bool? status;
+  final List<String>? _bookings;
   @override
-  List<String> get bookings {
+  List<String>? get bookings {
+    final value = _bookings;
+    if (value == null) return null;
     if (_bookings is EqualUnmodifiableListView) return _bookings;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_bookings);
+    return EqualUnmodifiableListView(value);
   }
 
-  final List<BookingVoucherElementModel> _userVouchers;
+  final List<BookingVoucherElementModel>? _userVouchers;
   @override
-  List<BookingVoucherElementModel> get userVouchers {
+  List<BookingVoucherElementModel>? get userVouchers {
+    final value = _userVouchers;
+    if (value == null) return null;
     if (_userVouchers is EqualUnmodifiableListView) return _userVouchers;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_userVouchers);
+    return EqualUnmodifiableListView(value);
   }
 
-  final List<BookingVoucherElementModel> _bookingVouchers;
+  final List<BookingVoucherElementModel>? _bookingVouchers;
   @override
-  List<BookingVoucherElementModel> get bookingVouchers {
+  List<BookingVoucherElementModel>? get bookingVouchers {
+    final value = _bookingVouchers;
+    if (value == null) return null;
     if (_bookingVouchers is EqualUnmodifiableListView) return _bookingVouchers;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_bookingVouchers);
+    return EqualUnmodifiableListView(value);
   }
 
   @override
@@ -584,10 +590,10 @@ abstract class _VoucherModel implements VoucherModel {
           required final String description,
           required final int discount,
           required final String expiryDate,
-          required final bool status,
-          required final List<String> bookings,
-          required final List<BookingVoucherElementModel> userVouchers,
-          required final List<BookingVoucherElementModel> bookingVouchers}) =
+          final bool? status,
+          final List<String>? bookings,
+          final List<BookingVoucherElementModel>? userVouchers,
+          final List<BookingVoucherElementModel>? bookingVouchers}) =
       _$VoucherModelImpl;
 
   factory _VoucherModel.fromJson(Map<String, dynamic> json) =
@@ -604,13 +610,13 @@ abstract class _VoucherModel implements VoucherModel {
   @override
   String get expiryDate;
   @override
-  bool get status;
+  bool? get status;
   @override
-  List<String> get bookings;
+  List<String>? get bookings;
   @override
-  List<BookingVoucherElementModel> get userVouchers;
+  List<BookingVoucherElementModel>? get userVouchers;
   @override
-  List<BookingVoucherElementModel> get bookingVouchers;
+  List<BookingVoucherElementModel>? get bookingVouchers;
 
   /// Create a copy of VoucherModel
   /// with the given fields replaced by the non-null parameter values.

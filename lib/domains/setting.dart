@@ -25,19 +25,13 @@ class Setting {
 
 final List<Setting> settings = [
   Setting(
-    title: "Personal Data",
+    title: "Thông tin cá nhân",
     route: Routes.profile,
     icon: Icons.person,
   ),
-  Setting(title: "Settings", route: "/settings", icon: Icons.settings),
-  Setting(title: "Help", route: "/help", icon: Icons.help),
-  Setting(title: "About", route: "/about", icon: Icons.info),
-  Setting(title: "Share", route: "/share", icon: Icons.share),
-  Setting(title: "Rate", route: "/rate", icon: Icons.star),
-  Setting(title: "Privacy", route: "/privacy", icon: Icons.privacy_tip),
-  Setting(title: "Terms", route: "/terms", icon: Icons.verified_user),
+  // Setting(title: "Privacy", route: "/privacy", icon: Icons.privacy_tip),
   Setting(
-    title: "Log Out",
+    title: "Đăng xuất",
     route: "/logout",
     icon: Icons.logout,
     action: (BuildContext context) async {

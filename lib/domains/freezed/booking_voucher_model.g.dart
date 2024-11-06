@@ -35,15 +35,16 @@ _$VoucherModelImpl _$$VoucherModelImplFromJson(Map<String, dynamic> json) =>
       description: json['description'] as String,
       discount: (json['discount'] as num).toInt(),
       expiryDate: json['expiryDate'] as String,
-      status: json['status'] as bool,
-      bookings:
-          (json['bookings'] as List<dynamic>).map((e) => e as String).toList(),
-      userVouchers: (json['userVouchers'] as List<dynamic>)
-          .map((e) =>
+      status: json['status'] as bool?,
+      bookings: (json['bookings'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      userVouchers: (json['userVouchers'] as List<dynamic>?)
+          ?.map((e) =>
               BookingVoucherElementModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      bookingVouchers: (json['bookingVouchers'] as List<dynamic>)
-          .map((e) =>
+      bookingVouchers: (json['bookingVouchers'] as List<dynamic>?)
+          ?.map((e) =>
               BookingVoucherElementModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );

@@ -153,11 +153,11 @@ class MainPageNew extends HookConsumerWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   children: [
-                    const Row(
+                    Row(
                       children: [
                         Text("Khám phá ngay",
                             style: TextStyle(
@@ -166,37 +166,24 @@ class MainPageNew extends HookConsumerWidget {
                         Icon(FontAwesomeIcons.arrowRight, size: 22)
                       ],
                     ),
-                    CarouselSlider(
-                      items: const [
-                        RoundedImage(imgPath: "images/banner_1.png"),
-                      ],
-                      options: CarouselOptions(
-                        height: 200,
-                        // Set a fixed height
-                        viewportFraction: 1,
-                        autoPlay: true,
-                        autoPlayInterval: const Duration(seconds: 3),
-                        enlargeCenterPage: true,
-                      ),
-                    )
                   ],
                 ),
               ),
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      RoundedImage(
-                        imgPath: "images/banner_2.png",
-                        width: screenWidth * 0.4,
-                      ),
-                      RoundedImage(
-                        imgPath: "images/banner_3.png",
-                        width: screenWidth * 0.4,
-                      ),
-                    ],
-                  ))
+              SizedBox(height: 32,),
+              RoundedImage(
+                imgPath: "images/banner_1.png",
+                width: screenWidth * 0.6,
+              ),
+              SizedBox(height: 32,),
+              RoundedImage(
+                imgPath: "images/banner_2.png",
+                width: screenWidth * 0.6,
+              ),
+              SizedBox(height: 32,),
+              RoundedImage(
+                imgPath: "images/banner_3.png",
+                width: screenWidth * 0.6,
+              ),
             ],
           ),
         ),

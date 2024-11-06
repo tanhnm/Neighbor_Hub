@@ -53,9 +53,9 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdk = 23
-        targetSdk = 33
-        versionCode = 5
-        versionName = "5.0"
+        targetSdk = 34
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
         multiDexEnabled true 
         resValue "string", "applicationName", "com.renolation.ride" // Set the application name here
     }
@@ -70,10 +70,10 @@ android {
    }
 
     buildTypes {
-        debug {
+        release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            signingConfig = signingConfigs.release
              // Ensures that debug symbols are kept for native code
             ndk {
                 debugSymbolLevel 'FULL'
@@ -83,6 +83,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+//    buildTypes {
+//        release {
+////            signingConfig signingConfigs.debug
+//            signingConfig signingConfigs.release
+//            minifyEnabled true // Add these lines
+//            shrinkResources true // Add these lines
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//        }
+//    }
     
     // Add this block to rename the APK file
     applicationVariants.all { variant ->

@@ -1,9 +1,7 @@
-
-
-
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/dio.dart';
 
@@ -13,10 +11,7 @@ final bookingServiceProvider = Provider<BookingService>((ref) {
   return BookingService(ref: ref);
 });
 
-
 class BookingService {
-
-
   final Ref ref;
 
   BookingService({required this.ref});
@@ -46,11 +41,9 @@ class BookingService {
 
     final token = ref.read(tokenProvider);
     print(requestBody.toString());
-    var response = await appRepo
-        .createBooking(requestBody, 'Bearer $token');
+    var response = await appRepo.createBooking(requestBody, 'Bearer $token');
     return response;
   }
-
 
   Future<HttpResponse<void>> createAdvanceBooking({
     required String pickupLocation,
@@ -78,9 +71,20 @@ class BookingService {
 
     final token = ref.read(tokenProvider);
     print(requestBody.toString());
-    var response = await appRepo
-        .createAdvanceBooking(requestBody, 'Bearer $token');
+    var response =
+        await appRepo.createAdvanceBooking(requestBody, 'Bearer $token');
     return response;
   }
 
+  Future<HttpResponse<void>> deleteUser() async {
+    // Get the current date and time
+    DateTime now = DateTime.now(); // Convert to UTC
+    // Format the date to ISO 8601 format
+
+    final appRepo = ref.read(appApiProvider);
+    final user = ref.watch(userProvider);
+
+    var response = await appRepo.deleteUser(user.value!.userId.toString());
+    return response;
+  }
 }

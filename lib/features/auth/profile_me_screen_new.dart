@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../common/routes.dart';
+import '../../controller/app_service.dart';
+import '../../domains/freezed/user_model.dart';
 import '../../providers/user_provider.dart';
 
 class ProfileMeScreenNew extends HookConsumerWidget {
@@ -11,8 +17,57 @@ class ProfileMeScreenNew extends HookConsumerWidget {
     final userAsyncValue = ref.watch(userProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Profile'),
-        centerTitle: true,
+        title: const Text('Tài khoản'),
+
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Xóa tài khoản'),
+                        content: const Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Bạn có muốn xóa tài khoản không?'),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Hủy'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+
+                              var box = Hive.box('appBox');
+                              var locationBox = Hive.box('locationBox');
+                              var userBox = Hive.box<UserModel>('users'); // Otherwise, open the box
+                              var authBox = Hive.box('authBox');
+                              await authBox.clear(); // Clears all data in the authBox
+                              await userBox.clear();
+                              await locationBox.clear();
+                              await box.clear();
+                              if(context.mounted){
+                                context.pushReplacementNamed(Routes.login);
+                              }
+                              final bookingService =
+                                  ref.read(bookingServiceProvider);
+                              await bookingService.deleteUser();
+
+                              // Proceed with vehicle confirmation logic
+                            },
+                            child: const Text('Xác Nhận'),
+                          ),
+                        ],
+                      );
+                    });
+              },
+              icon: const Icon(FontAwesomeIcons.trash)),
+        ],
       ),
       body: userAsyncValue.when(
         data: (user) {

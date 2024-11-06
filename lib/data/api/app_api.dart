@@ -54,6 +54,11 @@ abstract class AppApi {
       @Header("Authorization") String authorization,
       );
 
+  @DELETE("/api/v1/user/DeleteUser/{id}")
+  Future<HttpResponse<void>> deleteUser(
+      @Path() String id,
+      );
+
 // @GET('/getter/list-echos')
 // Future<List<EchoEntity>> getEchoes();
 //

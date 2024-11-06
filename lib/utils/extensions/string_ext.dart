@@ -53,7 +53,7 @@ extension PriceFormattingExtension on String {
       double price = double.parse(this);
 
       // Create a NumberFormat instance for Vietnamese currency
-      var formatter = NumberFormat.currency(locale: 'vi_VN', symbol: 'VNĐ');
+      var formatter = NumberFormat.currency(locale: 'vi_VN', symbol: 'điểm');
 
       // Format the price and return the formatted string
       return formatter.format(price);

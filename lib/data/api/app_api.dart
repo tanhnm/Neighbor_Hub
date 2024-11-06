@@ -8,7 +8,8 @@ part 'app_api.g.dart';
 
 @RestApi(parser: Parser.JsonSerializable)
 abstract class AppApi {
-  factory AppApi(Dio client, {
+  factory AppApi(
+    Dio client, {
     String baseUrl,
   }) = _AppApi;
 
@@ -17,8 +18,9 @@ abstract class AppApi {
 
   @PUT("/api/v1/registrationForm/isActive")
   Future<HttpResponse<String>> activateDriver(
-      @Body() Map<String, dynamic> requestBody,
-      @Header("Authorization") String authorization,);
+    @Body() Map<String, dynamic> requestBody,
+    @Header("Authorization") String authorization,
+  );
 
   // @GET("/api/v1/registrationForm/getAllRegistrationForm/{driverId}")
   // Future<List<RegistrationFormModel>> getAllRegistrationFormsById(
@@ -26,16 +28,31 @@ abstract class AppApi {
   //     @Header("Authorization") String authorization,);
 
   @GET("/api/v1/driver/getAllBooking/{driverId}")
-  Future<List<BookingModel>> getAllBookingsByDriverId(@Path() String driverId,
-      @Header("Authorization") String authorization,);
+  Future<List<BookingModel>> getAllBookingsByDriverId(
+    @Path() String driverId,
+    @Header("Authorization") String authorization,
+  );
 
 
   @GET("/api/v1/registrationForm/getAllRegistrationForm")
   Future<List<RegistrationFormModel>> getAllRegistrationFormsById(
-      @Query("driverId") int driverId,
-      @Header("Authorization") String authorization, // Pass the token in the header
+    @Query("driverId") int driverId,
+    @Header("Authorization") String authorization,
+    // Pass the token in the header
+  );
+
+  @POST("/api/v1/booking/createBooking")
+  Future<HttpResponse<void>> createBooking(
+      @Body() Map<String, dynamic> requestBody,
+      @Header("Authorization") String authorization,
       );
 
+
+  @POST("/api/v1/booking/createAdvanceBooking")
+  Future<HttpResponse<void>> createAdvanceBooking(
+      @Body() Map<String, dynamic> requestBody,
+      @Header("Authorization") String authorization,
+      );
 
 // @GET('/getter/list-echos')
 // Future<List<EchoEntity>> getEchoes();

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_application_1/controller/app_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
@@ -6,6 +7,8 @@ import 'package:flutter_application_1/utils/extensions/string_ext.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:latlong2/latlong.dart';
@@ -13,6 +16,7 @@ import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:toastification/toastification.dart';
 
+import '../../common/routes.dart';
 import '../../data/api/api.dart';
 import '../../domains/trip.dart';
 import '../../domains/freezed/user_model.dart';
@@ -535,28 +539,65 @@ class MapScreenNew extends HookConsumerWidget {
                               ),
                               ElevatedButton(
                                 onPressed: () async {
-                                  !isPreBooking
-                                      ? BookingController(context: context)
-                                          .createBooking(
-                                              distance: distance.value.toInt(),
-                                              pickupLocation:
-                                                  pickLocation.value,
-                                              dropoffLocation:
-                                                  dropLocation.value,
-                                              userId: user.value?.userId ?? 0,
-                                              currentLocation: firstPick.value)
-                                      : BookingController(context: context)
-                                          .createBookingAdvance(
-                                              pickupLocation:
-                                                  pickLocation.value,
-                                              dropoffLocation:
-                                                  dropLocation.value,
-                                              distance: distance.value.toInt(),
-                                              userId: user.value?.userId ?? 0,
-                                              currentLocation: firstPick.value,
-                                              pickupTime:
-                                                  "${bookingDateTime.value?.toIso8601String()}Z");
-                                  Navigator.pop(context);
+                                  final bookingService = ref.read(bookingServiceProvider);
+                                  final response = !isPreBooking ? await bookingService.createBooking(
+                                       distance: distance.value.toInt(),
+                                       pickupLocation:
+                                       pickLocation.value,
+                                       dropoffLocation:
+                                       dropLocation.value,
+                                       userId: user.value?.userId ?? 0,
+                                       currentLocation: firstPick.value
+                                   ): await bookingService.createAdvanceBooking(
+                                      pickupLocation:
+                                      pickLocation.value,
+                                      dropoffLocation:
+                                      dropLocation.value,
+                                      distance: distance.value.toInt(),
+                                      userId: user.value?.userId ?? 0,
+                                      currentLocation: firstPick.value,
+                                      pickupTime:
+                                      "${bookingDateTime.value?.toIso8601String()}Z"
+                                  );
+
+                                  if (response.response.statusCode == 200 || response.response.statusCode == 201) {
+                                    var box = Hive.box('locationBox');
+                                    await box.put('currentLocation', firstPick.value);
+                                    if(context.mounted){
+                                      Navigator.pop(context);
+                                      context.pushNamed(Routes.activity);
+                                    }
+                                  } else {
+                                    Fluttertoast.showToast(
+                                      msg: 'Lỗi',
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      fontSize: 16.0,
+                                    );
+                                  }
+                                  // !isPreBooking
+                                  //     ? BookingController(context: context)
+                                  //         .createBooking(
+                                  //             distance: distance.value.toInt(),
+                                  //             pickupLocation:
+                                  //                 pickLocation.value,
+                                  //             dropoffLocation:
+                                  //                 dropLocation.value,
+                                  //             userId: user.value?.userId ?? 0,
+                                  //             currentLocation: firstPick.value)
+                                  //     : BookingController(context: context)
+                                  //         .createBookingAdvance(
+                                  //             pickupLocation:
+                                  //                 pickLocation.value,
+                                  //             dropoffLocation:
+                                  //                 dropLocation.value,
+                                  //             distance: distance.value.toInt(),
+                                  //             userId: user.value?.userId ?? 0,
+                                  //             currentLocation: firstPick.value,
+                                  //             pickupTime:
+                                  //                 "${bookingDateTime.value?.toIso8601String()}Z");
+
                                   // Proceed with vehicle confirmation logic
                                 },
                                 child: const Text('Xác Nhận'),
@@ -573,7 +614,7 @@ class MapScreenNew extends HookConsumerWidget {
                   backgroundColor: Colors.green,
                 ),
                 child: const Text(
-                  "Confirm Vehicle",
+                  "Xác nhận",
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),

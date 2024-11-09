@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../common/routes.dart';
-import '../../controller/app_service.dart';
+import '../../controller/booking_service.dart';
 
 class ProfileMeScreen extends StatefulHookConsumerWidget {
   const ProfileMeScreen({super.key});

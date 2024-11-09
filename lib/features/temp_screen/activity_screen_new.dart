@@ -94,7 +94,7 @@ class ActivityScreenNew extends HookConsumerWidget {
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    "Giá Thỏa Thuận: ${convertNum(bookingDetail.amount)} VNĐ",
+                                    "Giá Thỏa Thuận: ${convertNum(bookingDetail.amount)} điểm",
                                     style: const TextStyle(fontSize: 16),
                                   ),
                                   const SizedBox(height: 8),

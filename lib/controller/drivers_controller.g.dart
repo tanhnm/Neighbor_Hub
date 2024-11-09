@@ -6,7 +6,7 @@ part of 'drivers_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$driversControllerHash() => r'68e887c3280c5a361beb56d2561c7f379206b9d1';
+String _$driversControllerHash() => r'2123baaa71ba693f9e1639dc9ff80a01a4bc33de';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,7 +30,7 @@ class _SystemHash {
 }
 
 abstract class _$DriversController
-    extends BuildlessAsyncNotifier<List<RegistrationFormModel>> {
+    extends BuildlessAutoDisposeAsyncNotifier<List<RegistrationFormModel>> {
   late final int bookingId;
 
   FutureOr<List<RegistrationFormModel>> build(
@@ -82,7 +82,7 @@ class DriversControllerFamily
 }
 
 /// See also [DriversController].
-class DriversControllerProvider extends AsyncNotifierProviderImpl<
+class DriversControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
     DriversController, List<RegistrationFormModel>> {
   /// See also [DriversController].
   DriversControllerProvider(
@@ -139,8 +139,8 @@ class DriversControllerProvider extends AsyncNotifierProviderImpl<
   }
 
   @override
-  AsyncNotifierProviderElement<DriversController, List<RegistrationFormModel>>
-      createElement() {
+  AutoDisposeAsyncNotifierProviderElement<DriversController,
+      List<RegistrationFormModel>> createElement() {
     return _DriversControllerProviderElement(this);
   }
 
@@ -161,13 +161,14 @@ class DriversControllerProvider extends AsyncNotifierProviderImpl<
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 mixin DriversControllerRef
-    on AsyncNotifierProviderRef<List<RegistrationFormModel>> {
+    on AutoDisposeAsyncNotifierProviderRef<List<RegistrationFormModel>> {
   /// The parameter `bookingId` of this provider.
   int get bookingId;
 }
 
-class _DriversControllerProviderElement extends AsyncNotifierProviderElement<
-    DriversController, List<RegistrationFormModel>> with DriversControllerRef {
+class _DriversControllerProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<DriversController,
+        List<RegistrationFormModel>> with DriversControllerRef {
   _DriversControllerProviderElement(super.provider);
 
   @override

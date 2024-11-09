@@ -137,7 +137,7 @@ class UserListScreenNew extends HookConsumerWidget {
                                         phone: booking.bookingDetail.user.phone,
                                         kilometers:
                                         '${booking.bookingDetail.distance} km',
-                                        price: "${booking.amount} VNĐ",
+                                        price: "${booking.amount} điểm",
                                         image: 'https://via.placeholder.com/50',
                                         userId: booking.bookingDetail.user.userId,
                                       ),

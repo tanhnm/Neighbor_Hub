@@ -161,39 +161,41 @@ class ProfileScreenNew extends HookConsumerWidget {
             ),
             const SizedBox(height: 10),
             // Add Deal Price Driver waiting for decision
-            bookingInfoAsyncValue.when(
-              data: (amount) {
-                ref.read(driverAmountProvider.notifier).state = amount;
-                ref.read(priceProvider.notifier).state = amount['amount'].toString();
-                return amount['amount'] > 0.0
-                    ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Người chở ra giá ${convertNum(amount['amount'])} điểm',
-                      style: const TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                    ),
-                  ],
-                )
-                    : Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Đang đợi tài xế chấp nhận deal',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    LoadingAnimationWidget.waveDots(
-                        color: Colors.black, size: 20.0),
-                  ],
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stackTrace) => Text('Error: $error'),
-            ),
+            //todo: api/v1/booking/getDriverAmount?driverId=1&bookingId=33
+            //todo: lỗi nên xóa
+            // bookingInfoAsyncValue.when(
+            //   data: (amount) {
+            //     ref.read(driverAmountProvider.notifier).state = amount;
+            //     ref.read(priceProvider.notifier).state = amount['amount'].toString();
+            //     return amount['amount'] > 0.0
+            //         ? Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         Text(
+            //           'Người chở ra giá ${convertNum(amount['amount'])} điểm',
+            //           style: const TextStyle(
+            //               color: Colors.red,
+            //               fontWeight: FontWeight.bold,
+            //               fontSize: 18),
+            //         ),
+            //       ],
+            //     )
+            //         : Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         const Text(
+            //           'Đang đợi tài xế chấp nhận deal',
+            //           style: TextStyle(
+            //               fontSize: 18, fontWeight: FontWeight.bold),
+            //         ),
+            //         LoadingAnimationWidget.waveDots(
+            //             color: Colors.black, size: 20.0),
+            //       ],
+            //     );
+            //   },
+            //   loading: () => const Center(child: CircularProgressIndicator()),
+            //   error: (error, stackTrace) => Text('Error: $error'),
+            // ),
             const SizedBox(height: 10),
             // Action Buttons
             Padding(
@@ -207,6 +209,7 @@ class ProfileScreenNew extends HookConsumerWidget {
                 onPressed: driverAmount['amount'] > 0.0
                     ? () async {
                   // Handle action for accepted deal
+                  //todo: add driver to deal
                   Future<Map<String, dynamic>> addDriver() async {
                     return BookingController(context: context).addDriver(
                         registrationId: bookingDetail.registration!.registrationId,

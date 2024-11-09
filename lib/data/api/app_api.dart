@@ -22,10 +22,6 @@ abstract class AppApi {
     @Header("Authorization") String authorization,
   );
 
-  // @GET("/api/v1/registrationForm/getAllRegistrationForm/{driverId}")
-  // Future<List<RegistrationFormModel>> getAllRegistrationFormsById(
-  //     @Path() String driverId,
-  //     @Header("Authorization") String authorization,);
 
   @GET("/api/v1/driver/getAllBooking/{driverId}")
   Future<List<BookingModel>> getAllBookingsByDriverId(

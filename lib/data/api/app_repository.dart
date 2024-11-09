@@ -110,6 +110,66 @@ class AppRepository {
     return list.map((e) => VoucherModel.fromJson(e)).toList();
   }
 
+  //note: add later booking controller: addDriver
+  Future<void> addDriver(
+      {CancelToken? cancelToken,required String token,  required int registrationId,
+        required int bookingId,}
+      ) async {
+    final url = Uri(
+      scheme: 'https',
+      host: kBaseUrl,
+      path: '/api/v1/booking/addDriver',
+    ).toString();
+
+    final Map<String, dynamic> requestBody = {
+      "registrationFormId": registrationId,
+      "bookingId": bookingId,
+    };
+
+    Options options = Options(headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    final response =
+    await client.post(url, data: requestBody, cancelToken: cancelToken, options: options);
+    final List list = response.data;
+    print(list);
+    return response.data;
+    // return list.map((e) => RegistrationFormModel.fromJson(e)).toList();
+  }
+
+  //note: add later booking controller: addDriverAmount
+  Future<void> addDriverAmount(
+
+      {CancelToken? cancelToken,
+        required int driverId,
+        required double amount,
+        required int bookingId,required String token,}) async {
+    final url = Uri(
+      scheme: 'https',
+      host: kBaseUrl,
+      path: '/api/v1/booking/addDriverAmount',
+    ).toString();
+
+    final Map<String, dynamic> requestBody = {
+      "driverId": driverId,
+      "amount": amount,
+      "bookingId": bookingId,
+    };
+    Options options = Options(headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    final response =
+    await client.post(url, data: requestBody, cancelToken: cancelToken, options: options);
+    final List list = response.data;
+    print(list);
+    return response.data;
+    // return list.map((e) => RegistrationFormModel.fromJson(e)).toList();
+  }
+
 
 }
 

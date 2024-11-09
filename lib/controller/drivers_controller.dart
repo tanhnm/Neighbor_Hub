@@ -13,9 +13,8 @@ import '../data/api/app_repository.dart';
 part 'drivers_controller.g.dart';
 
 
-@Riverpod(keepAlive: true)
+@riverpod
 class DriversController extends _$DriversController {
-
 
   @override
   FutureOr<List<RegistrationFormModel>> build(int bookingId) async {

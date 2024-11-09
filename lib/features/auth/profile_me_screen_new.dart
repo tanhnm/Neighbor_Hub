@@ -5,7 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../common/routes.dart';
-import '../../controller/app_service.dart';
+import '../../controller/booking_service.dart';
 import '../../domains/freezed/user_model.dart';
 import '../../providers/user_provider.dart';
 

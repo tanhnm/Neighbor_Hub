@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter_application_1/controller/app_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
@@ -17,6 +16,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../common/routes.dart';
+import '../../controller/booking_service.dart';
 import '../../data/api/api.dart';
 import '../../domains/trip.dart';
 import '../../domains/freezed/user_model.dart';

@@ -9,7 +9,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../common/routes.dart';
 import '../auth/profile_screen_new.dart';
-
+import 'package:collection/collection.dart';
 class ActivityScreenNew extends HookConsumerWidget {
   const ActivityScreenNew({super.key});
 
@@ -24,6 +24,7 @@ class ActivityScreenNew extends HookConsumerWidget {
 
           return activities.when(
               data: (bookings) {
+                List<BookingDetailModel> bookingList = List.from(bookings)..sort((a, b) => b.bookingId.compareTo(a.bookingId));
                 return bookings.isEmpty
                     ? const Center(
                         child: Text(
@@ -33,9 +34,9 @@ class ActivityScreenNew extends HookConsumerWidget {
                       ))
                     : ListView.builder(
                         padding: const EdgeInsets.all(16.0),
-                        itemCount: bookings.length,
+                        itemCount: bookingList.length,
                         itemBuilder: (context, index) {
-                          BookingDetailModel bookingDetail = bookings[index];
+                          BookingDetailModel bookingDetail = bookingList[index];
                           var isPastPickupTime = DateTime.parse(
                                   bookingDetail.pickupTime.toString())
                               .isBefore(DateTime.now()
@@ -98,6 +99,7 @@ class ActivityScreenNew extends HookConsumerWidget {
                                     style: const TextStyle(fontSize: 16),
                                   ),
                                   const SizedBox(height: 8),
+                                  bookingDetail.status == "BookingComplete" ? SizedBox() :
                                   ElevatedButton(
                                     onPressed: isPastPickupTime
                                         ? null

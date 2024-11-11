@@ -30,7 +30,6 @@ class ProfileScreenNew extends HookConsumerWidget {
     final price = ref.watch(priceProvider);
 
     // Watch the FutureProvider for booking info
-    final bookingInfoAsyncValue = ref.watch(bookingInfoProvider(bookingDetail.toJson()));
 
     // Simulate driver decision when the widget is built
     ref.read(driverDecisionProvider.notifier).simulateDriverDecision();
@@ -168,87 +167,116 @@ class ProfileScreenNew extends HookConsumerWidget {
             // Add Deal Price Driver waiting for decision
             //todo: api/v1/booking/getDriverAmount?driverId=1&bookingId=33
             //todo: lỗi nên xóa
-            // bookingInfoAsyncValue.when(
-            //   data: (amount) {
-            //     ref.read(driverAmountProvider.notifier).state = amount;
-            //     ref.read(priceProvider.notifier).state = amount['amount'].toString();
-            //     return amount['amount'] > 0.0
-            //         ? Row(
-            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //       children: [
-            //         Text(
-            //           'Người chở ra giá ${convertNum(amount['amount'])} điểm',
-            //           style: const TextStyle(
-            //               color: Colors.red,
-            //               fontWeight: FontWeight.bold,
-            //               fontSize: 18),
-            //         ),
-            //       ],
-            //     )
-            //         : Row(
-            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //       children: [
-            //         const Text(
-            //           'Đang đợi tài xế chấp nhận deal',
-            //           style: TextStyle(
-            //               fontSize: 18, fontWeight: FontWeight.bold),
-            //         ),
-            //         LoadingAnimationWidget.waveDots(
-            //             color: Colors.black, size: 20.0),
-            //       ],
-            //     );
-            //   },
-            //   loading: () => const Center(child: CircularProgressIndicator()),
-            //   error: (error, stackTrace) => Text('Error: $error'),
-            // ),
-            const SizedBox(height: 10),
+
+            // Consumer(builder: (context, ref, child) {
+            //   final bookingInfoAsyncValue = ref.watch(amountControllerProvider(
+            //       bookingDetail.registration!.driver!.driverId, bookingDetail.bookingId
+            //   ));
+            //
+            //   return bookingInfoAsyncValue.when(
+            //     data: (amount) {
+            //       ref.read(driverAmountProvider.notifier).state = amount.amount;
+            //       ref.read(priceProvider.notifier).state = amount.amount;
+            //       // return Text('aaa');
+            //       print(amount.amount);
+            //       return amount.amount > 0
+            //           ? Row(
+            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //         children: [
+            //           Text(
+            //             'Người chở ra giá ${convertNum(amount.amount)} điểm',
+            //             style: const TextStyle(
+            //                 color: Colors.red,
+            //                 fontWeight: FontWeight.bold,
+            //                 fontSize: 18),
+            //           ),
+            //         ],
+            //       )
+            //           : Row(
+            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //         children: [
+            //           const Text(
+            //             'Đang đợi tài xế chấp nhận deal',
+            //             style: TextStyle(
+            //                 fontSize: 18, fontWeight: FontWeight.bold),
+            //           ),
+            //           LoadingAnimationWidget.waveDots(
+            //               color: Colors.black, size: 20.0),
+            //         ],
+            //       );
+            //     },
+            //     loading: () => const Center(child: CircularProgressIndicator()),
+            //     error: (error, stackTrace) => Text('Error: $error'),
+            //   );
+            // }),
+            // const SizedBox(height: 10),
             // Action Buttons
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 10),
+            //   child: ElevatedButton(
+            //     style: ElevatedButton.styleFrom(
+            //         minimumSize: const Size(double.infinity, 50),
+            //         backgroundColor: driverAmount > 0.0
+            //             ? const Color(0xFFFDC6D6)
+            //             : Colors.grey),
+            //     onPressed:
+            //          () async {
+            //       // Handle action for accepted deal
+            //       //todo: add driver to deal
+            //       // Future<Map<String, dynamic>> addDriver() async {
+            //       //   return BookingController(context: context).addDriver(
+            //       //       registrationId: bookingDetail.registration!.registrationId,
+            //       //       bookingId: bookingDetail.bookingId);
+            //       // }
+            //      //  final bookingService = ref.read(bookingServiceProvider);
+            //      // final response =  await bookingService.addDriver(bookingDetail.registration!.registrationId,  bookingDetail.bookingId);
+            //      //  if(true){
+            //      //    if(context.mounted){
+            //      //      context.goNamed(Routes.activity);
+            //      //      ref.refresh(activityControllerProvider);
+            //      //    }
+            //      //  }
+            //       // Map<String, dynamic> data = await addDriver();
+            //       // String imgUrlPayment = '';
+            //       // // Handle action for accepted deal
+            //       // Future<String> simulateDriverDecision() async {
+            //       //   return BookingController(context: context)
+            //       //       .createQrCodePayment(bookingDetail.bookingId);
+            //       // }
+            //       //
+            //       // imgUrlPayment = await simulateDriverDecision();
+            //       // Navigator.push(
+            //       //   context,
+            //       //   MaterialPageRoute(
+            //       //     builder: (context) => QRCodeScanPage(
+            //       //       imgUrl: imgUrlPayment,
+            //       //     ),
+            //       //   ), // SelectRatingScreen
+            //       // );
+            //     }
+            //         , // Disable button if deal is not accepted
+            //     child: const Text('Chốt Deal Với Tài Xế Này',
+            //         style: TextStyle(fontSize: 18, color: Colors.black)),
+            //   ),
+            // ),
+            Align(
+              alignment: Alignment.bottomCenter,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
-                    backgroundColor: driverAmount['amount'] > 0.0
-                        ? const Color(0xFFFDC6D6)
-                        : Colors.grey),
-                onPressed:
-                     () async {
-                  // Handle action for accepted deal
-                  //todo: add driver to deal
-                  // Future<Map<String, dynamic>> addDriver() async {
-                  //   return BookingController(context: context).addDriver(
-                  //       registrationId: bookingDetail.registration!.registrationId,
-                  //       bookingId: bookingDetail.bookingId);
-                  // }
-                 //  final bookingService = ref.read(bookingServiceProvider);
-                 // final response =  await bookingService.addDriver(bookingDetail.registration!.registrationId,  bookingDetail.bookingId);
-                  if(true){
-                    if(context.mounted){
+                onPressed: () async {
+                  print(bookingDetail.registration!.registrationId);
+                  print(bookingDetail.user.userId);
+                  print(bookingDetail.bookingId);
+                  final bookingService = ref.read(bookingServiceProvider);
+                  await bookingService.addDriverRequest(bookingDetail.user.userId,
+                      bookingDetail.registration!.registrationId, bookingDetail.bookingId).then((value) {
+                    if(value.bookingId == bookingDetail.bookingId){
                       context.goNamed(Routes.activity);
-                      ref.refresh(activityControllerProvider);
+                      ref.invalidate(activityControllerProvider);
                     }
-                  }
-                  // Map<String, dynamic> data = await addDriver();
-                  // String imgUrlPayment = '';
-                  // // Handle action for accepted deal
-                  // Future<String> simulateDriverDecision() async {
-                  //   return BookingController(context: context)
-                  //       .createQrCodePayment(bookingDetail.bookingId);
-                  // }
-                  //
-                  // imgUrlPayment = await simulateDriverDecision();
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => QRCodeScanPage(
-                  //       imgUrl: imgUrlPayment,
-                  //     ),
-                  //   ), // SelectRatingScreen
-                  // );
-                }
-                    , // Disable button if deal is not accepted
-                child: const Text('Chốt Deal Với Tài Xế Này',
-                    style: TextStyle(fontSize: 18, color: Colors.black)),
+                  });
+
+                },
+                child: Text('Chọn tài xế'),
               ),
             ),
           ],

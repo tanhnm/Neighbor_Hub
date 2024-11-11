@@ -6,6 +6,8 @@ import 'package:flutter_application_1/providers/user_provider.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../domains/freezed/dealing_model.dart';
+
 part 'activity_controller.g.dart';
 
 @Riverpod(keepAlive: true)
@@ -24,5 +26,19 @@ class ActivityController extends _$ActivityController {
       userId,
       cancelToken: cancelToken,
     );
+  }
+}
+
+@riverpod
+class AmountController extends _$AmountController {
+
+  @override
+  FutureOr<DealingModel> build(int driverId, int bookingId) {
+    return getAmount(driverId, bookingId);
+  }
+  FutureOr<DealingModel> getAmount(int driverId, int bookingId){
+    final appRepository = ref.watch(appRepositoryProvider);
+
+    return appRepository.getDriverAmount(driverId, bookingId);
   }
 }

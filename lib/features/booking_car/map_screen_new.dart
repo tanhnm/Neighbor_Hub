@@ -46,7 +46,7 @@ class MapScreenNew extends HookConsumerWidget {
     final duration = useState<double>(0.0);
     final isLoading = useState<bool>(false);
     final bookingDateTime = useState<DateTime?>(DateTime.now());
-
+    final price = useState(0);
     final mapController = useMemoized(() => MapController());
 
     final currentCenter =
@@ -57,6 +57,7 @@ class MapScreenNew extends HookConsumerWidget {
     final pickLocation = useState<String>('');
 
     final selectedVehicle = useState<String>('');
+
     final firstPick = useState<String>(
         "${currentCenter.value.longitude}, ${currentCenter.value.latitude}");
     final selectedMarkers = useState<List<Marker>>([
@@ -383,6 +384,9 @@ class MapScreenNew extends HookConsumerWidget {
                                             onTap: () {
                                               selectedVehicle.value =
                                                   vehicle['type']!;
+                                              // price.value = int.parse(vehicle['price']!);
+                                              price.value = double.parse(vehicle['price']!).toInt();
+                                              print(price.value);
                                             },
                                             child: Card(
                                               shape: RoundedRectangleBorder(
@@ -547,6 +551,7 @@ class MapScreenNew extends HookConsumerWidget {
                                        dropoffLocation:
                                        dropLocation.value,
                                        userId: user.value?.userId ?? 0,
+                                       price: price.value,
                                        currentLocation: firstPick.value
                                    ): await bookingService.createAdvanceBooking(
                                       pickupLocation:
@@ -556,6 +561,7 @@ class MapScreenNew extends HookConsumerWidget {
                                       distance: distance.value.toInt(),
                                       userId: user.value?.userId ?? 0,
                                       currentLocation: firstPick.value,
+                                      price: price.value,
                                       pickupTime:
                                       "${bookingDateTime.value?.toIso8601String()}Z"
                                   );

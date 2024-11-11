@@ -22,14 +22,7 @@ final driverDecisionProvider = StateNotifierProvider<DriverDecisionNotifier, boo
 final dealAcceptedProvider = StateProvider<bool>((ref) => false);
 
 // Provider for driver amount
-final driverAmountProvider = StateProvider<Map<String, dynamic>>((ref) => {'amount': 0.0});
+final driverAmountProvider = StateProvider<int>((ref) => 0);
 
-final priceProvider = StateProvider<String>((ref) => '0.0');
+final priceProvider = StateProvider<int>((ref) => 0);
 
-// Function to load booking info using a FutureProvider
-final bookingInfoProvider = FutureProvider.family<Map<String, dynamic>, Map<String, dynamic>>((ref, bookingData) async {
-  final driverId = bookingData['driverId'];
-  final bookingId = bookingData['bookingId'];
-  final amount = await BookingController().getDriverAmount(driverId, bookingId);
-  return amount;
-});

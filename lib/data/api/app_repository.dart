@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_application_1/common/restaurants.dart';
 import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
 import 'package:flutter_application_1/domains/freezed/booking_model.dart';
 import 'package:flutter_application_1/domains/freezed/booking_voucher_model.dart';
+import 'package:flutter_application_1/domains/freezed/dealing_model.dart';
 import 'package:flutter_application_1/domains/freezed/registration_form_model.dart';
 import 'package:flutter_application_1/providers/app_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -173,6 +176,25 @@ class AppRepository {
     // return list.map((e) => RegistrationFormModel.fromJson(e)).toList();
   }
 
+
+  Future<DealingModel> getDriverAmount(
+      int driverId, int bookingId) async {
+    final url = Uri(
+      scheme: 'https',
+      host: kBaseUrl,
+      path: '/api/v1/booking/getDriverAmount',
+      queryParameters: {
+        'driverId': driverId.toString(),
+        'bookingId': bookingId.toString(),
+      },
+    ).toString();
+    final response =
+    await client.get(url);
+    var result =  DealingModel.fromJson(response.data);
+    print(result);
+    return result;
+}
+
   Future<List<Trip>> getFare(
       {CancelToken? cancelToken,required String token, required double travelTime,
   required double distance,
@@ -195,6 +217,27 @@ class AppRepository {
     print(list);
     // return response.data;
     return list.map((e) => Trip.fromJson(e)).toList();
+  }
+
+
+  Future<BookingDetailModel> addDriverRequest (int userId,
+      int registrationFormId, int bookingId,
+      {CancelToken? cancelToken}) async {
+    final url = Uri(
+      scheme: 'https',
+      host: kBaseUrl,
+      path: 'api/v1/booking/addDriverRequest',
+    ).toString();
+
+    final Map<String, dynamic> requestBody = {
+      "registrationFormId": registrationFormId,
+      "bookingId": bookingId,
+      "userId": userId,
+    };
+    print(requestBody);
+    final response = await client.post(url, data: requestBody, cancelToken: cancelToken);
+    // final List list = response.data;
+    return BookingDetailModel.fromJson(response.data['data']);
   }
 
 }

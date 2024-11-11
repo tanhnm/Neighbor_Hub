@@ -5,6 +5,7 @@ import 'package:flutter_application_1/features/booking_car/message_screen_new.da
 import 'package:flutter_application_1/features/driver/map_driver_screen_new.dart';
 import 'package:flutter_application_1/features/driver/message_screen_driver_new.dart';
 import 'package:flutter_application_1/features/driver/registration_form_screen.dart';
+import 'package:flutter_application_1/features/driver/registration_form_screen_new.dart';
 import 'package:flutter_application_1/features/driver/user_list_screen_new.dart';
 import 'package:flutter_application_1/features/home/main_page_new.dart';
 import 'package:flutter_application_1/features/temp_screen/activity_screen_new.dart';
@@ -190,7 +191,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                   path: Routes.regForm,
                   name: Routes.regForm,
-                  builder: (context, state) => const RegistrationFormScreen(),
+                  builder: (context, state) => const RegistrationFormScreenNew(),
                   routes: []),
             ]),
           ]),

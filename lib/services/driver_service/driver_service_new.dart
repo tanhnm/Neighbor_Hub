@@ -39,6 +39,7 @@ class DriverService {
     final user = ref.read(userModelProvider);
 
     final token = ref.read(tokenProvider);
+    //note: fix
     List<RegistrationFormModel> data = await appRepo
         .getAllRegistrationFormsById(4, 'Bearer $token');
     //     List<RegistrationFormModel> data = await appRepository
@@ -51,6 +52,7 @@ class DriverService {
     final appRepo = ref.read(appApiProvider);
     final user = ref.read(userModelProvider);
     final token = ref.read(tokenProvider);
+    //note: fix
     return appRepo.getAllBookingsByDriverId(
         4.toString(), 'Bearer $token');
   }

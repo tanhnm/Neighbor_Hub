@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../domains/trip.dart';
 import '../../providers/dio_provider.dart';
 
 part 'app_repository.g.dart';
@@ -113,7 +114,7 @@ class AppRepository {
   //note: add later booking controller: addDriver
   Future<void> addDriver(
       {CancelToken? cancelToken,required String token,  required int registrationId,
-        required int bookingId,}
+        required int bookingId, required int userId}
       ) async {
     final url = Uri(
       scheme: 'https',
@@ -124,12 +125,14 @@ class AppRepository {
     final Map<String, dynamic> requestBody = {
       "registrationFormId": registrationId,
       "bookingId": bookingId,
+      "userId": userId,
     };
 
     Options options = Options(headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
+    print("reqeust: $requestBody");
 
     final response =
     await client.post(url, data: requestBody, cancelToken: cancelToken, options: options);
@@ -170,6 +173,29 @@ class AppRepository {
     // return list.map((e) => RegistrationFormModel.fromJson(e)).toList();
   }
 
+  Future<List<Trip>> getFare(
+      {CancelToken? cancelToken,required String token, required double travelTime,
+  required double distance,
+  List<String>? listVoucher}
+      ) async {
+    final url = Uri(
+      scheme: 'https',
+      host: kBaseUrl,
+      path: '/api/v1/booking/calculateFare',
+    ).toString();
+
+    Options options = Options(headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    final response =
+    await client.post(url, cancelToken: cancelToken, options: options);
+    final List list = response.data;
+    print(list);
+    // return response.data;
+    return list.map((e) => Trip.fromJson(e)).toList();
+  }
 
 }
 

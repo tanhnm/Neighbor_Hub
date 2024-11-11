@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/dio.dart';
 
 import '../data/api/app_repository.dart';
+import '../domains/trip.dart';
 import '../providers/app_providers.dart';
 
 final bookingServiceProvider = Provider<BookingService>((ref) {
@@ -42,6 +43,7 @@ class BookingService {
 
     final token = ref.read(tokenProvider);
     print(requestBody.toString());
+    print('token: $token');
     var response = await appRepo.createBooking(requestBody, 'Bearer $token');
     return response;
   }
@@ -89,12 +91,13 @@ class BookingService {
     return response;
   }
 
-  Future<void> addDriver(String token,   int registrationId,
+  Future<void> addDriver(int registrationId,
        int bookingId,) async {
     final appRepository = ref.watch(appRepositoryProvider);
 
     final token = ref.read(tokenProvider);
-    final response = await appRepository.addDriver(token: token, registrationId: registrationId, bookingId: bookingId);
+    final user = ref.read(userProvider);
+    final response = await appRepository.addDriver(token: token, registrationId: registrationId, bookingId: bookingId, userId: user.value!.userId);
     return response;
   }
 
@@ -104,6 +107,16 @@ class BookingService {
 
     final token = ref.read(tokenProvider);
     final response = await appRepository.addDriverAmount(token: token, driverId: driverId, bookingId: bookingId, amount: amount);
+    return response;
+  }
+
+  Future<List<Trip>> getFare(double travelTime, double distance) async {
+
+
+    final appRepository = ref.watch(appRepositoryProvider);
+    final token = ref.read(tokenProvider);
+
+    var response = await appRepository.getFare(token: token, travelTime: travelTime, distance: distance);
     return response;
   }
 }

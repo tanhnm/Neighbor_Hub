@@ -1,10 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/common/router.dart';
+import 'package:flutter_application_1/common/routes.dart';
+import 'package:flutter_application_1/controller/booking_service.dart';
 import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
 import 'package:flutter_application_1/domains/freezed/driver_model.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import '../../controller/activity_controller.dart';
 import '../../providers/driver_notifier.dart';
 import '../payment/qrcode_payment_screen.dart';
 
@@ -206,35 +211,42 @@ class ProfileScreenNew extends HookConsumerWidget {
                     backgroundColor: driverAmount['amount'] > 0.0
                         ? const Color(0xFFFDC6D6)
                         : Colors.grey),
-                onPressed: driverAmount['amount'] > 0.0
-                    ? () async {
+                onPressed:
+                     () async {
                   // Handle action for accepted deal
                   //todo: add driver to deal
-                  Future<Map<String, dynamic>> addDriver() async {
-                    return BookingController(context: context).addDriver(
-                        registrationId: bookingDetail.registration!.registrationId,
-                        bookingId: bookingDetail.bookingId);
+                  // Future<Map<String, dynamic>> addDriver() async {
+                  //   return BookingController(context: context).addDriver(
+                  //       registrationId: bookingDetail.registration!.registrationId,
+                  //       bookingId: bookingDetail.bookingId);
+                  // }
+                 //  final bookingService = ref.read(bookingServiceProvider);
+                 // final response =  await bookingService.addDriver(bookingDetail.registration!.registrationId,  bookingDetail.bookingId);
+                  if(true){
+                    if(context.mounted){
+                      context.goNamed(Routes.activity);
+                      ref.refresh(activityControllerProvider);
+                    }
                   }
-
-                  Map<String, dynamic> data = await addDriver();
-                  String imgUrlPayment = '';
-                  // Handle action for accepted deal
-                  Future<String> simulateDriverDecision() async {
-                    return BookingController(context: context)
-                        .createQrCodePayment(bookingDetail.bookingId);
-                  }
-
-                  imgUrlPayment = await simulateDriverDecision();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => QRCodeScanPage(
-                        imgUrl: imgUrlPayment,
-                      ),
-                    ), // SelectRatingScreen
-                  );
+                  // Map<String, dynamic> data = await addDriver();
+                  // String imgUrlPayment = '';
+                  // // Handle action for accepted deal
+                  // Future<String> simulateDriverDecision() async {
+                  //   return BookingController(context: context)
+                  //       .createQrCodePayment(bookingDetail.bookingId);
+                  // }
+                  //
+                  // imgUrlPayment = await simulateDriverDecision();
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => QRCodeScanPage(
+                  //       imgUrl: imgUrlPayment,
+                  //     ),
+                  //   ), // SelectRatingScreen
+                  // );
                 }
-                    : null, // Disable button if deal is not accepted
+                    , // Disable button if deal is not accepted
                 child: const Text('Chốt Deal Với Tài Xế Này',
                     style: TextStyle(fontSize: 18, color: Colors.black)),
               ),

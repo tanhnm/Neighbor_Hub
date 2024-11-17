@@ -40,12 +40,12 @@ Future<void> getCoordinates({
           .toList();
 
       // Fetch fare details based on distance and duration
-      // List<Trip> trips = await FareController(context: context)
-      //     .getFare(distance: distance.value, travelTime: duration.value);
+      List<Trip> trips = await FareController(context: context)
+          .getFare(distance: distance.value, travelTime: duration.value);
     //:note temp
-      List<Trip> trips = [
-        Trip(distance: 1000, travelTimeSeconds: 1000, tripCost: 10000, vehicleType: "Bike")
-      ];
+    //   List<Trip> trips = [
+    //     Trip(distance: 1000, travelTimeSeconds: 1000, tripCost: 10000, vehicleType: "Bike")
+    //   ];
 
       // Populate the vehicles list with trip details
       for (var trip in trips) {

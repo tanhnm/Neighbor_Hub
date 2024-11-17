@@ -54,7 +54,8 @@ class ProfileScreenNew extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Thông Tin ${bookingDetail.registration!.driver!.username}'),
+        title:
+            Text('Thông Tin ${bookingDetail.registration!.driver!.username}'),
         centerTitle: true,
       ),
       body: Padding(
@@ -98,7 +99,8 @@ class ProfileScreenNew extends HookConsumerWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      bookingDetail.registration!.driver!.averageRating.toString(),
+                      bookingDetail.registration!.driver!.averageRating
+                          .toString(),
                       style: const TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold),
                     ),
@@ -168,48 +170,75 @@ class ProfileScreenNew extends HookConsumerWidget {
             //todo: api/v1/booking/getDriverAmount?driverId=1&bookingId=33
             //todo: lỗi nên xóa
 
-            // Consumer(builder: (context, ref, child) {
-            //   final bookingInfoAsyncValue = ref.watch(amountControllerProvider(
-            //       bookingDetail.registration!.driver!.driverId, bookingDetail.bookingId
-            //   ));
-            //
-            //   return bookingInfoAsyncValue.when(
-            //     data: (amount) {
-            //       ref.read(driverAmountProvider.notifier).state = amount.amount;
-            //       ref.read(priceProvider.notifier).state = amount.amount;
-            //       // return Text('aaa');
-            //       print(amount.amount);
-            //       return amount.amount > 0
-            //           ? Row(
-            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //         children: [
-            //           Text(
-            //             'Người chở ra giá ${convertNum(amount.amount)} điểm',
-            //             style: const TextStyle(
-            //                 color: Colors.red,
-            //                 fontWeight: FontWeight.bold,
-            //                 fontSize: 18),
-            //           ),
-            //         ],
-            //       )
-            //           : Row(
-            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //         children: [
-            //           const Text(
-            //             'Đang đợi tài xế chấp nhận deal',
-            //             style: TextStyle(
-            //                 fontSize: 18, fontWeight: FontWeight.bold),
-            //           ),
-            //           LoadingAnimationWidget.waveDots(
-            //               color: Colors.black, size: 20.0),
-            //         ],
-            //       );
-            //     },
-            //     loading: () => const Center(child: CircularProgressIndicator()),
-            //     error: (error, stackTrace) => Text('Error: $error'),
-            //   );
-            // }),
-            // const SizedBox(height: 10),
+            Consumer(builder: (context, ref, child) {
+              final bookingInfoAsyncValue = ref.watch(amountControllerProvider(
+                  bookingDetail.registration!.driver!.driverId,
+                  bookingDetail.bookingId));
+
+              return bookingInfoAsyncValue.when(
+                data: (amount) {
+                  ref.read(driverAmountProvider.notifier).state = amount.amount;
+                  ref.read(priceProvider.notifier).state = amount.amount;
+                  print(amount);
+                  // return Text('aaa');
+                  print(amount.amount);
+                  return amount.amount > 0
+                      ? Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Người chở ra giá ${convertNum(amount.amount)} điểm',
+                                  style: const TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                              ],
+                            ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                //:note call api chot deal
+                                print(bookingDetail.registration!.registrationId);
+                                      print(bookingDetail.user.userId);
+                                      print(bookingDetail.bookingId);
+                                      final bookingService = ref.read(bookingServiceProvider);
+                                      // await bookingService.addDriverRequest(bookingDetail.user.userId,
+                                      //     bookingDetail.registration!.registrationId, bookingDetail.bookingId).then((value) {
+                                      //   if(value.bookingId == bookingDetail.bookingId){
+                                      //     context.goNamed(Routes.activity);
+                                      //     ref.invalidate(activityControllerProvider);
+                                      //   }
+                                      // });
+                              },
+                              child: Text('Chọn tài xế'),
+                            ),
+                          ],
+                        )
+                      : Column(
+                        children: [
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Đang đợi tài xế chấp nhận deal',
+                                  style: TextStyle(
+                                      fontSize: 18, fontWeight: FontWeight.bold),
+                                ),
+                                LoadingAnimationWidget.waveDots(
+                                    color: Colors.black, size: 20.0),
+                              ],
+                            ),
+
+                        ],
+                      );
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stackTrace) => Text('Error: $error'),
+              );
+            }),
+            const SizedBox(height: 10),
             // Action Buttons
             // Padding(
             //   padding: const EdgeInsets.only(top: 10),
@@ -259,26 +288,26 @@ class ProfileScreenNew extends HookConsumerWidget {
             //         style: TextStyle(fontSize: 18, color: Colors.black)),
             //   ),
             // ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
-                onPressed: () async {
-                  print(bookingDetail.registration!.registrationId);
-                  print(bookingDetail.user.userId);
-                  print(bookingDetail.bookingId);
-                  final bookingService = ref.read(bookingServiceProvider);
-                  await bookingService.addDriverRequest(bookingDetail.user.userId,
-                      bookingDetail.registration!.registrationId, bookingDetail.bookingId).then((value) {
-                    if(value.bookingId == bookingDetail.bookingId){
-                      context.goNamed(Routes.activity);
-                      ref.invalidate(activityControllerProvider);
-                    }
-                  });
-
-                },
-                child: Text('Chọn tài xế'),
-              ),
-            ),
+            // Align(
+            //   alignment: Alignment.bottomCenter,
+            //   child: ElevatedButton(
+            //     onPressed: () async {
+            //       print(bookingDetail.registration!.registrationId);
+            //       print(bookingDetail.user.userId);
+            //       print(bookingDetail.bookingId);
+            //       final bookingService = ref.read(bookingServiceProvider);
+            //       await bookingService.addDriverRequest(bookingDetail.user.userId,
+            //           bookingDetail.registration!.registrationId, bookingDetail.bookingId).then((value) {
+            //         if(value.bookingId == bookingDetail.bookingId){
+            //           context.goNamed(Routes.activity);
+            //           ref.invalidate(activityControllerProvider);
+            //         }
+            //       });
+            //
+            //     },
+            //     child: Text('Chọn tài xế'),
+            //   ),
+            // ),
           ],
         ),
       ),

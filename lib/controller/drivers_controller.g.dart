@@ -174,5 +174,23 @@ class _DriversControllerProviderElement
   @override
   int get bookingId => (origin as DriversControllerProvider).bookingId;
 }
+
+String _$bookingDriverControllerHash() =>
+    r'4724150dcf2c2cbe18a606f65c3fc81d2516688c';
+
+/// See also [BookingDriverController].
+@ProviderFor(BookingDriverController)
+final bookingDriverControllerProvider = AsyncNotifierProvider<
+    BookingDriverController, List<BookingDetailModel>>.internal(
+  BookingDriverController.new,
+  name: r'bookingDriverControllerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$bookingDriverControllerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$BookingDriverController = AsyncNotifier<List<BookingDetailModel>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

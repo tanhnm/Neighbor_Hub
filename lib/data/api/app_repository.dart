@@ -240,6 +240,22 @@ class AppRepository {
     return BookingDetailModel.fromJson(response.data['data']);
   }
 
+  Future<List<BookingDetailModel>> getBookingsOfDriver (int driverId,
+      {CancelToken? cancelToken}) async {
+    final url = Uri(
+      scheme: 'https',
+      host: kBaseUrl,
+      path: 'api/v1/driver/getBookingsOfDriver/1',
+      // path: 'api/v1/driver/getBookingsOfDriver/$driverId',
+    ).toString();
+
+
+    final response = await client.get(url, cancelToken: cancelToken);
+    final List list = response.data['data'];
+    // return BookingDetailModel.fromJson(response.data['data']);
+    return list.map((e) => BookingDetailModel.fromJson(e)).toList();
+  }
+
 }
 
 @Riverpod(keepAlive: true)

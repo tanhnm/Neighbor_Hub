@@ -37,11 +37,11 @@ class DriverService {
     final appRepo = ref.read(appApiProvider);
     final appRepository = ref.watch(appRepositoryProvider);
     final user = ref.read(userModelProvider);
-
+    final driverId = ref.read(driverProvider).value;
     final token = ref.read(tokenProvider);
     //note: fix
     List<RegistrationFormModel> data = await appRepo
-        .getAllRegistrationFormsById(4, 'Bearer $token');
+        .getAllRegistrationFormsById(driverId!, 'Bearer $token');
     //     List<RegistrationFormModel> data = await appRepository
     //     .getAllRegistrationFormsById(1, token);
     print(data);
@@ -52,9 +52,11 @@ class DriverService {
     final appRepo = ref.read(appApiProvider);
     final user = ref.read(userModelProvider);
     final token = ref.read(tokenProvider);
+    final driverId = ref.read(driverProvider).value;
+
     //note: fix
     return appRepo.getAllBookingsByDriverId(
-        4.toString(), 'Bearer $token');
+        driverId.toString(), 'Bearer $token');
   }
 
 //region aaa

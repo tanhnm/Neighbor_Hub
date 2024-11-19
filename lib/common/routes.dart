@@ -20,6 +20,9 @@ abstract class Routes {
   static const userList = '/userList';
   static const messageDriver = 'messageDriver';
 
+  static const bookingDriver = '/bookingDriver';
+
+
   static const regForm = '/regForm';
 
 }

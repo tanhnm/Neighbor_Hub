@@ -55,6 +55,7 @@ class MessageScreenDriverNew extends HookConsumerWidget {
                 MaterialPageRoute(
                   builder: (context) => UserInfoScreenNew(
                     booking.bookingDetail.user,
+                    booking.bookingDetail
                   ),
                 ),
               );

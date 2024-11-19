@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/domains/freezed/booking_model.dart';
 import 'package:flutter_application_1/features/auth/profile_me_screen.dart';
 import 'package:flutter_application_1/features/booking_car/message_screen_new.dart';
+import 'package:flutter_application_1/features/driver/booking_driver_screen.dart';
 import 'package:flutter_application_1/features/driver/map_driver_screen_new.dart';
 import 'package:flutter_application_1/features/driver/message_screen_driver_new.dart';
 import 'package:flutter_application_1/features/driver/registration_form_screen.dart';
@@ -189,6 +190,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ]),
             StatefulShellBranch(routes: [
               GoRoute(
+                  path: Routes.bookingDriver,
+                  name: Routes.bookingDriver,
+                  builder: (context, state) => const BookingDriverScreen(),
+                  ),
+            ]),
+            StatefulShellBranch(routes: [
+              GoRoute(
                   path: Routes.regForm,
                   name: Routes.regForm,
                   builder: (context, state) => const RegistrationFormScreenNew(),
@@ -277,6 +285,11 @@ class ScaffoldWithNavBar extends HookConsumerWidget {
                 if (isDriver.value)
                   GButton(
                     icon: FontAwesomeIcons.user,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                if (isDriver.value)
+                  GButton(
+                    icon: FontAwesomeIcons.taxi,
                     borderRadius: BorderRadius.circular(12),
                   ),
                 if (isDriver.value)

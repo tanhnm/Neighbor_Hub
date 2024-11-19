@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
 import 'package:flutter_application_1/domains/freezed/registration_form_model.dart';
 import 'package:flutter_application_1/providers/app_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,7 @@ import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../data/api/app_repository.dart';
+import '../providers/user_provider.dart';
 
 part 'drivers_controller.g.dart';
 
@@ -22,7 +24,6 @@ class DriversController extends _$DriversController {
     if(token == '') return [];
     return fetchDrivers(bookingId);
   }
-
 
   Future<List<RegistrationFormModel>> fetchDrivers(int bookingId) async {
     try {
@@ -53,7 +54,6 @@ class DriversController extends _$DriversController {
       throw Exception("Error: ${e.toString()}");
     }
   }
-
   Future<void> _getCurrentLocationAndUpdate() async {
     try {
       LocationPermission permission = await Geolocator.checkPermission();
@@ -77,4 +77,24 @@ class DriversController extends _$DriversController {
       throw Exception("Error retrieving location: ${e.toString()}");
     }
   }
+}
+
+@Riverpod(keepAlive: true)
+class BookingDriverController extends _$BookingDriverController {
+  @override
+    FutureOr<List<BookingDetailModel>> build() async {
+    return fetchBookingDriver();
+  }
+  Future<List<BookingDetailModel>> fetchBookingDriver() async {
+
+
+      final appRepository = ref.watch(appRepositoryProvider);
+      final driverId = ref.read(driverProvider).value!;
+      final cancelToken = CancelToken();
+      return appRepository.getBookingsOfDriver(
+        driverId,
+        cancelToken: cancelToken,
+      );
+  }
+
 }

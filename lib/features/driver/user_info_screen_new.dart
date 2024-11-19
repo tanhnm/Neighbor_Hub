@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
 import 'package:flutter_application_1/domains/freezed/user_model.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -15,30 +16,31 @@ import 'package:http/http.dart' as http;
 import '../../services/fare_service/booking_controller.dart';
 
 class UserInfoScreenNew extends HookConsumerWidget {
-  const UserInfoScreenNew(this.user, {super.key});
-
+  const UserInfoScreenNew(this.user, this.bookingDetail, {super.key});
 
   final UserModel user;
-
+  final BookingDetailModel bookingDetail;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-
 // State variables converted to useState
-    final isWaitingForDecision = useState(true); // Initially, waiting for decision
+    final isWaitingForDecision =
+        useState(true); // Initially, waiting for decision
     final isDealAccepted = useState(false); // Initially, no decision made
-    final priceController = useTextEditingController(); // TextEditingController hook
-    const double minPrice = 1000.0; // Minimum acceptable price (constant, no need for useState)
-    const double maxPrice = 100000.0; // Maximum acceptable price (constant, no need for useState)
+    final priceController =
+        useTextEditingController(); // TextEditingController hook
+    const double minPrice =
+        1000.0; // Minimum acceptable price (constant, no need for useState)
+    const double maxPrice =
+        100000.0; // Maximum acceptable price (constant, no need for useState)
     final priceError = useState<String?>(null); // To show validation error
 
     // MapController is not stateful, so it can remain as a final variable
     final mapController = useMemoized(() => MapController());
 
-
     // Simulated driver's location (constant, no need for useState)
-    const LatLng driverLocation = LatLng(51.5074, -0.1278); // Example: London coordinates
+    const LatLng driverLocation =
+        LatLng(51.5074, -0.1278); // Example: London coordinates
 
     // Mutable state for the current map center
     final currentCenter = useState(const LatLng(37.4222832, -122.083944));
@@ -79,7 +81,7 @@ class UserInfoScreenNew extends HookConsumerWidget {
 
           // Update points and markers using useState hooks
           points.value = List<LatLng>.from(listOfPoint.map(
-                  (point) => LatLng(point[1].toDouble(), point[0].toDouble())));
+              (point) => LatLng(point[1].toDouble(), point[0].toDouble())));
 
           // Add marker for driver location
           selectedMarkers.value = [
@@ -106,7 +108,6 @@ class UserInfoScreenNew extends HookConsumerWidget {
         );
       }
     }
-
 
     // Function to search for locations
     Future<void> searchLocation(String location, String destination) async {
@@ -157,7 +158,8 @@ class UserInfoScreenNew extends HookConsumerWidget {
 
       // Update state using useState hooks
       isWaitingForDecision.value = false;
-      isDealAccepted.value = true; // Set to true if driver accepts, false otherwise
+      isDealAccepted.value =
+          true; // Set to true if driver accepts, false otherwise
     }
 
     // Fetch coordinates based on location and destination
@@ -167,20 +169,20 @@ class UserInfoScreenNew extends HookConsumerWidget {
       final enteredPrice = double.tryParse(priceController.text);
       if (enteredPrice == null ||
           enteredPrice < 1000.0 || // Assuming _minPrice is 1000.0
-          enteredPrice > 100000.0) { // Assuming _maxPrice is 100000.0
+          enteredPrice > 100000.0) {
+        // Assuming _maxPrice is 100000.0
         priceError.value = 'Price must be between 1000.0 and 100000.0';
       } else {
         priceError.value = null; // Clear error if valid
 
         // Assume BookingController.addDriverAmount is an async method
         Map<String, dynamic> driverAmount =
-        await BookingController(context: context).addDriverAmount(
-            driverId: 123, // Replace with actual driverId
-            amount: enteredPrice,
-            bookingId: 456); // Replace with actual bookingId
+            await BookingController(context: context).addDriverAmount(
+                driverId: 123, // Replace with actual driverId
+                amount: enteredPrice,
+                bookingId: 456); // Replace with actual bookingId
 
         if (driverAmount.isNotEmpty) {
-
           Fluttertoast.showToast(
             msg: 'Đã đặt giá thành công: ${driverAmount['amount']}',
             toastLength: Toast.LENGTH_LONG,
@@ -195,7 +197,6 @@ class UserInfoScreenNew extends HookConsumerWidget {
         }
       }
     }
-
 
     return Scaffold(
       appBar: AppBar(
@@ -212,9 +213,7 @@ class UserInfoScreenNew extends HookConsumerWidget {
                 initialCenter: currentCenter.value,
                 initialZoom: 15.0,
                 onPositionChanged: (camera, hasGesture) {
-
-                    currentCenter.value = camera.center;
-
+                  currentCenter.value = camera.center;
                 },
               ),
               children: [
@@ -272,57 +271,54 @@ class UserInfoScreenNew extends HookConsumerWidget {
                 // Input price to deal with customer
                 amount.value != '' && !isDeal.value
                     ? GestureDetector(
-                  onTap: () {
-
-                      isDeal.value = true;
-
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            'Giá thỏa thuận: ',
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            amount.value,
-                            style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      const Icon(
-                        FontAwesomeIcons.edit,
-                        size: 20,
-                        color: Colors.black,
-                      ),
-                    ],
-                  ),
-                )
-                    : TextField(
-                  controller: priceController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      labelText: 'Nhập giá thỏa thuận',
-                      border: const OutlineInputBorder(),
-                      errorText:
-                      priceError.value, // Show error message if invalid
-                      suffixIcon: IconButton(
-                        icon: const Icon(FontAwesomeIcons.check),
-                        onPressed: () {
-
-                            isDeal.value = false;
-
+                        onTap: () {
+                          isDeal.value = true;
                         },
-                      )),
-                ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Text(
+                                  'Giá thỏa thuận: ',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  amount.value,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            const Icon(
+                              FontAwesomeIcons.edit,
+                              size: 20,
+                              color: Colors.black,
+                            ),
+                          ],
+                        ),
+                      )
+                    : TextField(
+                        controller: priceController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            labelText: 'Nhập giá thỏa thuận',
+                            border: const OutlineInputBorder(),
+                            errorText: priceError
+                                .value, // Show error message if invalid
+                            suffixIcon: IconButton(
+                              icon: const Icon(FontAwesomeIcons.check),
+                              onPressed: () {
+                                isDeal.value = false;
+                              },
+                            )),
+                      ),
+                Text(bookingDetail.amount.toString()),
                 const SizedBox(height: 20),
                 // Action Buttons
                 ElevatedButton(

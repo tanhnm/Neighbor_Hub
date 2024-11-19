@@ -8,6 +8,7 @@ import 'package:toastification/toastification.dart';
 
 import '../../common/routes.dart';
 import '../../controller/booking_service.dart';
+import '../../services/driver_service/driver_service_new.dart';
 
 class ProfileMeScreen extends StatefulHookConsumerWidget {
   const ProfileMeScreen({super.key});
@@ -64,51 +65,9 @@ class _ProfileMeScreenState extends ConsumerState<ProfileMeScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('Xóa tài khoản'),
-                        content: const Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('Bạn có muốn xóa tài khoản không?'),
-                          ],
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Hủy'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () async {
-                              print('cac');
-                              var box = Hive.box('appBox');
-                              var locationBox = Hive.box('locationBox');
-                              var userBox = Hive.box<UserModel>('users'); // Otherwise, open the box
-                              var authBox = Hive.box('authBox');
-                              await authBox.clear(); // Clears all data in the authBox
-                              await userBox.clear();
-                              await locationBox.clear();
-                              await box.clear();
-                              if(context.mounted){
-                                context.pushReplacementNamed(Routes.login);
-                              }
-                              final bookingService =
-                              ref.read(bookingServiceProvider);
-                              await bookingService.deleteUser();
-
-                              // Proceed with vehicle confirmation logic
-                            },
-                            child: const Text('Xác Nhận'),
-                          ),
-                        ],
-                      );
-                    });
+                ref.refresh(updateLocationDriverProvider);
               },
-              icon: const Icon(FontAwesomeIcons.trash)),
+              icon: const Icon(FontAwesomeIcons.arrowsRotate)),
         ],
       ),
       body: FutureBuilder<UserModel>(

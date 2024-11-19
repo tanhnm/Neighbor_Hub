@@ -6,9 +6,11 @@ import 'package:flutter_application_1/domains/freezed/registration_form_model.da
 import 'package:flutter_application_1/providers/app_providers.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
 
 import '../../data/api/app_repository.dart';
+import '../../providers/current_position_provider.dart';
 
 final driverServiceProvider = Provider<DriverService>((ref) {
   return DriverService(ref: ref);
@@ -108,6 +110,21 @@ final getAllBookingsByDriverIdProvider =
 FutureProvider<List<BookingModel>>((ref) async {
   final driverService = ref.read(driverServiceProvider);
   return await driverService.getAllBookingsByDriverId();
+});
+
+final updateLocationDriverProvider = FutureProvider((ref) async {
+  final driverService = ref.read(driverServiceProvider);
+  final List<RegistrationFormModel> listReg = await driverService.getAllRegistrationFormsById();
+  final position = ref.read(currentLocationProvider).value;
+  if (listReg.isNotEmpty && position != null) {
+    return await driverService.activateDriver(
+      registrationId: listReg[0].registrationId,
+      lat: position.latitude,
+      lon: position.longitude,
+    );
+  } else {
+    throw Exception('No registration forms or location unavailable');
+  }
 });
 
 

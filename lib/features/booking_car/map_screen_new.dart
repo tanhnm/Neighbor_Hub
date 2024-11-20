@@ -16,6 +16,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../common/routes.dart';
+import '../../controller/activity_controller.dart';
 import '../../controller/booking_service.dart';
 import '../../data/api/api.dart';
 import '../../domains/trip.dart';
@@ -571,7 +572,9 @@ class MapScreenNew extends HookConsumerWidget {
                                     await box.put('currentLocation', firstPick.value);
                                     if(context.mounted){
                                       Navigator.pop(context);
+                                      ref.invalidate(activityControllerProvider);
                                       context.pushNamed(Routes.activity);
+
                                     }
                                   } else {
                                     Fluttertoast.showToast(

@@ -8,8 +8,8 @@ import 'package:hive/hive.dart';
 import 'dio_provider.dart';
 
 
-final tokenProvider = Provider<String>((ref) {
-  throw UnimplementedError();
+final tokenProvider = StateProvider<String>((ref) {
+  return kTokenKey;
 });
 
 Future<String?> getTokenFromHive() async {

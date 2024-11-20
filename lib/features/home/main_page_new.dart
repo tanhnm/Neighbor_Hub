@@ -19,6 +19,7 @@ class MainPageNew extends HookConsumerWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     ref.read(driverProvider.future);
     final user = ref.watch(userProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Image.asset('images/Logo.png'),
@@ -167,13 +168,12 @@ class MainPageNew extends HookConsumerWidget {
                         Icon(FontAwesomeIcons.arrowRight, size: 22)
                       ],
                     ),
-                    TextButton(
-                      onPressed: () async {
-                        final token = ref.read(tokenProvider);
-                        print(token);
-                      },
-                      child: const Text('Button'),
-                    ),
+                    // TextButton(
+                    //   onPressed: () async {
+                    //     ref.invalidate(driverProvider);
+                    //   },
+                    //   child: const Text('Button'),
+                    // ),
                   ],
                 ),
               ),

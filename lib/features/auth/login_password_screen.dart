@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/services/driver_service/driver_service.dart';
 import 'package:flutter_application_1/services/remote_service/remote_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class LoginPasswordScreen extends StatefulWidget {
+import '../../providers/app_providers.dart';
+import '../../providers/user_provider.dart';
+
+class LoginPasswordScreen extends ConsumerStatefulWidget {
   final String phoneNumber;
   const LoginPasswordScreen({super.key, required this.phoneNumber});
 
   @override
-  State<LoginPasswordScreen> createState() => _LoginPasswordScreenState();
+  ConsumerState createState() => _LoginPasswordScreenState();
 }
 
-class _LoginPasswordScreenState extends State<LoginPasswordScreen> {
+class _LoginPasswordScreenState extends ConsumerState<LoginPasswordScreen> {
   final passwordTextEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
@@ -29,6 +33,12 @@ class _LoginPasswordScreenState extends State<LoginPasswordScreen> {
             phone: widget.phoneNumber,
             password: passwordTextEditingController.text);
         await driverService.getDriverByPhoneNumber(widget.phoneNumber);
+        ref.invalidate(driverProvider);
+        String? token = await getTokenFromHive();
+        if (token != null) {
+          ref.read(tokenProvider.notifier).state = token;
+        }
+        await Future.delayed(Duration(seconds: 1));
       } finally {
         setState(() {
           isLoading = false; // Stop loading after the process completes
@@ -95,23 +105,23 @@ class _LoginPasswordScreenState extends State<LoginPasswordScreen> {
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
                     backgroundColor:
-                        isPasswordValidated ? const Color(0xFFFDC6D6) : null,
+                    isPasswordValidated ? const Color(0xFFFDC6D6) : null,
                   ),
                   onPressed: isPasswordValidated && !isLoading
                       ? _submit // Enable button if password is validated
                       : null, // Disable button if not validated
                   child: isLoading
                       ? LoadingAnimationWidget.waveDots(
-                          color: Colors.black, size: 18)
+                      color: Colors.black, size: 18)
                       : Text(
-                          'Đăng nhập',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: isPasswordValidated
-                                ? Colors.black
-                                : Colors.grey,
-                          ),
-                        ),
+                    'Đăng nhập',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: isPasswordValidated
+                          ? Colors.black
+                          : Colors.grey,
+                    ),
+                  ),
                 ),
               ],
             ),

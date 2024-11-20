@@ -188,13 +188,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                         }),
                   ]),
             ]),
-            StatefulShellBranch(routes: [
-              GoRoute(
-                  path: Routes.bookingDriver,
-                  name: Routes.bookingDriver,
-                  builder: (context, state) => const BookingDriverScreen(),
-                  ),
-            ]),
+
             StatefulShellBranch(routes: [
               GoRoute(
                   path: Routes.regForm,
@@ -235,11 +229,11 @@ class ScaffoldWithNavBar extends HookConsumerWidget {
         final driverStatus = await ref.read(driverProvider.future);
         isDriver.value = driverStatus != null;
       }
-
+      print('call loadDriverStatus');
       loadDriverStatus();
 
       return null; // No cleanup needed
-    }, []);
+    }, [ref.read(driverProvider.future)]);
 
     Future(() {
       ref.read(navigationShellProvider.notifier).state = navigationShell;
@@ -258,50 +252,54 @@ class ScaffoldWithNavBar extends HookConsumerWidget {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4),
-            child: GNav(
-              gap: 10,
-              color: Colors.grey[600],
-              activeColor: Colors.white,
-              rippleColor: Colors.grey[800]!,
-              hoverColor: Colors.grey[700]!,
-              iconSize: 20,
-              textStyle: TextStyle(fontSize: 16, color: Colors.white),
-              tabBackgroundColor: Colors.grey[900]!,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16.5),
-              duration: Duration(milliseconds: 800),
-              tabs: [
-                GButton(
-                  icon: FontAwesomeIcons.house,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                GButton(
-                  icon: FontAwesomeIcons.chartLine,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                GButton(
-                  icon: FontAwesomeIcons.gears,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                if (isDriver.value)
-                  GButton(
-                    icon: FontAwesomeIcons.user,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                if (isDriver.value)
-                  GButton(
-                    icon: FontAwesomeIcons.taxi,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                if (isDriver.value)
-                  GButton(
-                    icon: FontAwesomeIcons.paperclip,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-              ],
-              selectedIndex: navigationShell.currentIndex,
-              onTabChange: (index) => _onTap(context, index),
-            ),
-          ),
+            child: Consumer(builder: (context, ref, child) {
+              final driverStatus =  ref.watch(driverProvider);
+
+                return driverStatus.when(data: (driverId){
+                  return GNav(
+                    gap: 10,
+                    color: Colors.grey[600],
+                    activeColor: Colors.white,
+                    rippleColor: Colors.grey[800]!,
+                    hoverColor: Colors.grey[700]!,
+                    iconSize: 20,
+                    textStyle: TextStyle(fontSize: 16, color: Colors.white),
+                    tabBackgroundColor: Colors.grey[900]!,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16.5),
+                    duration: Duration(milliseconds: 800),
+                    tabs: [
+                      GButton(
+                        icon: FontAwesomeIcons.house,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      GButton(
+                        icon: FontAwesomeIcons.chartLine,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      GButton(
+                        icon: FontAwesomeIcons.gears,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      if (driverId != null)
+                        GButton(
+                          icon: FontAwesomeIcons.user,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+
+                      if (driverId != null)
+                        GButton(
+                          icon: FontAwesomeIcons.paperclip,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                    ],
+                    selectedIndex: navigationShell.currentIndex,
+                    onTabChange: (index) => _onTap(context, index),
+                  );
+                },
+                  error: (err, stack) => Text('Error $err'),
+                  loading: () => Text('loading'),
+                );
+              })),
         ),
       ),
     );

@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart'; // For getting the app directory
+import 'common/restaurants.dart';
 import 'common/router.dart';
 import 'features/auth/profile_me_screen.dart';
 import 'domains/freezed/user_model.dart';
@@ -23,15 +24,17 @@ void main() async {
   await Hive.openBox('appBox');
   await Hive.openBox('locationBox');
   await Hive.openBox<UserModel>('users');
-
+  print('123123');
   // Load the user from Hive before running the app
   String? token = await getTokenFromHive();
+  if(token != null) {
+    print('Token found in Hive: $token');
+    kTokenKey = token;
+  }
+  print('????');
   runApp(
-    ProviderScope(
-      overrides: [
-       if(token != null) tokenProvider.overrideWithValue(token),
-      ],
-      child: const MyApp(),
+    const ProviderScope(
+      child: MyApp(),
     ),
   );
 }

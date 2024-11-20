@@ -55,3 +55,5 @@ const kTextInfo = TextStyle(
   fontSize: 20,
   fontWeight: FontWeight.bold,
 );
+
+ String kTokenKey ='';

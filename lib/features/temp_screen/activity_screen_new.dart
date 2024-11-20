@@ -4,6 +4,7 @@ import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart'
 import 'package:flutter_application_1/features/booking_car/map_screen_new.dart';
 import 'package:flutter_application_1/utils/extensions/string_ext.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -23,6 +24,11 @@ class ActivityScreenNew extends HookConsumerWidget {
     return Scaffold(
         appBar: AppBar(
           title: const Text("Hoạt động"),
+          actions: [
+            IconButton(onPressed: (){
+              ref.invalidate(activityControllerProvider);
+            }, icon: const Icon(FontAwesomeIcons.arrowsRotate))
+          ],
         ),
         body: Consumer(builder: (context, ref, child) {
           final activities = ref.watch(activityControllerProvider);

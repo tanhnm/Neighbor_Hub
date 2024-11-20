@@ -4,6 +4,7 @@ import 'package:flutter_application_1/common/routes.dart';
 import 'package:flutter_application_1/features/driver/message_screen_driver_new.dart';
 import 'package:flutter_application_1/utils/extensions/string_ext.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -28,6 +29,11 @@ class UserListScreenNew extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('User List'),
+        actions: [
+          IconButton(onPressed: (){
+            ref.invalidate(getAllBookingsByDriverIdProvider);
+          }, icon: const Icon(FontAwesomeIcons.arrowsRotate))
+        ],
       ),
       body: Consumer(
         builder: (context, ref, child) {

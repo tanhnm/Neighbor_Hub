@@ -97,7 +97,7 @@ class BookingService {
     return response;
   }
 
-  Future<void> addDriver(
+  Future<int> addDriver(
     int registrationId,
     int bookingId,
   ) async {
@@ -124,6 +124,22 @@ class BookingService {
     final token = ref.read(tokenProvider);
     final response = await appRepository.addDriverAmount(
         token: token, driverId: driverId, bookingId: bookingId, amount: amount);
+    return response;
+  }
+
+
+  Future<int> putBookingComplete(
+      int registrationId,
+      int bookingId,
+      ) async {
+    final appRepository = ref.watch(appRepositoryProvider);
+
+    final token = ref.read(tokenProvider);
+    final user = ref.read(userProvider);
+    final response = await appRepository.putBookingComplete(
+        token: token,
+        registrationId: registrationId,
+        bookingId: bookingId);
     return response;
   }
 

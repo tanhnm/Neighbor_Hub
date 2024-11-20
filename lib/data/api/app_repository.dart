@@ -38,8 +38,8 @@ class AppRepository {
   Future<List<RegistrationFormModel>> getDrivers(
       String currentLocation, int bookingId,
       {CancelToken? cancelToken}) async {
-    double lon = double.parse(currentLocation.split(',')[1]);
-    double lat = double.parse(currentLocation.split(',')[0]);
+    double lon = double.parse(currentLocation.split(',')[0]);
+    double lat = double.parse(currentLocation.split(',')[1]);
 
     final url = Uri(
       scheme: 'https',
@@ -115,7 +115,7 @@ class AppRepository {
   }
 
   //note: add later booking controller: addDriver
-  Future<void> addDriver(
+  Future<int> addDriver(
       {CancelToken? cancelToken,required String token,  required int registrationId,
         required int bookingId, required int userId}
       ) async {
@@ -139,9 +139,7 @@ class AppRepository {
 
     final response =
     await client.post(url, data: requestBody, cancelToken: cancelToken, options: options);
-    final List list = response.data;
-    print(list);
-    return response.data;
+    return response.statusCode!;
     // return list.map((e) => RegistrationFormModel.fromJson(e)).toList();
   }
 
@@ -254,6 +252,34 @@ class AppRepository {
     final List list = response.data['data'];
     // return BookingDetailModel.fromJson(response.data['data']);
     return list.map((e) => BookingDetailModel.fromJson(e)).toList();
+  }
+
+
+  Future<int> putBookingComplete(
+      {CancelToken? cancelToken,required String token,  required int registrationId,
+        required int bookingId,}
+      ) async {
+    final url = Uri(
+      scheme: 'https',
+      host: kBaseUrl,
+      path: '/api/v1/booking/bookingIsCompleted',
+    ).toString();
+
+    final Map<String, dynamic> requestBody = {
+      "registrationFormId": registrationId,
+      "bookingId": bookingId,
+    };
+
+    Options options = Options(headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    print("reqeust: $requestBody");
+
+    final response =
+    await client.put(url, data: requestBody, cancelToken: cancelToken, options: options);
+    return response.statusCode!;
+    // return list.map((e) => RegistrationFormModel.fromJson(e)).toList();
   }
 
 }

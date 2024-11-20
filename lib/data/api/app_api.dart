@@ -30,9 +30,9 @@ abstract class AppApi {
   );
 
 
-  @GET("/api/v1/registrationForm/getAllRegistrationForm")
+  @GET("/api/v1/registrationForm/getAllRegistrationForm/{driverId}")
   Future<List<RegistrationFormModel>> getAllRegistrationFormsById(
-    @Query("driverId") int driverId,
+      @Path() String driverId,
     @Header("Authorization") String authorization,
     // Pass the token in the header
   );

@@ -134,11 +134,11 @@ class _AppApi implements AppApi {
 
   @override
   Future<List<RegistrationFormModel>> getAllRegistrationFormsById(
-    int driverId,
+    String driverId,
     String authorization,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'driverId': driverId};
+    final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': authorization};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
@@ -149,7 +149,7 @@ class _AppApi implements AppApi {
     )
         .compose(
           _dio.options,
-          '/api/v1/registrationForm/getAllRegistrationForm',
+          '/api/v1/registrationForm/getAllRegistrationForm/${driverId}',
           queryParameters: queryParameters,
           data: _data,
         )

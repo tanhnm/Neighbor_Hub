@@ -98,8 +98,9 @@ class BookingController {
       if (token == null) {
         return [];
       }
-      double lon = double.parse(currentLocation.split(',')[1]);
-      double lat = double.parse(currentLocation.split(',')[0]);
+      double lon = double.parse(currentLocation.split(',')[0]);
+      double lat = double.parse(currentLocation.split(',')[1]);
+      print("lat $lat");
       final response = await http.get(
         Uri.parse(
             '$_baseUrl/booking/getDriverNearUser?userLat=$lat&userLon=$lon&bookingId=${booking['bookingId']}'),

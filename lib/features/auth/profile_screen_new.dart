@@ -177,8 +177,8 @@ class ProfileScreenNew extends HookConsumerWidget {
 
               return bookingInfoAsyncValue.when(
                 data: (amount) {
-                  ref.read(driverAmountProvider.notifier).state = amount.amount;
-                  ref.read(priceProvider.notifier).state = amount.amount;
+                  // ref.read(driverAmountProvider.notifier).state = amount.amount;
+                  // ref.read(priceProvider.notifier).state = amount.amount;
                   print(amount);
                   // return Text('aaa');
                   print(amount.amount);
@@ -204,13 +204,13 @@ class ProfileScreenNew extends HookConsumerWidget {
                                       print(bookingDetail.user.userId);
                                       print(bookingDetail.bookingId);
                                       final bookingService = ref.read(bookingServiceProvider);
-                                      // await bookingService.addDriverRequest(bookingDetail.user.userId,
-                                      //     bookingDetail.registration!.registrationId, bookingDetail.bookingId).then((value) {
-                                      //   if(value.bookingId == bookingDetail.bookingId){
-                                      //     context.goNamed(Routes.activity);
-                                      //     ref.invalidate(activityControllerProvider);
-                                      //   }
-                                      // });
+                                      await bookingService.addDriver(
+                                          bookingDetail.registration!.registrationId, bookingDetail.bookingId).then((value) {
+                                          if(value == 200){
+                                            context.goNamed(Routes.activity);
+                                            ref.invalidate(activityControllerProvider);
+                                          }
+                                      });
                               },
                               child: Text('Chọn tài xế'),
                             ),

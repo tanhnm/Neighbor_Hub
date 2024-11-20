@@ -59,6 +59,7 @@ class UserListScreenNew extends HookConsumerWidget {
                         return true; // Keep the booking
                       }
                     }).toList();
+                    bookings.sort((a, b) => b.bookingDetail.bookingId.compareTo(a.bookingDetail.bookingId));
                     return ListView.builder(
                       itemCount: bookings.length,
                       itemBuilder: (context, index) {

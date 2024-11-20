@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
 import 'package:flutter_application_1/domains/freezed/user_model.dart';
+import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -26,9 +27,8 @@ class UserInfoScreenNew extends HookConsumerWidget {
 // State variables converted to useState
     final isWaitingForDecision =
         useState(true); // Initially, waiting for decision
-    final isDealAccepted = useState(false); // Initially, no decision made
     final priceController =
-        useTextEditingController(); // TextEditingController hook
+        useTextEditingController(text: bookingDetail.amount.toString()); // TextEditingController hook
     const double minPrice =
         1000.0; // Minimum acceptable price (constant, no need for useState)
     const double maxPrice =
@@ -58,13 +58,8 @@ class UserInfoScreenNew extends HookConsumerWidget {
     // Mutable string for amount
     final amount = useState<String>('');
 
-    // Mutable boolean for whether the deal is active
-    final isDeal = useState<bool>(false);
 
-    // Example function to update state
-    void updateDealStatus(bool status) {
-      isDeal.value = status;
-    }
+
 
     // Example function to update current center
     void updateCurrentCenter(LatLng newCenter) {
@@ -158,8 +153,7 @@ class UserInfoScreenNew extends HookConsumerWidget {
 
       // Update state using useState hooks
       isWaitingForDecision.value = false;
-      isDealAccepted.value =
-          true; // Set to true if driver accepts, false otherwise
+
     }
 
     // Fetch coordinates based on location and destination
@@ -169,18 +163,18 @@ class UserInfoScreenNew extends HookConsumerWidget {
       final enteredPrice = double.tryParse(priceController.text);
       if (enteredPrice == null ||
           enteredPrice < 1000.0 || // Assuming _minPrice is 1000.0
-          enteredPrice > 100000.0) {
+          enteredPrice > 300000.0) {
         // Assuming _maxPrice is 100000.0
-        priceError.value = 'Price must be between 1000.0 and 100000.0';
+        priceError.value = 'Price must be between 1000.0 and 300000.0';
       } else {
         priceError.value = null; // Clear error if valid
 
         // Assume BookingController.addDriverAmount is an async method
         Map<String, dynamic> driverAmount =
             await BookingController(context: context).addDriverAmount(
-                driverId: 123, // Replace with actual driverId
+                driverId: ref.read(driverProvider).value!, // Replace with actual driverId
                 amount: enteredPrice,
-                bookingId: 456); // Replace with actual bookingId
+                bookingId: bookingDetail.bookingId); // Replace with actual bookingId
 
         if (driverAmount.isNotEmpty) {
           Fluttertoast.showToast(
@@ -193,7 +187,6 @@ class UserInfoScreenNew extends HookConsumerWidget {
 
           // Update amount and isDeal using useState hooks
           amount.value = driverAmount['amount'].toString();
-          isDeal.value = false;
         }
       }
     }
@@ -269,41 +262,8 @@ class UserInfoScreenNew extends HookConsumerWidget {
                 ),
                 const SizedBox(height: 20),
                 // Input price to deal with customer
-                amount.value != '' && !isDeal.value
-                    ? GestureDetector(
-                        onTap: () {
-                          isDeal.value = true;
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                const Text(
-                                  'Giá thỏa thuận: ',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  amount.value,
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            const Icon(
-                              FontAwesomeIcons.edit,
-                              size: 20,
-                              color: Colors.black,
-                            ),
-                          ],
-                        ),
-                      )
-                    : TextField(
+
+                    TextField(
                         controller: priceController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -311,26 +271,19 @@ class UserInfoScreenNew extends HookConsumerWidget {
                             border: const OutlineInputBorder(),
                             errorText: priceError
                                 .value, // Show error message if invalid
-                            suffixIcon: IconButton(
-                              icon: const Icon(FontAwesomeIcons.check),
-                              onPressed: () {
-                                isDeal.value = false;
-                              },
-                            )),
+                            ),
                       ),
-                Text(bookingDetail.amount.toString()),
                 const SizedBox(height: 20),
                 // Action Buttons
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
-                    backgroundColor: isDealAccepted.value && isDeal.value
-                        ? const Color(0xFFFDC6D6)
-                        : Colors.grey,
+                    backgroundColor: const Color(0xFFFDC6D6)
+
                   ),
-                  onPressed: isDealAccepted.value && isDeal.value
-                      ? _validateAndAcceptDeal
-                      : null, // Disable button if deal is not accepted
+                  onPressed:
+                       _validateAndAcceptDeal,
+
                   child: const Text('Chốt Deal Với Người Này',
                       style: TextStyle(fontSize: 18, color: Colors.black)),
                 ),

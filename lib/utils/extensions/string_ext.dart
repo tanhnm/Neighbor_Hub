@@ -71,3 +71,18 @@ extension TruncateWithWordsExtension on String {
     return '${words.sublist(0, maxWords).join(' ')}...';
   }
 }
+
+extension ConvertToVietnamese on String {
+  String convertToVietnamese() {
+    switch (this) {
+      case 'Booking':
+        return 'Đang đặt';
+      case 'DriverEnRoute':
+        return 'Tài xế đang trên đường';
+      case 'BookingCompleted':
+        return 'Đặt chỗ hoàn thành';
+      default:
+        return 'Trạng thái không xác định';
+    }
+  }
+}

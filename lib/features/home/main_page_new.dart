@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../common/routes.dart';
+import '../../providers/app_providers.dart';
 import '../../view/rounded_img.dart';
 
 class MainPageNew extends HookConsumerWidget {
@@ -153,11 +154,11 @@ class MainPageNew extends HookConsumerWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   children: [
-                    Row(
+                    const Row(
                       children: [
                         Text("Khám phá ngay",
                             style: TextStyle(
@@ -165,6 +166,13 @@ class MainPageNew extends HookConsumerWidget {
                         SizedBox(width: 6),
                         Icon(FontAwesomeIcons.arrowRight, size: 22)
                       ],
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        final token = ref.read(tokenProvider);
+                        print(token);
+                      },
+                      child: const Text('Button'),
                     ),
                   ],
                 ),

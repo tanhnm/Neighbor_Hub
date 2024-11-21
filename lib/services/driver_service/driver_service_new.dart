@@ -97,6 +97,35 @@ class DriverService {
       return false;
     }
   }
+
+  Future<bool> unActivateDriver(
+  ) async {
+    try {
+      // Get the token from the token provider
+      final token = ref.read(tokenProvider);
+
+      // Call the Retrofit API method
+      final driverId = ref.read(driverProvider).value;
+      final appApi = ref.read(appApiProvider);
+      final response = await appApi.unActivateDriver(
+        driverId.toString(),
+        'Bearer $token',
+      );
+
+      if (response.response.statusCode == 200) {
+        final box = await Hive.openBox('authBox');
+        await box.put('is_active', false);
+        return true;
+      } else {
+        throw Exception('Failed to unActivate driver');
+      }
+    } catch (e) {
+      print('Error activating driver: $e');
+      return false;
+    }
+  }
+
+
 //endregion
 }
 

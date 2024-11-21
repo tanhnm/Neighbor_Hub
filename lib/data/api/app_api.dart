@@ -22,6 +22,11 @@ abstract class AppApi {
     @Header("Authorization") String authorization,
   );
 
+  @PUT("/api/v1/registrationForm/unActive/{driverId}")
+  Future<HttpResponse<String>> unActivateDriver(
+    @Path() String driverId,
+    @Header("Authorization") String authorization,
+  );
 
   @GET("/api/v1/driver/getAllBooking/{driverId}")
   Future<List<BookingModel>> getAllBookingsByDriverId(
@@ -29,31 +34,29 @@ abstract class AppApi {
     @Header("Authorization") String authorization,
   );
 
-
   @GET("/api/v1/registrationForm/getAllRegistrationForm/{driverId}")
   Future<List<RegistrationFormModel>> getAllRegistrationFormsById(
-      @Path() String driverId,
+    @Path() String driverId,
     @Header("Authorization") String authorization,
     // Pass the token in the header
   );
 
   @POST("/api/v1/booking/createBooking")
   Future<HttpResponse<void>> createBooking(
-      @Body() Map<String, dynamic> requestBody,
-      @Header("Authorization") String authorization,
-      );
-
+    @Body() Map<String, dynamic> requestBody,
+    @Header("Authorization") String authorization,
+  );
 
   @POST("/api/v1/booking/createAdvanceBooking")
   Future<HttpResponse<void>> createAdvanceBooking(
-      @Body() Map<String, dynamic> requestBody,
-      @Header("Authorization") String authorization,
-      );
+    @Body() Map<String, dynamic> requestBody,
+    @Header("Authorization") String authorization,
+  );
 
   @DELETE("/api/v1/user/DeleteUser/{id}")
   Future<HttpResponse<void>> deleteUser(
-      @Path() String id,
-      );
+    @Path() String id,
+  );
 
 // @GET('/getter/list-echos')
 // Future<List<EchoEntity>> getEchoes();

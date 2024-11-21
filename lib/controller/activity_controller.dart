@@ -16,6 +16,7 @@ class ActivityController extends _$ActivityController {
   FutureOr<List<BookingDetailModel>> build() {
 
     final user = ref.read(userProvider);
+    print('concac');
     return getActivities(user.value!.userId);
   }
 

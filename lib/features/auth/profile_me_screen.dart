@@ -3,6 +3,7 @@ import 'package:flutter_application_1/domains/freezed/user_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
@@ -19,8 +20,6 @@ class ProfileMeScreen extends StatefulHookConsumerWidget {
 
 class _ProfileMeScreenState extends ConsumerState<ProfileMeScreen> {
   Box<UserModel>? userBox;
-  UserModel? user;
-  Future<UserModel>? userIdFuture;
 
   @override
   void initState() {
@@ -30,29 +29,14 @@ class _ProfileMeScreenState extends ConsumerState<ProfileMeScreen> {
 
   Future<void> _initializeHiveBox() async {
     try {
-      userBox = Hive.box<UserModel>('users');
-      setState(() {
-        userIdFuture = _loadUser();
-        userIdFuture!.then((value) => user = value);
-      });
+      userBox = await Hive.openBox<UserModel>('users');
+      setState(() {});
     } catch (e) {
       toastification.show(
         context: context,
         style: ToastificationStyle.flat,
         title: Text('Error: $e'),
       );
-    }
-  }
-
-  Future<UserModel> _loadUser() async {
-    try {
-      user = userBox?.get('user');
-      if (user == null) {
-        throw Exception('No user found in the Hive box.');
-      }
-      return user!;
-    } catch (e) {
-      rethrow;
     }
   }
 
@@ -70,18 +54,15 @@ class _ProfileMeScreenState extends ConsumerState<ProfileMeScreen> {
               icon: const Icon(FontAwesomeIcons.arrowsRotate)),
         ],
       ),
-      body: FutureBuilder<UserModel>(
-        future: userIdFuture, // Using the Future from _initializeHiveBox
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData) {
+      body: userBox == null
+          ? const Center(child: CircularProgressIndicator())
+          : ValueListenableBuilder(
+        valueListenable: userBox!.listenable(),
+        builder: (context, Box<UserModel> box, _) {
+          final user = box.get('user');
+          if (user == null) {
             return const Center(child: Text('UserModel not found.'));
           }
-
-          final user = snapshot.data!;
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
@@ -125,6 +106,23 @@ class _ProfileMeScreenState extends ConsumerState<ProfileMeScreen> {
                   'Status: ${user.status ? "Active" : "Inactive"}',
                   style: const TextStyle(
                       fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    if (user.status) {
+                      final driverService = ref.read(driverServiceProvider);
+                      await driverService.unActivateDriver().then((value) {
+                        if(value){
+                          userBox!.put('user', user.copyWith(status: false));
+                        }
+                      });
+                      // userBox!.put('user', user.copyWith(status: false));
+                    } else {
+                      ref.refresh(updateLocationDriverProvider);
+                      userBox!.put('user', user.copyWith(status: true));
+                    }
+                  },
+                  child: Text('Button'),
                 ),
               ],
             ),

@@ -102,11 +102,7 @@ class _ProfileMeScreenState extends ConsumerState<ProfileMeScreen> {
                 ),
                 const SizedBox(height: 20),
                 // UserModel Status Section
-                Text(
-                  'Status: ${user.status ? "Active" : "Inactive"}',
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+
                 TextButton(
                   onPressed: () async {
                     if (user.status) {
@@ -122,7 +118,12 @@ class _ProfileMeScreenState extends ConsumerState<ProfileMeScreen> {
                       userBox!.put('user', user.copyWith(status: true));
                     }
                   },
-                  child: Text('Button'),
+                  child: Text(
+                    'Status: ${user.status ? "Hoạt động" : "Không hoạt động"}',
+                    style:  TextStyle(
+                      color: user.status ? Colors.green : Colors.red,
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ],
             ),

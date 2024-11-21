@@ -178,6 +178,7 @@ class RemoteAuth {
         await userBox.put('user', user);
         // Retrieve the user
         UserModel? retrievedUser = userBox.get('user');
+
         // Navigate to the bottom nav screen
         context.pushNamed(Routes.home);
       } else {

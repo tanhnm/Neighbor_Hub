@@ -41,6 +41,7 @@ final List<Setting> settings = [
       var authBox = Hive.box('authBox');
       await authBox.clear(); // Clears all data in the authBox
       await userBox.clear();
+      await userBox.delete('user');
       await locationBox.clear();
       await box.clear();
       if(context.mounted){

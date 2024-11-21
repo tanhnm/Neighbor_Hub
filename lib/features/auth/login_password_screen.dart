@@ -34,6 +34,7 @@ class _LoginPasswordScreenState extends ConsumerState<LoginPasswordScreen> {
             password: passwordTextEditingController.text);
         await driverService.getDriverByPhoneNumber(widget.phoneNumber);
         ref.invalidate(driverProvider);
+        ref.invalidate(userProvider);
         String? token = await getTokenFromHive();
         if (token != null) {
           ref.read(tokenProvider.notifier).state = token;

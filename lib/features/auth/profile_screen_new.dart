@@ -5,6 +5,7 @@ import 'package:flutter_application_1/common/routes.dart';
 import 'package:flutter_application_1/controller/booking_service.dart';
 import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
 import 'package:flutter_application_1/domains/freezed/driver_model.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_application_1/services/fare_service/booking_controller.dart';
@@ -222,12 +223,15 @@ class ProfileScreenNew extends HookConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text(
-                                  'Đang đợi tài xế chấp nhận deal',
+                                  'Đang đợi chấp nhận deal',
                                   style: TextStyle(
                                       fontSize: 18, fontWeight: FontWeight.bold),
                                 ),
-                                LoadingAnimationWidget.waveDots(
-                                    color: Colors.black, size: 20.0),
+                                IconButton(onPressed: (){
+                                  ref.invalidate(amountControllerProvider(
+                                      bookingDetail.registration!.driver!.driverId,
+                                      bookingDetail.bookingId));
+                                }, icon: Icon(FontAwesomeIcons.arrowsRotate))
                               ],
                             ),
 

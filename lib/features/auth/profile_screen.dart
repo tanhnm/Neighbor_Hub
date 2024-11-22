@@ -209,7 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        'Đang đợi tài xế chấp nhận deal',
+                        'Đang đợi chấp nhận deal',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),

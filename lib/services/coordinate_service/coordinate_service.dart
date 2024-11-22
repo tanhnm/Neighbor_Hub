@@ -48,14 +48,20 @@ Future<void> getCoordinates({
     //   ];
 
       // Populate the vehicles list with trip details
-      for (var trip in trips) {
-        vehicles.value.add({
-          'type': trip.vehicleType,
-          'distance': distance.value.toString(),
-          'duration': duration.value.toString(),
-          'price': trip.tripCost.toString(),
-        });
-      }
+      // for (var trip in trips) {
+      //   vehicles.value.add({
+      //     'type': trip.vehicleType,
+      //     'distance': distance.value.toString(),
+      //     'duration': duration.value.toString(),
+      //     'price': trip.tripCost.toString(),
+      //   });
+      // }
+      vehicles.value = trips.map((e) => {
+        'type': e.vehicleType,
+        'distance': distance.value.toString(),
+        'duration': duration.value.toString(),
+        'price': e.tripCost.toString(),
+      }).toList();
     } else {
       Fluttertoast.showToast(
         msg: 'Error response: ${response.body}',

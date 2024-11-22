@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_application_1/common/restaurants.dart';
 import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
 import 'package:flutter_application_1/domains/freezed/booking_model.dart';
@@ -42,7 +43,7 @@ class AppRepository {
       {CancelToken? cancelToken}) async {
     double lon = double.parse(currentLocation.split(',')[0]);
     double lat = double.parse(currentLocation.split(',')[1]);
-
+    print(currentLocation);
     final url = Uri(
       scheme: 'https',
       host: kBaseUrl,
@@ -274,6 +275,17 @@ class AppRepository {
 
     print('hello');
     print(response.data);
+    if(response.data['message'].contains('have enough money')){
+      Fluttertoast.showToast(
+          msg: "Số dư không đủ",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }
     return ResponseData.fromJson(response.data);
   }
 

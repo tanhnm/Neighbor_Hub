@@ -51,6 +51,7 @@ class MainPageNew extends HookConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
@@ -74,6 +75,34 @@ class MainPageNew extends HookConsumerWidget {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 20),
+                Container(
+                  height: 120,
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: const Color(0xFFE5E5E5),
+                  ),
+                  child:  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          FontAwesomeIcons.route,
+                          size: 72,
+                        ),
+                      ),
+                      SizedBox(width: 8,),
+                      Expanded(child: Text('Đi dễ dàng, sống tiện lợi!', style: TextStyle(fontSize: 26),))
+                    ],
+                  ),),
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -139,18 +168,18 @@ class MainPageNew extends HookConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // _buildInfoCard("images/wallet.png", screenWidth,
-                        //     "Thanh Toán", "Thêm thẻ"),
-                        // TextButton(onPressed: () async {
-                        //   print(await ref.read(driverProvider.future));
-                        // }, child: Text('aaa')),
-                        _buildInfoCard(
-                            "images/coin.png", screenWidth, "Tích điểm", "100000"),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     // _buildInfoCard("images/wallet.png", screenWidth,
+                    //     //     "Thanh Toán", "Thêm thẻ"),
+                    //     // TextButton(onPressed: () async {
+                    //     //   print(await ref.read(driverProvider.future));
+                    //     // }, child: Text('aaa')),
+                    //     _buildInfoCard(
+                    //         "images/coin.png", screenWidth, "Tích điểm", "100000"),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),

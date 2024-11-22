@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/dio.dart';
 
 import '../data/api/app_repository.dart';
+import '../domains/freezed/response_data.dart';
 import '../domains/trip.dart';
 import '../providers/app_providers.dart';
 
@@ -19,7 +20,7 @@ class BookingService {
 
   BookingService({required this.ref});
 
-  Future<HttpResponse<void>> createBooking({
+  Future<ResponseData> createBooking({
     required String pickupLocation,
     required String dropoffLocation,
     required int distance,
@@ -43,16 +44,17 @@ class BookingService {
       "price": price,
     };
 
-    final appRepo = ref.read(appApiProvider);
-
+    // final appRepo = ref.read(appApiProvider);
+    final appRepository = ref.watch(appRepositoryProvider);
     final token = ref.read(tokenProvider);
     print(requestBody.toString());
     print('token: $token');
-    var response = await appRepo.createBooking(requestBody, 'Bearer $token');
+    // var response = await appRepo.createBooking(requestBody, 'Bearer $token');
+    var response = await appRepository.createBooking(requestBody, token);
     return response;
   }
 
-  Future<HttpResponse<void>> createAdvanceBooking({
+  Future<ResponseData> createAdvanceBooking({
     required String pickupLocation,
     required String dropoffLocation,
     required int distance,
@@ -76,12 +78,13 @@ class BookingService {
       "price": price,
     };
 
-    final appRepo = ref.read(appApiProvider);
-
+    // final appRepo = ref.read(appApiProvider);
+    final appRepository = ref.watch(appRepositoryProvider);
     final token = ref.read(tokenProvider);
     print(requestBody.toString());
-    var response =
-        await appRepo.createAdvanceBooking(requestBody, 'Bearer $token');
+    print('token: $token');
+    // var response = await appRepo.createBooking(requestBody, 'Bearer $token');
+    var response = await appRepository.createBooking(requestBody, token);
     return response;
   }
 

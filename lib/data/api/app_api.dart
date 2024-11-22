@@ -4,6 +4,8 @@ import 'package:flutter_application_1/domains/freezed/driver_model.dart';
 import 'package:flutter_application_1/domains/freezed/registration_form_model.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../../domains/freezed/response_data.dart';
+
 part 'app_api.g.dart';
 
 @RestApi(parser: Parser.JsonSerializable)
@@ -42,7 +44,7 @@ abstract class AppApi {
   );
 
   @POST("/api/v1/booking/createBooking")
-  Future<HttpResponse<void>> createBooking(
+  Future<ResponseData> createBooking(
     @Body() Map<String, dynamic> requestBody,
     @Header("Authorization") String authorization,
   );

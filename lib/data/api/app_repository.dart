@@ -7,8 +7,10 @@ import 'package:flutter_application_1/domains/freezed/booking_model.dart';
 import 'package:flutter_application_1/domains/freezed/booking_voucher_model.dart';
 import 'package:flutter_application_1/domains/freezed/dealing_model.dart';
 import 'package:flutter_application_1/domains/freezed/registration_form_model.dart';
+import 'package:flutter_application_1/domains/freezed/response_data.dart';
 import 'package:flutter_application_1/providers/app_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -252,6 +254,27 @@ class AppRepository {
     final List list = response.data['data'];
     // return BookingDetailModel.fromJson(response.data['data']);
     return list.map((e) => BookingDetailModel.fromJson(e)).toList();
+  }
+
+  Future<ResponseData> createBooking(Map<String, dynamic> requestBody, String token,
+      {CancelToken? cancelToken}) async {
+    final url = Uri(
+      scheme: 'https',
+      host: kBaseUrl,
+      path: '/api/v1/booking/createBooking',
+    ).toString();
+
+    Options options = Options(headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    final response = await client.post(url,
+        data: requestBody, cancelToken: cancelToken, options: options);
+
+    print('hello');
+    print(response.data);
+    return ResponseData.fromJson(response.data);
   }
 
 

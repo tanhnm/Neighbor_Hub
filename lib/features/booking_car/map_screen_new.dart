@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
@@ -546,15 +547,36 @@ class MapScreenNew extends HookConsumerWidget {
                                 onPressed: () async {
                                   final bookingService = ref.read(bookingServiceProvider);
                                   final response = !isPreBooking ? await bookingService.createBooking(
-                                       distance: distance.value.toInt(),
-                                       pickupLocation:
-                                       pickLocation.value,
-                                       dropoffLocation:
-                                       dropLocation.value,
-                                       userId: user.value?.userId ?? 0,
-                                       price: price.value,
-                                       currentLocation: firstPick.value
-                                   ): await bookingService.createAdvanceBooking(
+                                      distance: distance.value.toInt(),
+                                      pickupLocation:
+                                      pickLocation.value,
+                                      dropoffLocation:
+                                      dropLocation.value,
+                                      userId: user.value?.userId ?? 0,
+                                      price: price.value,
+                                      currentLocation: firstPick.value
+                                  ).then((value) async {
+                                    if (value.code == 200 || value.code == 201) {
+                                      var box = Hive.box('locationBox');
+                                      await box.put('currentLocation', firstPick.value);
+                                      if(context.mounted){
+                                        Navigator.pop(context);
+                                        ref.invalidate(activityControllerProvider);
+
+                                        context.pushNamed(
+                                            Routes.driverList,
+                                            extra: value.data);
+                                      }
+                                    } else {
+                                      Fluttertoast.showToast(
+                                        msg: 'Lỗi',
+                                        toastLength: Toast.LENGTH_LONG,
+                                        gravity: ToastGravity.CENTER,
+                                        timeInSecForIosWeb: 1,
+                                        fontSize: 16.0,
+                                      );
+                                    }
+                                  }): await bookingService.createAdvanceBooking(
                                       pickupLocation:
                                       pickLocation.value,
                                       dropoffLocation:
@@ -565,49 +587,31 @@ class MapScreenNew extends HookConsumerWidget {
                                       price: price.value,
                                       pickupTime:
                                       "${bookingDateTime.value?.toIso8601String()}Z"
-                                  );
+                                  ).then((value) async {
+                                    if (value.code == 200 || value.code == 201) {
+                                      var box = Hive.box('locationBox');
+                                      await box.put('currentLocation', firstPick.value);
+                                      if(context.mounted){
+                                        Navigator.pop(context);
+                                        ref.invalidate(activityControllerProvider);
 
-                                  if (response.response.statusCode == 200 || response.response.statusCode == 201) {
-                                    var box = Hive.box('locationBox');
-                                    await box.put('currentLocation', firstPick.value);
-                                    if(context.mounted){
-                                      Navigator.pop(context);
-                                      ref.invalidate(activityControllerProvider);
-                                      context.pushNamed(Routes.activity);
-
+                                        context.pushNamed(
+                                            Routes.driverList,
+                                            extra: value);
+                                      }
+                                    } else {
+                                      Fluttertoast.showToast(
+                                        msg: 'Lỗi',
+                                        toastLength: Toast.LENGTH_LONG,
+                                        gravity: ToastGravity.CENTER,
+                                        timeInSecForIosWeb: 1,
+                                        fontSize: 16.0,
+                                      );
                                     }
-                                  } else {
-                                    Fluttertoast.showToast(
-                                      msg: 'Lỗi',
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 1,
-                                      fontSize: 16.0,
-                                    );
-                                  }
-                                  // !isPreBooking
-                                  //     ? BookingController(context: context)
-                                  //         .createBooking(
-                                  //             distance: distance.value.toInt(),
-                                  //             pickupLocation:
-                                  //                 pickLocation.value,
-                                  //             dropoffLocation:
-                                  //                 dropLocation.value,
-                                  //             userId: user.value?.userId ?? 0,
-                                  //             currentLocation: firstPick.value)
-                                  //     : BookingController(context: context)
-                                  //         .createBookingAdvance(
-                                  //             pickupLocation:
-                                  //                 pickLocation.value,
-                                  //             dropoffLocation:
-                                  //                 dropLocation.value,
-                                  //             distance: distance.value.toInt(),
-                                  //             userId: user.value?.userId ?? 0,
-                                  //             currentLocation: firstPick.value,
-                                  //             pickupTime:
-                                  //                 "${bookingDateTime.value?.toIso8601String()}Z");
+                                  });
 
-                                  // Proceed with vehicle confirmation logic
+
+
                                 },
                                 child: const Text('Xác Nhận'),
                               ),

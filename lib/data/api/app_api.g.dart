@@ -211,7 +211,7 @@ class _AppApi implements AppApi {
   }
 
   @override
-  Future<HttpResponse<void>> createBooking(
+  Future<ResponseData> createBooking(
     Map<String, dynamic> requestBody,
     String authorization,
   ) async {
@@ -221,7 +221,7 @@ class _AppApi implements AppApi {
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(requestBody);
-    final _options = _setStreamType<HttpResponse<void>>(Options(
+    final _options = _setStreamType<ResponseData>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -237,9 +237,15 @@ class _AppApi implements AppApi {
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch<void>(_options);
-    final httpResponse = HttpResponse(null, _result);
-    return httpResponse;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ResponseData _value;
+    try {
+      _value = ResponseData.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   @override

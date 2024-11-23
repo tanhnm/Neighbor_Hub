@@ -13,6 +13,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../common/routes.dart';
 import '../../controller/booking_service.dart';
+import '../../controller/drivers_controller.dart';
 import '../auth/profile_screen_new.dart';
 import 'package:collection/collection.dart';
 
@@ -120,6 +121,7 @@ class ActivityScreenNew extends HookConsumerWidget {
                                                   if (bookingDetail
                                                           .registration ==
                                                       null) {
+                                                    ref.invalidate(driversControllerProvider);
                                                     context.pushNamed(
                                                         Routes.driverList,
                                                         extra: bookingDetail);

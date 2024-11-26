@@ -1,17 +1,20 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/booking.dart';
-import 'package:flutter_application_1/screens/activity_screen.dart';
+import 'package:flutter_application_1/common/router.dart';
+import 'package:flutter_application_1/domains/setting.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:toastification/toastification.dart';
+import 'package:go_router/go_router.dart';
+import '../../common/routes.dart';
+import '../../domains/freezed/booking_model.dart';
 
 class BookingController {
   final Dio _dio = Dio();
 
-  BuildContext context;
-  BookingController({required this.context});
+  BuildContext? context;
+  BookingController({this.context});
   final String _baseUrl =
       'https://gh-neighborhub-569199407036.asia-southeast1.run.app/api/v1';
 
@@ -27,7 +30,7 @@ class BookingController {
       // Call the API to get bookings
       final response =
           await _dio.get('$_baseUrl/booking/getBookingByUserId/$userid');
-
+      print('$_baseUrl/booking/getBookingByUserId/$userid');
       // Check for response status
       if (response.statusCode == 200) {
         return response.data; // Return the response if successful
@@ -39,7 +42,7 @@ class BookingController {
     }
   }
 
-  Future<List<Booking>> getBookingAdvanceList() async {
+  Future<List<BookingModel>> getBookingAdvanceList() async {
     try {
       // Get the token
       // String? token = await _getToken();
@@ -57,14 +60,15 @@ class BookingController {
       // Check if the request was successful
       if (response.statusCode == 200) {
         // Parse the JSON response
-        List<dynamic> responseData = json.decode(response.body);
+        // List<dynamic> responseData = json.decode(response.body);
+        //
+        // // Convert the list of JSON objects to a list of Booking objects
+        // List<Booking> bookings = responseData.map((json) {
+        //   return Booking.fromJson(json);
+        // }).toList();
+        return bookingModelFromJson(response.body);
 
-        // Convert the list of JSON objects to a list of Booking objects
-        List<Booking> bookings = responseData.map((json) {
-          return Booking.fromJson(json);
-        }).toList();
-
-        return bookings;
+        // return bookings;
       } else {
         toastification.show(
           context: context,
@@ -94,8 +98,9 @@ class BookingController {
       if (token == null) {
         return [];
       }
-      double lon = double.parse(currentLocation.split(',')[1]);
-      double lat = double.parse(currentLocation.split(',')[0]);
+      double lon = double.parse(currentLocation.split(',')[0]);
+      double lat = double.parse(currentLocation.split(',')[1]);
+      print("lat $lat");
       final response = await http.get(
         Uri.parse(
             '$_baseUrl/booking/getDriverNearUser?userLat=$lat&userLon=$lon&bookingId=${booking['bookingId']}'),
@@ -329,10 +334,7 @@ class BookingController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         var box = Hive.box('locationBox');
         await box.put('currentLocation', currentLocation);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ActivityScreen()),
-        );
+        context?.pushNamed(Routes.activity);
       } else {}
     } catch (e) {
       toastification.show(
@@ -388,11 +390,8 @@ class BookingController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         var box = Hive.box('locationBox');
         await box.put('currentLocation', currentLocation);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ActivityScreen()),
-        );
-      } else {}
+        context?.pushNamed(Routes.activity);
+      }
     } catch (e) {
       toastification.show(
         context: context,

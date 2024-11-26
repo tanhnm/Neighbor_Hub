@@ -6,6 +6,7 @@ plugins {
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
+
 }
 
 def localProperties = new Properties()
@@ -26,14 +27,14 @@ if (flutterVersionName == null) {
     flutterVersionName = "2.0"
 }
 
-def keystoreProperties = new Properties()
-   def keystorePropertiesFile = rootProject.file('key.properties')
-   if (keystorePropertiesFile.exists()) {
-       keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-   }
+//def keystoreProperties = new Properties()
+//   def keystorePropertiesFile = rootProject.file('key.properties')
+//   if (keystorePropertiesFile.exists()) {
+//       keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+//   }
 
 android {
-    namespace = "com.example.flutter_application_1"
+    namespace = "com.renolation.ride"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -48,31 +49,31 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.neighborhub.neighborhub"
+        applicationId = "com.renolation.ride"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdk = 23
-        targetSdk = flutter.targetSdkVersion
-        versionCode = 5
-        versionName = "5.0"
+        targetSdk = 34
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
         multiDexEnabled true 
-        resValue "string", "applicationName", "com.neighborhub.neighborhub" // Set the application name here
+        resValue "string", "applicationName", "com.renolation.ride" // Set the application name here
     }
 
-    signingConfigs {
-       release {
-           keyAlias keystoreProperties['keyAlias']
-           keyPassword keystoreProperties['keyPassword']
-           storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-           storePassword keystoreProperties['storePassword']
-       }
-   }
+//    signingConfigs {
+//       release {
+//           keyAlias keystoreProperties['keyAlias']
+//           keyPassword keystoreProperties['keyPassword']
+//           storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+//           storePassword keystoreProperties['storePassword']
+//       }
+//   }
 
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.release
+            signingConfig = signingConfigs.debug
              // Ensures that debug symbols are kept for native code
             ndk {
                 debugSymbolLevel 'FULL'
@@ -82,6 +83,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+//    buildTypes {
+//        release {
+////            signingConfig signingConfigs.debug
+//            signingConfig signingConfigs.release
+//            minifyEnabled true // Add these lines
+//            shrinkResources true // Add these lines
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//        }
+//    }
     
     // Add this block to rename the APK file
     applicationVariants.all { variant ->
@@ -98,6 +108,9 @@ dependencies {
     // Add the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-messaging")
+
+
 }
 
 

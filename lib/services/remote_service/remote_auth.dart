@@ -1,14 +1,18 @@
 import 'dart:convert'; // For jsonEncode
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/user_model.dart';
-import 'package:flutter_application_1/screens/auth/login_password_screen.dart';
-import 'package:flutter_application_1/screens/confirm_otp_screen.dart';
-import 'package:flutter_application_1/screens/navbar_screen.dart';
-import 'package:flutter_application_1/screens/register_screen.dart';
+import 'package:flutter_application_1/common/router.dart';
+import 'package:flutter_application_1/domains/freezed/user_model.dart';
+import 'package:flutter_application_1/features/auth/login_password_screen.dart';
+import 'package:flutter_application_1/features/temp_screen/confirm_otp_screen_new.dart';
+import 'package:flutter_application_1/features/temp_screen/register_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:toastification/toastification.dart';
 import 'package:dio/dio.dart';
+
+import '../../common/routes.dart';
+
 
 class RemoteAuth {
   final BuildContext context;
@@ -23,11 +27,13 @@ class RemoteAuth {
           await http.get(Uri.parse('${_baseUrl}user/getByPhoneNumber/$phone'));
 
       if (response.statusCode == 200) {
-        Navigator.push(
+        if(context.mounted) {
+          Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => LoginPasswordScreen(phoneNumber: phone)),
         );
+        }
       } else if (response.body == "User does not exist") {
         sendSMSOTP(phone: phone);
       } else {
@@ -71,7 +77,7 @@ class RemoteAuth {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ConfirmOtpScreen(phoneNumber: phone)),
+              builder: (context) => ConfirmOtpScreenNew(phoneNumber: phone)),
         );
       } else {
         toastification.show(
@@ -161,8 +167,8 @@ class RemoteAuth {
 
         var box = Hive.box('authBox');
         // Open a Hive box
-        var userBox = Hive.box<User>('users');
-        User user = User.fromJson(response.data['user']);
+        var userBox = Hive.box<UserModel>('users');
+        UserModel user = UserModel.fromJson(response.data['user']);
 
         await box.put('is_logged_in', true); // Mark the user as logged in
 
@@ -171,12 +177,10 @@ class RemoteAuth {
         // Store the user
         await userBox.put('user', user);
         // Retrieve the user
-        User? retrievedUser = userBox.get('user');
+        UserModel? retrievedUser = userBox.get('user');
+
         // Navigate to the bottom nav screen
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const BottomNavBar()),
-        );
+        context.pushNamed(Routes.home);
       } else {
         toastification.show(
           context: context,

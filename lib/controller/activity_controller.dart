@@ -1,0 +1,45 @@
+
+import 'package:dio/dio.dart';
+import 'package:flutter_application_1/data/api/app_repository.dart';
+import 'package:flutter_application_1/domains/freezed/booking_detail_model.dart';
+import 'package:flutter_application_1/providers/user_provider.dart';
+
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../domains/freezed/dealing_model.dart';
+
+part 'activity_controller.g.dart';
+
+@Riverpod(keepAlive: true)
+class ActivityController extends _$ActivityController {
+  @override
+  FutureOr<List<BookingDetailModel>> build() {
+
+    final user = ref.read(userProvider);
+    print('concac');
+    return getActivities(user.value!.userId);
+  }
+
+  Future<List<BookingDetailModel>> getActivities(int userId){
+    final appRepository = ref.watch(appRepositoryProvider);
+    final cancelToken = CancelToken();
+    return appRepository.getBookingDetails(
+      userId,
+      cancelToken: cancelToken,
+    );
+  }
+}
+
+@riverpod
+class AmountController extends _$AmountController {
+
+  @override
+  FutureOr<DealingModel> build(int driverId, int bookingId) {
+    return getAmount(driverId, bookingId);
+  }
+  FutureOr<DealingModel> getAmount(int driverId, int bookingId){
+    final appRepository = ref.watch(appRepositoryProvider);
+
+    return appRepository.getDriverAmount(driverId, bookingId);
+  }
+}
